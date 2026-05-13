@@ -16,7 +16,12 @@ export default function Home() {
   }, [])
 
   async function handleLogin() {
-    const { error } = await supabase.auth.signInWithOtp({ email })
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: 'https://www.miroki.app/auth/callback'
+      }
+    })
     if (error) { alert(error.message); return }
     setSent(true)
   }
@@ -24,8 +29,8 @@ export default function Home() {
   if (sent) return (
     <main className="flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <h1 className="text-2xl font-semibold mb-2">Check je email</h1>
-        <p className="text-gray-500">We hebben een magic link gestuurd naar {email}</p>
+        <h1 className="text-2xl font-semibold mb-2">Check your email</h1>
+        <p className="text-gray-500">We sent a magic link to {email}</p>
       </div>
     </main>
   )
@@ -34,10 +39,10 @@ export default function Home() {
     <main className="flex min-h-screen items-center justify-center">
       <div className="flex flex-col items-center gap-4 w-full max-w-sm">
         <h1 className="text-3xl font-semibold">Miroki</h1>
-        <p className="text-gray-500 text-sm">Ship rustig. Stap voor stap.</p>
+        <p className="text-gray-500 text-sm">Ship calm. Step by step.</p>
         <input
           type="email"
-          placeholder="jouw@email.com"
+          placeholder="your@email.com"
           className="border rounded-lg px-4 py-2 w-full"
           value={email}
           onChange={e => setEmail(e.target.value)}
@@ -46,7 +51,7 @@ export default function Home() {
           onClick={handleLogin}
           className="bg-black text-white rounded-lg px-4 py-2 w-full"
         >
-          Inloggen met magic link
+          Login with magic link
         </button>
       </div>
     </main>
