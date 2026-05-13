@@ -19,7 +19,7 @@ export default function Home() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: 'https://www.miroki.app/auth/callback'
+        emailRedirectTo: 'https://www.miroki.app/auth/callback?next=/onboarding'
       }
     })
     if (error) { alert(error.message); return }
