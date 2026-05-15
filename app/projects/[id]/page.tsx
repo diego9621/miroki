@@ -49,42 +49,16 @@ const categoryPaths: Record<string, string> = {
 }
 
 const stackTools = [
-  { category: 'Frontend', tools: [
-    { id: 'nextjs', name: 'Next.js' },
-    { id: 'remix', name: 'Remix' },
-    { id: 'astro', name: 'Astro' },
-    { id: 'svelte', name: 'SvelteKit' },
-  ]},
-  { category: 'Database & Backend', tools: [
-    { id: 'supabase', name: 'Supabase' },
-    { id: 'firebase', name: 'Firebase' },
-    { id: 'neon', name: 'Neon' },
-    { id: 'planetscale', name: 'PlanetScale' },
-  ]},
-  { category: 'Auth', tools: [
-    { id: 'supabase-auth', name: 'Supabase Auth' },
-    { id: 'clerk', name: 'Clerk' },
-    { id: 'nextauth', name: 'NextAuth' },
-  ]},
-  { category: 'Hosting', tools: [
-    { id: 'vercel', name: 'Vercel' },
-    { id: 'netlify', name: 'Netlify' },
-    { id: 'railway', name: 'Railway' },
-    { id: 'flyio', name: 'Fly.io' },
-  ]},
-  { category: 'Payments', tools: [
-    { id: 'stripe', name: 'Stripe' },
-    { id: 'lemonsqueezy', name: 'Lemon Squeezy' },
-  ]},
-  { category: 'Code', tools: [
-    { id: 'github', name: 'GitHub' },
-    { id: 'gitlab', name: 'GitLab' },
-  ]},
+  { category: 'Frontend', tools: [{ id: 'nextjs', name: 'Next.js' }, { id: 'remix', name: 'Remix' }, { id: 'astro', name: 'Astro' }, { id: 'svelte', name: 'SvelteKit' }] },
+  { category: 'Database & Backend', tools: [{ id: 'supabase', name: 'Supabase' }, { id: 'firebase', name: 'Firebase' }, { id: 'neon', name: 'Neon' }, { id: 'planetscale', name: 'PlanetScale' }] },
+  { category: 'Auth', tools: [{ id: 'supabase-auth', name: 'Supabase Auth' }, { id: 'clerk', name: 'Clerk' }, { id: 'nextauth', name: 'NextAuth' }] },
+  { category: 'Hosting', tools: [{ id: 'vercel', name: 'Vercel' }, { id: 'netlify', name: 'Netlify' }, { id: 'railway', name: 'Railway' }, { id: 'flyio', name: 'Fly.io' }] },
+  { category: 'Payments', tools: [{ id: 'stripe', name: 'Stripe' }, { id: 'lemonsqueezy', name: 'Lemon Squeezy' }] },
+  { category: 'Code', tools: [{ id: 'github', name: 'GitHub' }, { id: 'gitlab', name: 'GitLab' }] },
 ]
 
 const allTools = stackTools.flatMap(g => g.tools)
 
-// Inline SVG logos
 function ToolLogo({ id, size = 14 }: { id: string, size?: number }) {
   const logos: Record<string, React.ReactNode> = {
     nextjs: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#000"/><path d="M4.5 19.5V4.5h4.5l6 10V4.5H19.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
@@ -104,6 +78,8 @@ function ToolLogo({ id, size = 14 }: { id: string, size?: number }) {
     flyio: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#7B3FE4"/><path d="M12 4l6 4v8l-6 4-6-4V8l6-4zm0 3L8 9.5V14l4 2.5 4-2.5V9.5L12 7z" fill="white"/></svg>,
     nextauth: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#1A1A2E"/><path d="M12 4l7 4v8l-7 4-7-4V8l7-4z" stroke="white" strokeWidth="1.5" fill="none"/><path d="M9 12l2 2 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
     planetscale: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#000"/><path d="M4 4l16 16M4 4h7M4 4v7" stroke="white" strokeWidth="1.5" strokeLinecap="round"/></svg>,
+    remix: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#121212"/><path d="M13.5 8c0-1.1-.9-2-2-2H7v4h4.5c1.1 0 2-.9 2-2zM7 13v3h2v-2.5c1.8.3 3.5 1 3.5 2.5H15c0-2.5-2.2-4-5-4.3V13H7z" fill="white"/></svg>,
+    astro: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#17191E"/><path d="M12 3l3.5 10H16l-4 6-4-6h.5L12 3z" fill="white"/><path d="M8.5 13C9.5 14 11 15 12 19c1-4 2.5-5 3.5-6H8.5z" fill="#FF5D01"/></svg>,
   }
   return <>{logos[id] ?? <div style={{ width: size, height: size, borderRadius: 3, background: 'var(--m-surface-3)' }} />}</>
 }
@@ -111,8 +87,7 @@ function ToolLogo({ id, size = 14 }: { id: string, size?: number }) {
 function CategoryIcon({ category }: { category: string }) {
   const path = categoryPaths[category] ?? categoryPaths.other
   return (
-    <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-      style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)' }}>
+    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)' }}>
       <svg className="w-4 h-4" style={{ color: 'var(--m-text-secondary)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d={path} />
       </svg>
@@ -135,9 +110,7 @@ function SummaryCard({ steps, stack }: { steps: Step[], stack: string[] }) {
       <button onClick={() => setExpanded(p => !p)} className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-80">
         <div className="flex items-center gap-2.5">
           <span className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--m-text-muted)' }}>Project summary</span>
-          <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: 'var(--m-accent-subtle)', color: 'var(--m-accent)', border: '0.5px solid var(--m-accent-border)' }}>
-            {answered.length} filled
-          </span>
+          <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: 'var(--m-accent-subtle)', color: 'var(--m-accent)', border: '0.5px solid var(--m-accent-border)' }}>{answered.length} filled</span>
         </div>
         <svg className={`w-4 h-4 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`} style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -176,8 +149,8 @@ function NextStepBanner({ steps, onGo }: { steps: Step[], onGo: (phase: string) 
         <svg className="w-5 h-5" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
       </div>
       <div>
-        <p className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>All steps completed</p>
-        <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>Your project is shipped.</p>
+        <p className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>All steps completed — project shipped!</p>
+        <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>Track your growth below.</p>
       </div>
     </div>
   )
@@ -223,167 +196,100 @@ function StackSelector({ selected, onChange }: { selected: string[], onChange: (
   )
 }
 
-// Tracking integrations config
 const integrations = [
   { id: 'search_console', name: 'Search Console', description: 'Track search performance', logo: <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#4285F4"/><circle cx="11" cy="11" r="4.5" stroke="white" strokeWidth="1.5" fill="none"/><path d="M15 15l3 3" stroke="white" strokeWidth="1.5" strokeLinecap="round"/><path d="M9 11h4M11 9v4" stroke="white" strokeWidth="1.3" strokeLinecap="round"/></svg> },
-  { id: 'stripe', name: 'Stripe', description: 'Track revenue', logo: <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#635BFF"/><path d="M11.5 9.5c0-.8.7-1.1 1.8-1.1 1.6 0 3.2.5 4.7 1.3V6.2C16.5 5.4 14.9 5 13.3 5 9.9 5 7.6 6.7 7.6 9.7c0 4.6 6.3 3.9 6.3 5.9 0 .9-.8 1.2-2 1.2-1.7 0-3.6-.7-5.2-1.7v3.6c1.8.8 3.5 1.2 5.2 1.2 3.5 0 5.9-1.7 5.9-4.8 0-4.8-6.3-4-6.3-5.6z" fill="white"/></svg> },
+  { id: 'stripe', name: 'Stripe', description: 'Track revenue automatically', logo: <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#635BFF"/><path d="M11.5 9.5c0-.8.7-1.1 1.8-1.1 1.6 0 3.2.5 4.7 1.3V6.2C16.5 5.4 14.9 5 13.3 5 9.9 5 7.6 6.7 7.6 9.7c0 4.6 6.3 3.9 6.3 5.9 0 .9-.8 1.2-2 1.2-1.7 0-3.6-.7-5.2-1.7v3.6c1.8.8 3.5 1.2 5.2 1.2 3.5 0 5.9-1.7 5.9-4.8 0-4.8-6.3-4-6.3-5.6z" fill="white"/></svg> },
   { id: 'plausible', name: 'Plausible', description: 'Privacy-friendly analytics', logo: <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#5850EC"/><path d="M5 17l4-6 4 3 3-5 3 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/></svg> },
   { id: 'reddit', name: 'Reddit', description: 'Track upvotes & mentions', logo: <svg width="16" height="16" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="#FF4500"/><path d="M16.67 10a1.46 1.46 0 00-2.47-1 7.12 7.12 0 00-3.85-1.23l.65-3.07 2.13.45a1 1 0 101.07-1 1 1 0 00-.96.68l-2.38-.5a.17.17 0 00-.2.13l-.73 3.44a7.14 7.14 0 00-3.89 1.23 1.46 1.46 0 10-1.61 2.39 2.87 2.87 0 000 .44c0 2.24 2.61 4.06 5.83 4.06s5.83-1.82 5.83-4.06a2.87 2.87 0 000-.44 1.46 1.46 0 00.49-1.52zM7.27 11a1 1 0 111 1 1 1 0 01-1-1zm5.58 2.71a3.58 3.58 0 01-2.85.86 3.58 3.58 0 01-2.85-.86.17.17 0 01.23-.23 3.26 3.26 0 002.62.71 3.26 3.26 0 002.62-.71.17.17 0 01.23.23zm-.14-1.71a1 1 0 111-1 1 1 0 01-1 1z" fill="white"/></svg> },
-  { id: 'instagram', name: 'Instagram', description: 'Track followers', logo: <svg width="16" height="16" viewBox="0 0 24 24"><defs><linearGradient id="ig-t" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stopColor="#FED373"/><stop offset="30%" stopColor="#F15245"/><stop offset="60%" stopColor="#D92E7F"/><stop offset="100%" stopColor="#515ECF"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#ig-t)"/><circle cx="12" cy="12" r="4.5" stroke="white" strokeWidth="1.5" fill="none"/><circle cx="17.5" cy="6.5" r="1.2" fill="white"/></svg> },
+  { id: 'instagram', name: 'Instagram', description: 'Track followers', logo: <svg width="16" height="16" viewBox="0 0 24 24"><defs><linearGradient id="ig-p" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stopColor="#FED373"/><stop offset="30%" stopColor="#F15245"/><stop offset="60%" stopColor="#D92E7F"/><stop offset="100%" stopColor="#515ECF"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#ig-p)"/><circle cx="12" cy="12" r="4.5" stroke="white" strokeWidth="1.5" fill="none"/><circle cx="17.5" cy="6.5" r="1.2" fill="white"/></svg> },
   { id: 'twitter', name: 'X / Twitter', description: 'Track followers', logo: <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#000"/><path d="M17.5 4h2.5l-5.5 6.3L21 20h-5l-3.7-4.8L8 20H5.5l5.8-6.6L4 4h5.1l3.4 4.4L17.5 4zm-.9 14.4h1.4L7.5 5.4H6z" fill="white"/></svg> },
 ]
 
 function TrackingSection({ projectId }: { projectId: number }) {
-  const [tracking, setTracking] = useState<Tracking>({
-    users: 0, revenue: 0, visitors: 0, signups: 0,
-    reddit_upvotes: 0, instagram_followers: 0, twitter_followers: 0,
-  })
-  const [editing, setEditing] = useState<string | null>(null)
-  const [tempVal, setTempVal] = useState('')
-  const [saving, setSaving] = useState(false)
   const [showIntegrations, setShowIntegrations] = useState(false)
 
-  useEffect(() => {
-    supabase.from('tracking').select('*').eq('project_id', projectId).single()
-      .then(({ data }) => { if (data) setTracking(data) })
-  }, [projectId])
-
-  async function saveTracking(updates: Partial<Tracking>) {
-    setSaving(true)
-    const newTracking = { ...tracking, ...updates }
-    setTracking(newTracking)
-    const { data: existing } = await supabase.from('tracking').select('id').eq('project_id', projectId).single()
-    if (existing) {
-      await supabase.from('tracking').update({ ...updates, updated_at: new Date().toISOString() }).eq('project_id', projectId)
-    } else {
-      await supabase.from('tracking').insert([{ project_id: projectId, ...newTracking }])
-    }
-    setSaving(false)
-    setEditing(null)
-  }
-
-  function startEdit(field: string, value: number) {
-    setEditing(field)
-    setTempVal(value.toString())
-  }
-
-  function commitEdit(field: string) {
-    const val = parseFloat(tempVal) || 0
-    saveTracking({ [field]: val })
-  }
-
   const metrics = [
-    { key: 'visitors', label: 'Visitors', value: tracking.visitors, prefix: '' },
-    { key: 'signups', label: 'Signups', value: tracking.signups, prefix: '' },
-    { key: 'users', label: 'Users', value: tracking.users, prefix: '' },
-    { key: 'revenue', label: 'Revenue', value: tracking.revenue, prefix: '$' },
+    { label: 'Visitors', icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>, integration: 'Plausible' },
+    { label: 'Signups', icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" /></svg>, integration: 'Plausible' },
+    { label: 'Users', icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>, integration: 'Supabase' },
+    { label: 'Revenue', icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, integration: 'Stripe' },
   ]
 
   const social = [
-    { key: 'reddit_upvotes', label: 'Reddit upvotes', value: tracking.reddit_upvotes, logo: integrations.find(i => i.id === 'reddit')!.logo },
-    { key: 'instagram_followers', label: 'Instagram followers', value: tracking.instagram_followers, logo: integrations.find(i => i.id === 'instagram')!.logo },
-    { key: 'twitter_followers', label: 'X followers', value: tracking.twitter_followers, logo: integrations.find(i => i.id === 'twitter')!.logo },
+    { label: 'Reddit upvotes', integration: 'Reddit', logo: integrations.find(i => i.id === 'reddit')!.logo },
+    { label: 'Instagram followers', integration: 'Instagram', logo: integrations.find(i => i.id === 'instagram')!.logo },
+    { label: 'X / Twitter followers', integration: 'X / Twitter', logo: integrations.find(i => i.id === 'twitter')!.logo },
   ]
 
   return (
     <div className="mt-8">
       <div style={{ borderTop: '0.5px solid var(--m-border)' }} className="mb-8" />
 
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="font-semibold" style={{ color: 'var(--m-text-primary)' }}>Growth tracking</h2>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>Tap any number to update</p>
-        </div>
-        {saving && <div className="w-3 h-3 border border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--m-accent)' }} />}
+      <div className="mb-6">
+        <h2 className="font-semibold" style={{ color: 'var(--m-text-primary)' }}>Growth tracking</h2>
+        <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>Connect integrations to see your data here.</p>
       </div>
 
-      {/* Metrics grid */}
+      {/* Metrics grid — locked until integration */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         {metrics.map(m => (
-          <div key={m.key} className="rounded-xl p-4 cursor-pointer transition-all hover:opacity-80"
-            style={{ background: 'var(--m-surface-1)', border: `0.5px solid ${editing === m.key ? 'var(--m-accent-border)' : 'var(--m-border)'}` }}
-            onClick={() => editing !== m.key && startEdit(m.key, m.value)}>
-            <div className="text-xs mb-2" style={{ color: 'var(--m-text-muted)' }}>{m.label}</div>
-            {editing === m.key ? (
-              <input
-                autoFocus
-                type="number"
-                value={tempVal}
-                onChange={e => setTempVal(e.target.value)}
-                onBlur={() => commitEdit(m.key)}
-                onKeyDown={e => e.key === 'Enter' && commitEdit(m.key)}
-                className="w-full text-xl font-semibold focus:outline-none"
-                style={{ background: 'transparent', color: 'var(--m-text-primary)', caretColor: 'var(--m-accent)' }}
-              />
-            ) : (
-              <div className="text-xl font-semibold" style={{ color: 'var(--m-text-primary)' }}>
-                {m.prefix}{m.key === 'revenue' ? m.value.toLocaleString('en', { minimumFractionDigits: 0 }) : m.value.toLocaleString()}
-              </div>
-            )}
+          <div key={m.label} className="rounded-xl p-4" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
+            <div className="flex items-center justify-between mb-3">
+              <div style={{ color: 'var(--m-text-muted)' }}>{m.icon}</div>
+              <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>
+                via {m.integration}
+              </span>
+            </div>
+            <div className="text-xs mb-1" style={{ color: 'var(--m-text-muted)' }}>{m.label}</div>
+            <div className="text-xl font-semibold" style={{ color: 'var(--m-border-hover)' }}>—</div>
           </div>
         ))}
       </div>
 
-      {/* Social */}
+      {/* Social — locked until integration */}
       <div className="flex flex-col gap-2 mb-6">
         {social.map(s => (
-          <div key={s.key} className="rounded-xl p-4 flex items-center gap-3 cursor-pointer transition-all hover:opacity-80"
-            style={{ background: 'var(--m-surface-1)', border: `0.5px solid ${editing === s.key ? 'var(--m-accent-border)' : 'var(--m-border)'}` }}
-            onClick={() => editing !== s.key && startEdit(s.key, s.value)}>
+          <div key={s.label} className="rounded-xl p-4 flex items-center gap-3" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
             <div className="flex-shrink-0">{s.logo}</div>
             <div className="flex-1">
-              <div className="text-xs" style={{ color: 'var(--m-text-muted)' }}>{s.label}</div>
+              <div className="text-sm" style={{ color: 'var(--m-text-secondary)' }}>{s.label}</div>
             </div>
-            {editing === s.key ? (
-              <input
-                autoFocus
-                type="number"
-                value={tempVal}
-                onChange={e => setTempVal(e.target.value)}
-                onBlur={() => commitEdit(s.key)}
-                onKeyDown={e => e.key === 'Enter' && commitEdit(s.key)}
-                className="w-24 text-right text-sm font-semibold focus:outline-none"
-                style={{ background: 'transparent', color: 'var(--m-text-primary)', caretColor: 'var(--m-accent)' }}
-              />
-            ) : (
-              <div className="text-sm font-semibold" style={{ color: 'var(--m-text-primary)' }}>{s.value.toLocaleString()}</div>
-            )}
+            <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>
+              via {s.integration}
+            </span>
+            <div className="text-sm font-semibold" style={{ color: 'var(--m-border-hover)' }}>—</div>
           </div>
         ))}
       </div>
 
-      {/* Integrations */}
-      <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--m-border)' }}>
-        <button
-          onClick={() => setShowIntegrations(p => !p)}
-          className="w-full flex items-center justify-between px-4 py-3 transition-opacity hover:opacity-80"
-          style={{ background: 'var(--m-surface-1)' }}
-        >
+      {/* Add integrations */}
+      <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--m-accent-border)', background: 'var(--m-accent-subtle)' }}>
+        <button onClick={() => setShowIntegrations(p => !p)} className="w-full flex items-center justify-between px-4 py-3 transition-opacity hover:opacity-80">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
-              <svg className="w-3 h-3" style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: 'var(--m-accent)', }}>
+              <svg className="w-3 h-3" style={{ color: 'white' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
             </div>
-            <span className="text-sm font-medium" style={{ color: 'var(--m-text-primary)' }}>Add integrations</span>
+            <span className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>Connect integrations</span>
           </div>
-          <svg className={`w-4 h-4 transition-transform duration-200 ${showIntegrations ? 'rotate-180' : ''}`} style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <svg className={`w-4 h-4 transition-transform duration-200 ${showIntegrations ? 'rotate-180' : ''}`} style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>
         </button>
 
         {showIntegrations && (
-          <div className="flex flex-col" style={{ borderTop: '0.5px solid var(--m-border)' }}>
+          <div className="flex flex-col" style={{ borderTop: '0.5px solid var(--m-accent-border)' }}>
             {integrations.map((intg, i) => (
               <div key={intg.id} className="flex items-center gap-3 px-4 py-3 transition-opacity hover:opacity-80 cursor-pointer"
-                style={{ borderBottom: i < integrations.length - 1 ? '0.5px solid var(--m-border)' : 'none', background: 'var(--m-surface-1)' }}>
+                style={{ borderBottom: i < integrations.length - 1 ? '0.5px solid var(--m-accent-border)' : 'none', background: 'var(--m-accent-subtle)' }}>
                 <div className="flex-shrink-0">{intg.logo}</div>
                 <div className="flex-1">
                   <div className="text-sm font-medium" style={{ color: 'var(--m-text-primary)' }}>{intg.name}</div>
                   <div className="text-xs" style={{ color: 'var(--m-text-muted)' }}>{intg.description}</div>
                 </div>
                 <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>
-                  Soon
+                  Coming soon
                 </span>
               </div>
             ))}
@@ -434,14 +340,26 @@ export default function ProjectPage() {
 
   async function toggleStep(stepId: number, completed: boolean) {
     await supabase.from('steps').update({ completed: !completed }).eq('id', stepId)
-    setSteps(prev => prev.map(s => s.id === stepId ? { ...s, completed: !completed } : s))
+    const updatedSteps = steps.map(s => s.id === stepId ? { ...s, completed: !completed } : s)
+    setSteps(updatedSteps)
+    const allDone = updatedSteps.every(s => s.completed)
+    if (allDone && project?.status !== 'launched') {
+      await supabase.from('projects').update({ status: 'launched' }).eq('id', project!.id)
+      setProject(prev => prev ? { ...prev, status: 'launched' } : prev)
+    }
   }
 
   async function saveAnswer(stepId: number) {
     setSaving(stepId)
     const answer = answers[stepId] ?? ''
     await supabase.from('steps').update({ answer, completed: answer.trim() !== '' }).eq('id', stepId)
-    setSteps(prev => prev.map(s => s.id === stepId ? { ...s, answer, completed: answer.trim() !== '' } : s))
+    const updatedSteps = steps.map(s => s.id === stepId ? { ...s, answer, completed: answer.trim() !== '' } : s)
+    setSteps(updatedSteps)
+    const allDone = updatedSteps.every(s => s.completed)
+    if (allDone && project?.status !== 'launched') {
+      await supabase.from('projects').update({ status: 'launched' }).eq('id', project!.id)
+      setProject(prev => prev ? { ...prev, status: 'launched' } : prev)
+    }
     setSaving(null)
     setExpandedStep(null)
   }
@@ -555,8 +473,7 @@ export default function ProjectPage() {
                 <div key={step.id} className="rounded-xl overflow-hidden transition-all duration-200"
                   style={{ background: 'var(--m-surface-1)', border: step.completed ? '0.5px solid var(--m-accent-border)' : '0.5px solid var(--m-border)' }}>
                   <div className="p-4 flex gap-3 cursor-pointer select-none" onClick={() => setExpandedStep(prev => prev === step.id ? null : step.id)}>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); if (!isStackStep) toggleStep(step.id, step.completed) }}
+                    <button onClick={(e) => { e.stopPropagation(); if (!isStackStep) toggleStep(step.id, step.completed) }}
                       className="w-5 h-5 rounded-full flex-shrink-0 mt-0.5 flex items-center justify-center transition-all"
                       style={step.completed ? { background: 'var(--m-accent)', border: '2px solid var(--m-accent)' } : { border: '2px solid var(--m-border-hover)' }}>
                       {step.completed && <svg className="w-2.5 h-2.5" fill="currentColor" style={{ color: 'white' }} viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>}
@@ -586,7 +503,6 @@ export default function ProjectPage() {
                     </div>
                     <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 transition-transform duration-200 ${expandedStep === step.id ? 'rotate-180' : ''}`} style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
                   </div>
-
                   {expandedStep === step.id && (
                     <div className="px-4 pb-4 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}>
                       {isStackStep ? (
@@ -604,14 +520,10 @@ export default function ProjectPage() {
                         </>
                       ) : (
                         <>
-                          <textarea
-                            className="w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none transition-colors resize-none"
+                          <textarea className="w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none transition-colors resize-none"
                             style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-primary)', caretColor: 'var(--m-accent)' }}
-                            placeholder="Write your answer here..."
-                            rows={3}
-                            value={answers[step.id] ?? ''}
-                            onChange={e => setAnswers(prev => ({ ...prev, [step.id]: e.target.value }))}
-                          />
+                            placeholder="Write your answer here..." rows={3}
+                            value={answers[step.id] ?? ''} onChange={e => setAnswers(prev => ({ ...prev, [step.id]: e.target.value }))} />
                           <div className="flex items-center justify-between mt-2">
                             <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Saving will also mark this step as complete</p>
                             <button onClick={() => saveAnswer(step.id)} disabled={saving === step.id} className="rounded-lg px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80 disabled:opacity-50 flex items-center gap-1.5" style={{ background: 'var(--m-accent)', color: 'white' }}>
@@ -628,7 +540,6 @@ export default function ProjectPage() {
           </div>
         )}
 
-        {/* Tracking — only visible when launched */}
         {project.status === 'launched' && (
           <TrackingSection projectId={project.id} />
         )}
