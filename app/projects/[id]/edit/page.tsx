@@ -27,7 +27,7 @@ export default function EditProject() {
       const { data } = await supabase
         .from('projects')
         .select('*')
-        .eq('id', id)
+        .eq('slug', id)
         .eq('user_id', session.user.id)
         .single()
 
@@ -57,7 +57,7 @@ export default function EditProject() {
         priority: priority.toLowerCase(),
         status: status.toLowerCase()
       })
-      .eq('id', id)
+      .eq('slug', id)
 
     if (error) { alert(error.message); setSaving(false); return }
     window.location.href = `/projects/${id}`

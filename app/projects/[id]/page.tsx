@@ -6,6 +6,7 @@ import { supabase } from '../../lib/supabase'
 
 interface Project {
   id: number
+  slug: string
   name: string
   core_feature: string
   hours_per_week: number
@@ -47,7 +48,7 @@ export default function ProjectPage() {
       const { data } = await supabase
         .from('projects')
         .select('*')
-        .eq('id', id)
+        .eq('slug', id)
         .eq('user_id', session.user.id)
         .single()
 
@@ -88,7 +89,7 @@ export default function ProjectPage() {
             <h1 className="text-2xl font-semibold text-white">{project.name}</h1>
           </div>
           <button
-            onClick={() => window.location.href = `/projects/${project.id}/edit`}
+            onClick={() => window.location.href = `/projects/${project.slug}/edit`}
             className="border border-zinc-800 text-zinc-400 rounded-xl px-3 py-1.5 text-xs hover:bg-zinc-900 transition-colors"
           >
             Edit
@@ -116,6 +117,10 @@ export default function ProjectPage() {
             <p className="text-zinc-500 text-xs mb-1">Hours per week</p>
             <p className="text-white text-sm">{project.hours_per_week}h / week</p>
           </div>
+        </div>
+
+        <div className="mt-8 bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+          <p className="text-zinc-500 text-sm text-center">Track coming soon.</p>
         </div>
 
       </div>

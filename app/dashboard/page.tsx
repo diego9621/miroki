@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 
 interface Project {
   id: number
+  slug: string
   name: string
   core_feature: string
   hours_per_week: number
@@ -115,14 +116,18 @@ export default function Dashboard() {
         ) : (
           <div className="flex flex-col gap-4">
             {projects.map(project => (
-              <div key={project.id} onClick={() => window.location.href = `/projects/${project.id}`} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col gap-4 hover:border-zinc-700 transition-colors cursor-pointer">
+              <div
+                key={project.id}
+                onClick={() => window.location.href = `/projects/${project.slug}`}
+                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col gap-4 hover:border-zinc-700 transition-colors cursor-pointer"
+              >
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{categoryIcon[project.category] ?? '✦'}</span>
                     <h2 className="text-white font-medium">{project.name}</h2>
                   </div>
                   <button
-                    onClick={() => handleDelete(project.id)}
+                    onClick={(e) => { e.stopPropagation(); handleDelete(project.id) }}
                     disabled={deleting === project.id}
                     className="text-zinc-600 hover:text-red-400 transition-colors text-xs"
                   >
@@ -152,7 +157,6 @@ export default function Dashboard() {
                     <p className="text-zinc-300 text-sm">{project.hours_per_week}h / week</p>
                   </div>
                 </div>
-
               </div>
             ))}
           </div>
