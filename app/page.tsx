@@ -1,19 +1,22 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { supabase } from './lib/supabase'
+import AppMockup from './components/AppMockup'
 
 export default function Home() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (session) window.location.href = '/dashboard'
+    import('./lib/supabase').then(({ supabase }) => {
+      supabase.auth.onAuthStateChange((event, session) => {
+        if (session) window.location.href = '/dashboard'
+      })
     })
   }, [])
 
   async function handleGitHub() {
     setLoading(true)
+    const { supabase } = await import('./lib/supabase')
     await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: { redirectTo: 'https://www.miroki.app/auth/callback' }
@@ -22,6 +25,7 @@ export default function Home() {
 
   async function handleGoogle() {
     setLoading(true)
+    const { supabase } = await import('./lib/supabase')
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: 'https://www.miroki.app/auth/callback' }
@@ -32,40 +36,41 @@ export default function Home() {
     <main className="min-h-screen" style={{ background: 'var(--m-bg)' }}>
 
       {/* Nav */}
-      <nav className="flex justify-between items-center px-6 py-5 max-w-4xl mx-auto">
-        <div className="flex items-center gap-2">
-          <span style={{ color: 'var(--m-accent)', fontSize: '18px' }}>✦</span>
-          <span className="font-semibold tracking-tight" style={{ color: 'var(--m-text-primary)' }}>Miroki</span>
+      <nav style={{ borderBottom: '0.5px solid var(--m-border)' }}>
+        <div className="flex justify-between items-center px-6 py-5 max-w-4xl mx-auto">
+          <div className="flex items-center gap-2">
+            <span style={{ color: 'var(--m-accent)', fontSize: 18 }}>✦</span>
+            <span className="font-semibold tracking-tight" style={{ color: 'var(--m-text-primary)' }}>Miroki</span>
+          </div>
+          <button
+            onClick={handleGitHub}
+            className="text-sm px-4 py-2 rounded-lg transition-opacity hover:opacity-80"
+            style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
+          >
+            Sign in
+          </button>
         </div>
-        <button
-          onClick={handleGitHub}
-          className="text-sm px-4 py-2 rounded-lg transition-opacity hover:opacity-80"
-          style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
-        >
-          Sign in
-        </button>
       </nav>
 
       {/* Hero */}
       <section className="px-6 py-20 max-w-2xl mx-auto text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs mb-8"
-          style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }}>
+        <div
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs mb-8"
+          style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }}
+        >
           <span>✦</span>
           <span>From idea to shipped — calmly</span>
         </div>
 
-        <h1 className="text-5xl font-semibold tracking-tight leading-tight mb-6"
-          style={{ color: 'var(--m-text-primary)' }}>
+        <h1 className="text-5xl font-semibold tracking-tight leading-tight mb-6" style={{ color: 'var(--m-text-primary)' }}>
           Stop starting.<br />
           <span style={{ color: 'var(--m-accent)' }}>Start shipping.</span>
         </h1>
 
-        <p className="text-lg leading-relaxed mb-4 max-w-lg mx-auto"
-          style={{ color: 'var(--m-text-secondary)' }}>
+        <p className="text-lg leading-relaxed mb-4 max-w-lg mx-auto" style={{ color: 'var(--m-text-secondary)' }}>
           Miroki breaks your idea into a clear, locked track — phase by phase, step by step.
         </p>
-        <p className="text-base leading-relaxed mb-12 max-w-md mx-auto"
-          style={{ color: 'var(--m-text-muted)' }}>
+        <p className="text-base leading-relaxed mb-12 max-w-md mx-auto" style={{ color: 'var(--m-text-muted)' }}>
           No more half-finished projects collecting dust.
         </p>
 
@@ -102,10 +107,10 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Divider */}
-      <div className="max-w-2xl mx-auto px-6">
-        <div style={{ borderTop: '0.5px solid var(--m-border)' }} />
-      </div>
+      {/* Mockup */}
+      <section style={{ borderTop: '0.5px solid var(--m-border)', borderBottom: '0.5px solid var(--m-border)' }}>
+        <AppMockup />
+      </section>
 
       {/* Features */}
       <section className="px-6 py-20 max-w-2xl mx-auto">
@@ -179,8 +184,10 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="px-6 py-8 max-w-4xl mx-auto flex justify-between items-center"
-        style={{ borderTop: '0.5px solid var(--m-border)' }}>
+      <footer
+        className="px-6 py-8 max-w-4xl mx-auto flex justify-between items-center"
+        style={{ borderTop: '0.5px solid var(--m-border)' }}
+      >
         <div className="flex items-center gap-2">
           <span style={{ color: 'var(--m-accent)' }}>✦</span>
           <span className="text-sm" style={{ color: 'var(--m-text-muted)' }}>Miroki</span>
