@@ -126,7 +126,7 @@ export default function Home() {
         </h1>
 
         <p className="text-lg leading-relaxed mb-12 max-w-lg" style={{ color: 'var(--m-text-secondary)' }}>
-          Most builders never ship. Not because they lack ideas or skills. Because they drift. Miroki locks you in and walks you through, phase by phase.
+          Most builders never ship. Not because they lack ideas or skills. Because they drift. <strong style={{ color: 'var(--m-text-primary)', fontWeight: 500 }}>Miroki</strong> locks you in and walks you through, phase by phase.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -173,30 +173,21 @@ export default function Home() {
           Sound familiar
         </p>
 
-        <div className="flex flex-col gap-6 mb-10">
+        <div className="flex flex-col gap-5 mb-10">
           {[
             'You started. You drifted. You stopped.',
             'You switched stacks. Lost momentum. Started over.',
             'You got to 80%. Never shipped.',
           ].map((line, i) => (
-            <div key={i} className="flex items-start gap-4">
-              <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-2.5" style={{ background: 'var(--m-border-hover)' }} />
-              <p className="text-xl font-semibold leading-snug" style={{ color: 'var(--m-text-primary)' }}>{line}</p>
-            </div>
+            <p key={i} className="text-lg leading-snug" style={{ color: 'var(--m-text-secondary)' }}>
+              {line}
+            </p>
           ))}
         </div>
 
-        <div
-          className="rounded-2xl px-6 py-5 mt-2"
-          style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}
-        >
-          <p className="text-base font-semibold leading-relaxed" style={{ color: 'var(--m-accent)' }}>
-            Your idea deserves to be live.<br />
-            <span style={{ color: 'var(--m-text-primary)', fontWeight: 400 }}>
-              Miroki gives it a clear path to follow. Step by step. Phase by phase. No drift.
-            </span>
-          </p>
-        </div>
+        <p className="text-base leading-relaxed" style={{ color: 'var(--m-text-secondary)' }}>
+          Your idea deserves to be live. <strong style={{ color: 'var(--m-text-primary)', fontWeight: 500 }}>Miroki</strong> gives it a clear path to follow. Step by step. Phase by phase.
+        </p>
       </section>
 
       {/* How it works */}
@@ -210,7 +201,6 @@ export default function Home() {
             {howSteps.map((step, i) => (
               <div key={i} className="flex gap-6">
 
-                {/* Timeline */}
                 <div className="flex flex-col items-center" style={{ width: 32, flexShrink: 0 }}>
                   <div
                     className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
@@ -235,7 +225,6 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* Content */}
                 <div className="pb-10 flex-1 min-w-0">
                   <p
                     className="text-lg font-semibold mb-2 leading-snug"
@@ -246,6 +235,7 @@ export default function Home() {
                   <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{step.body}</p>
                   {step.extra}
                 </div>
+
               </div>
             ))}
           </div>
@@ -260,10 +250,10 @@ export default function Home() {
             style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}
           >
             <p className="text-2xl font-semibold mb-3 leading-snug" style={{ color: 'var(--m-text-primary)' }}>
-              Miroki is early.<br />Follow the build.
+              <strong style={{ fontWeight: 500 }}>Miroki</strong> is early.<br />Follow the build.
             </p>
             <p className="text-sm leading-relaxed mb-8" style={{ color: 'var(--m-text-muted)' }}>
-              Get updates on new features, improvements and the story behind building Miroki in public.
+              Get updates on new features, improvements and the story behind building <strong style={{ color: 'var(--m-text-primary)', fontWeight: 500 }}>Miroki</strong> in public.
             </p>
 
             {waitlistStatus === 'success' ? (

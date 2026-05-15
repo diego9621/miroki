@@ -377,9 +377,9 @@ function TrackingScreen() {
       </div>
       <div style={{ fontSize: 9, fontWeight: 500, color: '#9C8E82', textTransform: 'uppercase' as const, letterSpacing: '0.06em', marginBottom: 8 }}>Social</div>
       {[
-        { platform: 'Reddit', followers: '312 upvotes', trend: '+24', LogoComp: RedditLogo },
-        { platform: 'Instagram', followers: '892 followers', trend: '+45', LogoComp: InstagramLogo },
-        { platform: 'X / Twitter', followers: '1.2k followers', trend: '+89', LogoComp: XLogo },
+        { platform: 'Reddit', followers: '312 upvotes', trend: '24', LogoComp: RedditLogo },
+        { platform: 'Instagram', followers: '892 followers', trend: '45', LogoComp: InstagramLogo },
+        { platform: 'X / Twitter', followers: '1.2k followers', trend: '89', LogoComp: XLogo },
       ].map((s, i) => (
         <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 10px', borderRadius: 9, border: '0.5px solid #E8E0D8', background: '#F7F4EF', marginBottom: 5 }}>
           <s.LogoComp size={16} />
