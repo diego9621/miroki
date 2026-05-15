@@ -103,7 +103,7 @@ export default function Home() {
       {/* Hero */}
       <section className="px-6 py-20 max-w-2xl mx-auto">
         <h1 className="text-5xl font-semibold tracking-tight leading-tight mb-6" style={{ color: 'var(--m-text-primary)' }}>
-          Stop starting.<br />
+          Stop Rebuilding.<br />
           <span style={{ color: 'var(--m-accent)' }}>Start shipping.</span>
         </h1>
 
@@ -140,7 +140,6 @@ export default function Home() {
         </div>
 
         <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>
-          No password. No credit card. Free to start.
         </p>
       </section>
 
