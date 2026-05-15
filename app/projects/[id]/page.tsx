@@ -59,7 +59,7 @@ function CategoryIcon({ category }: { category: string }) {
 }
 
 function SummaryCard({ steps }: { steps: Step[] }) {
-  const answered = steps.filter(s => s.answer && s.answer.trim() !== '')
+  const [expanded, setExpanded] = useState(false)
 
   const problem = steps.find(s => s.title === 'Describe the problem')?.answer
   const differentiator = steps.find(s => s.title === 'Define your one differentiator')?.answer
@@ -67,49 +67,70 @@ function SummaryCard({ steps }: { steps: Step[] }) {
   const stack = steps.find(s => s.title === 'Lock your stack')?.answer
   const shipDate = steps.find(s => s.title === 'Set a ship date')?.answer
 
+  const answered = [problem, differentiator, mvp, stack, shipDate].filter(Boolean)
   if (answered.length === 0) return null
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 mb-6">
-      <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-4">Project summary</h2>
-      <div className="flex flex-col gap-3">
-        {problem && (
-          <div className="flex flex-col gap-0.5">
-            <span className="text-zinc-600 text-xs">Problem</span>
-            <span className="text-zinc-200 text-sm leading-relaxed">{problem}</span>
-          </div>
-        )}
-        {differentiator && (
-          <div className="flex flex-col gap-0.5 pt-3 border-t border-zinc-800">
-            <span className="text-zinc-600 text-xs">Differentiator</span>
-            <span className="text-zinc-200 text-sm leading-relaxed">{differentiator}</span>
-          </div>
-        )}
-        {mvp && (
-          <div className="flex flex-col gap-0.5 pt-3 border-t border-zinc-800">
-            <span className="text-zinc-600 text-xs">MVP</span>
-            <span className="text-zinc-200 text-sm leading-relaxed">{mvp}</span>
-          </div>
-        )}
-        {stack && (
-          <div className="flex flex-col gap-0.5 pt-3 border-t border-zinc-800">
-            <span className="text-zinc-600 text-xs">Stack</span>
-            <span className="text-zinc-200 text-sm leading-relaxed">{stack}</span>
-          </div>
-        )}
-        {shipDate && (
-          <div className="flex flex-col gap-0.5 pt-3 border-t border-zinc-800">
-            <span className="text-zinc-600 text-xs">Ship date</span>
-            <span className="text-emerald-400 text-sm font-medium">{shipDate}</span>
-          </div>
-        )}
-      </div>
+    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl mb-6 overflow-hidden">
+      <button
+        onClick={() => setExpanded(prev => !prev)}
+        className="w-full flex items-center justify-between px-5 py-4 hover:bg-zinc-800/50 transition-colors"
+      >
+        <div className="flex items-center gap-2.5">
+          <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Project summary</span>
+          <span className="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-md px-1.5 py-0.5">
+            {answered.length} filled
+          </span>
+        </div>
+        <svg
+          className={`w-4 h-4 text-zinc-600 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
+          fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
+      </button>
+
+      {expanded && (
+        <div className="px-5 pb-5 border-t border-zinc-800 flex flex-col gap-3 pt-4">
+          {problem && (
+            <div className="flex flex-col gap-0.5">
+              <span className="text-zinc-600 text-xs">Problem</span>
+              <span className="text-zinc-200 text-sm leading-relaxed">{problem}</span>
+            </div>
+          )}
+          {differentiator && (
+            <div className="flex flex-col gap-0.5 pt-3 border-t border-zinc-800">
+              <span className="text-zinc-600 text-xs">Differentiator</span>
+              <span className="text-zinc-200 text-sm leading-relaxed">{differentiator}</span>
+            </div>
+          )}
+          {mvp && (
+            <div className="flex flex-col gap-0.5 pt-3 border-t border-zinc-800">
+              <span className="text-zinc-600 text-xs">MVP</span>
+              <span className="text-zinc-200 text-sm leading-relaxed">{mvp}</span>
+            </div>
+          )}
+          {stack && (
+            <div className="flex flex-col gap-0.5 pt-3 border-t border-zinc-800">
+              <span className="text-zinc-600 text-xs">Stack</span>
+              <span className="text-zinc-200 text-sm leading-relaxed">{stack}</span>
+            </div>
+          )}
+          {shipDate && (
+            <div className="flex flex-col gap-0.5 pt-3 border-t border-zinc-800">
+              <span className="text-zinc-600 text-xs">Ship date</span>
+              <span className="text-emerald-400 text-sm font-medium">{shipDate}</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
 
 function NextStepBanner({ steps, onGo }: { steps: Step[], onGo: (phase: string) => void }) {
   const nextStep = steps.find(s => !s.completed)
+
   if (!nextStep) return (
     <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 mb-6 flex items-center gap-4">
       <div className="w-9 h-9 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
@@ -204,8 +225,11 @@ export default function ProjectPage() {
 
   async function saveAnswer(stepId: number) {
     setSaving(stepId)
-    await supabase.from('steps').update({ answer: answers[stepId] ?? '' }).eq('id', stepId)
-    setSteps(prev => prev.map(s => s.id === stepId ? { ...s, answer: answers[stepId] ?? '' } : s))
+    const answer = answers[stepId] ?? ''
+    await supabase.from('steps').update({ answer, completed: answer.trim() !== '' }).eq('id', stepId)
+    setSteps(prev => prev.map(s =>
+      s.id === stepId ? { ...s, answer, completed: answer.trim() !== '' } : s
+    ))
     setSaving(null)
     setExpandedStep(null)
   }
@@ -239,7 +263,6 @@ export default function ProjectPage() {
     <main className="min-h-screen bg-[#0A0A0A] px-6 py-10">
       <div className="max-w-lg mx-auto">
 
-        {/* Header */}
         <div className="flex items-center justify-between mb-10">
           <button
             onClick={() => window.location.href = '/dashboard'}
@@ -261,13 +284,11 @@ export default function ProjectPage() {
           </button>
         </div>
 
-        {/* Project title */}
         <div className="flex items-center gap-3 mb-3">
           <CategoryIcon category={project.category} />
           <h1 className="text-xl font-semibold text-white">{project.name}</h1>
         </div>
 
-        {/* Badges */}
         <div className="flex gap-1.5 flex-wrap mb-6">
           <span className={`text-xs px-2 py-0.5 rounded-md border capitalize ${pc.bg} ${pc.text} ${pc.border}`}>
             {project.priority} priority
@@ -280,7 +301,6 @@ export default function ProjectPage() {
           </span>
         </div>
 
-        {/* Progress */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
             <span className="text-zinc-500 text-xs">Overall progress</span>
@@ -296,13 +316,9 @@ export default function ProjectPage() {
           </div>
         </div>
 
-        {/* Next step banner */}
         <NextStepBanner steps={steps} onGo={handleGoToPhase} />
-
-        {/* Summary card */}
         <SummaryCard steps={steps} />
 
-        {/* Phase tabs */}
         <div className="flex gap-1 mb-5 overflow-x-auto pb-1">
           {phases.map(phase => {
             const phaseStepsAll = steps.filter(s => s.phase === phase)
@@ -343,7 +359,6 @@ export default function ProjectPage() {
           })}
         </div>
 
-        {/* Steps */}
         {!activePhaseUnlocked ? (
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 text-center">
             <svg className="w-8 h-8 text-zinc-700 mx-auto mb-3" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
@@ -429,7 +444,7 @@ export default function ProjectPage() {
                       onChange={e => setAnswers(prev => ({ ...prev, [step.id]: e.target.value }))}
                     />
                     <div className="flex items-center justify-between mt-2">
-                      <p className="text-zinc-600 text-xs">Saved answers appear in your project summary</p>
+                      <p className="text-zinc-600 text-xs">Saving will also mark this step as complete</p>
                       <button
                         onClick={() => saveAnswer(step.id)}
                         disabled={saving === step.id}
@@ -440,7 +455,7 @@ export default function ProjectPage() {
                             <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
                             Saving
                           </>
-                        ) : 'Save →'}
+                        ) : 'Save & complete →'}
                       </button>
                     </div>
                   </div>
@@ -449,7 +464,6 @@ export default function ProjectPage() {
             ))}
           </div>
         )}
-
       </div>
     </main>
   )
