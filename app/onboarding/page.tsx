@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import Logo from '../components/Logo'
 
 const categories = ['SaaS', 'Tool', 'App', 'Content', 'Other']
 const priorities = ['High', 'Medium', 'Low']

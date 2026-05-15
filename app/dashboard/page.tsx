@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import ThemeToggle from '../components/ThemeToggle'
+import Logo from '../components/Logo'
+
 
 interface Step {
   id: number
@@ -164,7 +166,7 @@ export default function Dashboard() {
       <div className="max-w-lg mx-auto">
 
         <div className="flex justify-between items-center mb-10">
-          <span className="font-medium tracking-tight" style={{ color: 'var(--m-text-primary)' }}>✦ Miroki</span>
+          <Logo />
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <AvatarMenu email={email} onLogout={handleLogout} />
