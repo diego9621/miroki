@@ -127,11 +127,22 @@ export default function Dashboard() {
         </div>
 
         {projects.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-zinc-500 text-sm mb-4">No projects yet.</p>
+          <div className="flex flex-col items-center text-center py-16 px-4">
+            <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-6">
+              <svg className="w-5 h-5 text-zinc-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+            </div>
+            <h2 className="text-white font-semibold mb-2">Ship your first project</h2>
+            <p className="text-zinc-500 text-sm leading-relaxed mb-2">
+              Miroki gives you a clear, step-by-step track from idea to shipped.
+            </p>
+            <p className="text-zinc-600 text-xs leading-relaxed mb-8 max-w-xs">
+              Lock in your stack. Follow the phases. No more half-finished projects collecting dust.
+            </p>
             <button
               onClick={() => window.location.href = '/onboarding'}
-              className="bg-white text-black rounded-xl px-4 py-3 text-sm font-medium hover:bg-zinc-100 transition-colors"
+              className="bg-white text-black rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-zinc-100 transition-colors"
             >
               Start your first project →
             </button>
@@ -202,11 +213,13 @@ export default function Dashboard() {
                     <div className="border-t border-zinc-800 pt-3">
                       <div className="flex justify-between items-center mb-1.5">
                         <span className="text-zinc-600 text-xs">{completedSteps}/{totalSteps} steps</span>
-                        <span className="text-zinc-600 text-xs">{progress}%</span>
+                        <span className={`text-xs font-medium ${progress === 100 ? 'text-emerald-500' : 'text-zinc-500'}`}>
+                          {progress}%
+                        </span>
                       </div>
                       <div className="h-0.5 bg-zinc-800 rounded-full">
                         <div
-                          className="h-0.5 bg-white rounded-full transition-all duration-500"
+                          className={`h-0.5 rounded-full transition-all duration-500 ${progress === 100 ? 'bg-emerald-500' : 'bg-emerald-500'}`}
                           style={{ width: `${progress}%` }}
                         />
                       </div>

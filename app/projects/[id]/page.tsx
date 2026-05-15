@@ -102,6 +102,14 @@ export default function ProjectPage() {
     load()
   }, [id])
 
+  function isPhaseUnlocked(phase: string): boolean {
+    const phaseIndex = phases.indexOf(phase)
+    if (phaseIndex === 0) return true
+    const previousPhase = phases[phaseIndex - 1]
+    const previousSteps = steps.filter(s => s.phase === previousPhase)
+    return previousSteps.length > 0 && previousSteps.every(s => s.completed)
+  }
+
   async function toggleStep(stepId: number, completed: boolean) {
     await supabase
       .from('steps')
@@ -135,6 +143,7 @@ export default function ProjectPage() {
   const completedCount = steps.filter(s => s.completed).length
   const totalCount = steps.length
   const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
+  const activePhaseUnlocked = isPhaseUnlocked(activePhase)
 
   if (loading) return (
     <main className="flex min-h-screen items-center justify-center bg-[#0A0A0A]">
@@ -207,102 +216,130 @@ export default function ProjectPage() {
           {phases.map(phase => {
             const phaseStepsAll = steps.filter(s => s.phase === phase)
             const phaseCompleted = phaseStepsAll.every(s => s.completed) && phaseStepsAll.length > 0
+            const unlocked = isPhaseUnlocked(phase)
+
             return (
               <button
                 key={phase}
-                onClick={() => setActivePhase(phase)}
+                onClick={() => unlocked && setActivePhase(phase)}
+                disabled={!unlocked}
+                title={!unlocked ? `Complete ${phases[phases.indexOf(phase) - 1]} first` : ''}
                 className={`px-3 py-1.5 rounded-lg text-xs whitespace-nowrap transition-colors flex items-center gap-1.5 ${
-                  activePhase === phase
-                    ? phaseCompleted
-                      ? 'bg-emerald-500 text-white font-medium'
-                      : 'bg-white text-black font-medium'
-                    : phaseCompleted
-                      ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
-                      : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:border-zinc-600'
+                  !unlocked
+                    ? 'bg-zinc-900/50 border border-zinc-900 text-zinc-700 cursor-not-allowed'
+                    : activePhase === phase
+                      ? phaseCompleted
+                        ? 'bg-emerald-500 text-white font-medium'
+                        : 'bg-white text-black font-medium'
+                      : phaseCompleted
+                        ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
+                        : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:border-zinc-600'
                 }`}
               >
-                {phaseCompleted && (
+                {!unlocked ? (
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                  </svg>
+                ) : phaseCompleted ? (
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                   </svg>
-                )}
+                ) : null}
                 {phase}
               </button>
             )
           })}
         </div>
 
-        <div className="flex flex-col gap-3">
-          {phaseSteps.map(step => (
-            <div
-              key={step.id}
-              className={`bg-zinc-900 border rounded-xl overflow-hidden transition-colors ${
-                step.completed
-                  ? 'border-emerald-500/20'
-                  : 'border-zinc-800 hover:border-zinc-700'
-              }`}
+        {!activePhaseUnlocked ? (
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 text-center">
+            <svg className="w-8 h-8 text-zinc-700 mx-auto mb-3" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+            <p className="text-zinc-400 text-sm font-medium mb-1">Phase locked</p>
+            <p className="text-zinc-600 text-xs">
+              Complete all steps in {phases[phases.indexOf(activePhase) - 1]} first.
+            </p>
+            <button
+              onClick={() => setActivePhase(phases[phases.indexOf(activePhase) - 1])}
+              className="mt-4 text-xs text-emerald-500 hover:text-emerald-400 transition-colors"
             >
+              ← Go back to {phases[phases.indexOf(activePhase) - 1]}
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {phaseSteps.map(step => (
               <div
-                className="p-4 flex gap-3 cursor-pointer"
-                onClick={() => handleExpand(step.id)}
+                key={step.id}
+                className={`bg-zinc-900 border rounded-xl overflow-hidden transition-colors ${
+                  step.completed
+                    ? 'border-emerald-500/20'
+                    : 'border-zinc-800 hover:border-zinc-700'
+                }`}
               >
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    toggleStep(step.id, step.completed)
-                  }}
-                  className={`w-5 h-5 rounded-full border flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
-                    step.completed
-                      ? 'bg-emerald-500 border-emerald-500'
-                      : 'border-zinc-600 hover:border-emerald-500'
-                  }`}
+                <div
+                  className="p-4 flex gap-3 cursor-pointer"
+                  onClick={() => handleExpand(step.id)}
                 >
-                  {step.completed && (
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                    </svg>
-                  )}
-                </button>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-medium ${step.completed ? 'line-through text-zinc-500' : 'text-white'}`}>
-                    {step.title}
-                  </p>
-                  <p className="text-zinc-500 text-xs leading-relaxed mt-0.5">{step.description}</p>
-                  {step.answer && expandedStep !== step.id && (
-                    <p className="text-emerald-400 text-xs mt-2 truncate">✓ {step.answer}</p>
-                  )}
-                </div>
-                <svg
-                  className={`w-4 h-4 text-zinc-600 flex-shrink-0 mt-0.5 transition-transform ${expandedStep === step.id ? 'rotate-180' : ''}`}
-                  fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
-              </div>
-
-              {expandedStep === step.id && (
-                <div className="px-4 pb-4 border-t border-zinc-800 pt-3">
-                  <textarea
-                    className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-600 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors resize-none"
-                    placeholder="Write your answer here..."
-                    rows={3}
-                    value={answers[step.id] ?? ''}
-                    onChange={e => setAnswers(prev => ({ ...prev, [step.id]: e.target.value }))}
-                  />
-                  <div className="flex justify-end mt-2">
-                    <button
-                      onClick={() => saveAnswer(step.id)}
-                      disabled={saving === step.id}
-                      className="bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50"
-                    >
-                      {saving === step.id ? 'Saving...' : 'Save'}
-                    </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleStep(step.id, step.completed)
+                    }}
+                    className={`w-5 h-5 rounded-full border flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
+                      step.completed
+                        ? 'bg-emerald-500 border-emerald-500'
+                        : 'border-zinc-600 hover:border-emerald-500'
+                    }`}
+                  >
+                    {step.completed && (
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                      </svg>
+                    )}
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-medium ${step.completed ? 'line-through text-zinc-500' : 'text-white'}`}>
+                      {step.title}
+                    </p>
+                    <p className="text-zinc-500 text-xs leading-relaxed mt-0.5">{step.description}</p>
+                    {step.answer && expandedStep !== step.id && (
+                      <p className="text-emerald-400 text-xs mt-2 truncate">✓ {step.answer}</p>
+                    )}
                   </div>
+                  <svg
+                    className={`w-4 h-4 text-zinc-600 flex-shrink-0 mt-0.5 transition-transform ${expandedStep === step.id ? 'rotate-180' : ''}`}
+                    fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
+
+                {expandedStep === step.id && (
+                  <div className="px-4 pb-4 border-t border-zinc-800 pt-3">
+                    <textarea
+                      className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-600 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors resize-none"
+                      placeholder="Write your answer here..."
+                      rows={3}
+                      value={answers[step.id] ?? ''}
+                      onChange={e => setAnswers(prev => ({ ...prev, [step.id]: e.target.value }))}
+                    />
+                    <div className="flex justify-end mt-2">
+                      <button
+                        onClick={() => saveAnswer(step.id)}
+                        disabled={saving === step.id}
+                        className="bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50"
+                      >
+                        {saving === step.id ? 'Saving...' : 'Save'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
       </div>
     </main>
