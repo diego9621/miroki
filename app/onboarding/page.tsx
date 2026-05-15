@@ -16,6 +16,7 @@ export default function Onboarding() {
   const [status, setStatus] = useState('Idea')
   const [userId, setUserId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -28,7 +29,9 @@ export default function Onboarding() {
     if (!userId) { alert('Not logged in'); return }
     if (!name || !coreFeature || !hours) { alert('Fill in all fields'); return }
 
-    const { error } = await supabase
+    setSubmitting(true)
+
+    const { data, error } = await supabase
       .from('projects')
       .insert([{
         user_id: userId,
@@ -39,14 +42,19 @@ export default function Onboarding() {
         priority: priority.toLowerCase(),
         status: status.toLowerCase()
       }])
+      .select()
+      .single()
 
-    if (error) { alert(error.message); return }
+    if (error) { alert(error.message); setSubmitting(false); return }
+
+    await supabase.rpc('create_default_steps', { p_project_id: data.id })
+
     window.location.href = '/dashboard'
   }
 
   if (loading) return (
     <main className="flex min-h-screen items-center justify-center bg-[#0A0A0A]">
-      <p className="text-zinc-500 text-sm">Loading...</p>
+      <div className="w-1.5 h-1.5 bg-zinc-600 rounded-full animate-pulse" />
     </main>
   )
 
@@ -64,7 +72,15 @@ export default function Onboarding() {
       <div className="max-w-sm mx-auto flex flex-col gap-8">
 
         <div>
-          <div className="text-2xl mb-4">✦</div>
+          <button
+            onClick={() => window.location.href = '/dashboard'}
+            className="flex items-center gap-1.5 text-zinc-500 hover:text-white transition-colors text-sm mb-8"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            Back
+          </button>
           <h1 className="text-2xl font-semibold text-white tracking-tight">New project</h1>
           <p className="text-zinc-500 text-sm mt-1">Lock in your track. Then ship.</p>
         </div>
@@ -132,7 +148,7 @@ export default function Onboarding() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Current status</label>
+            <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Status</label>
             <div className="flex gap-2">
               {statuses.map(s => (
                 <button
@@ -165,9 +181,10 @@ export default function Onboarding() {
 
         <button
           onClick={handleSubmit}
-          className="bg-white text-black rounded-xl px-4 py-3 text-sm font-medium hover:bg-zinc-100 transition-colors"
+          disabled={submitting}
+          className="bg-white text-black rounded-xl px-4 py-3 text-sm font-medium hover:bg-zinc-100 transition-colors disabled:opacity-50"
         >
-          Lock in my track →
+          {submitting ? 'Creating...' : 'Lock in my track →'}
         </button>
 
       </div>
