@@ -10,9 +10,7 @@ const geist = Geist({
 export const metadata: Metadata = {
   title: "Miroki",
   description: "Ship calm. Step by step.",
-  icons: {
-    icon: "/favicon.svg",
-  },
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({
@@ -21,7 +19,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geist.variable} h-full antialiased`}>
+    <html lang="en" className={geist.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            try {
+              const t = localStorage.getItem('miroki-theme') || 'dark';
+              document.documentElement.setAttribute('data-theme', t);
+            } catch(e) {}
+          `
+        }} />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

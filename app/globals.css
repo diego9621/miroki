@@ -1,26 +1,70 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --m-bg: #F7F4EF;
+  --m-surface-1: #FFFFFF;
+  --m-surface-2: #F0EAE2;
+  --m-surface-3: #EDE6DC;
+  --m-border: #E8E0D8;
+  --m-border-hover: #D4C9BC;
+  --m-text-primary: #1C1612;
+  --m-text-secondary: #7A6C62;
+  --m-text-muted: #9C8E82;
+  --m-accent: #5A8A4A;
+  --m-accent-hover: #4A7A3A;
+  --m-accent-subtle: rgba(88,130,78,0.1);
+  --m-accent-border: rgba(88,130,78,0.25);
+  --m-success: #3D6B35;
+  --m-success-subtle: rgba(61,107,53,0.1);
+  --m-success-border: rgba(61,107,53,0.25);
+  --m-danger: #A33028;
+  --m-danger-subtle: rgba(163,48,40,0.08);
+  --m-danger-border: rgba(163,48,40,0.2);
+}
+
+[data-theme="dark"] {
+  --m-bg: #0D0B09;
+  --m-surface-1: #161210;
+  --m-surface-2: #1C1814;
+  --m-surface-3: #231E1A;
+  --m-border: #2A2420;
+  --m-border-hover: #3D3530;
+  --m-text-primary: #F5EFE6;
+  --m-text-secondary: #8C7B6E;
+  --m-text-muted: #5A4E47;
+  --m-accent: #7A9E6F;
+  --m-accent-hover: #8CB080;
+  --m-accent-subtle: rgba(122,158,111,0.12);
+  --m-accent-border: rgba(122,158,111,0.28);
+  --m-success: #6B8F5E;
+  --m-success-subtle: rgba(107,143,94,0.12);
+  --m-success-border: rgba(107,143,94,0.28);
+  --m-danger: #D4726A;
+  --m-danger-subtle: rgba(180,60,50,0.12);
+  --m-danger-border: rgba(180,60,50,0.25);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-m-bg: var(--m-bg);
+  --color-m-surface-1: var(--m-surface-1);
+  --color-m-surface-2: var(--m-surface-2);
+  --color-m-surface-3: var(--m-surface-3);
+  --color-m-border: var(--m-border);
+  --color-m-border-hover: var(--m-border-hover);
+  --color-m-text-primary: var(--m-text-primary);
+  --color-m-text-secondary: var(--m-text-secondary);
+  --color-m-text-muted: var(--m-text-muted);
+  --color-m-accent: var(--m-accent);
+  --color-m-accent-hover: var(--m-accent-hover);
+  --color-m-success: var(--m-success);
+  --color-m-danger: var(--m-danger);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--m-bg);
+  color: var(--m-text-primary);
+  font-family: var(--font-geist-sans), Arial, sans-serif;
 }
