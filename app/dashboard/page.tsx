@@ -40,11 +40,19 @@ const categoryPaths: Record<string, string> = {
   other: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
 }
 
+const categoryAccent: Record<string, string> = {
+  saas: 'from-yellow-500/5 to-transparent border-yellow-500/10',
+  tool: 'from-blue-500/5 to-transparent border-blue-500/10',
+  app: 'from-purple-500/5 to-transparent border-purple-500/10',
+  content: 'from-pink-500/5 to-transparent border-pink-500/10',
+  other: 'from-zinc-500/5 to-transparent border-zinc-500/10',
+}
+
 function CategoryIcon({ category }: { category: string }) {
   const path = categoryPaths[category] ?? categoryPaths.other
   return (
-    <div className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center">
-      <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <div className="w-8 h-8 rounded-xl bg-zinc-800 border border-zinc-700/50 flex items-center justify-center">
+      <svg className="w-3.5 h-3.5 text-zinc-300" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d={path} />
       </svg>
     </div>
@@ -104,6 +112,16 @@ function AvatarMenu({ email, onLogout }: { email: string, onLogout: () => void }
   )
 }
 
+function StatCard({ label, value, sub }: { label: string, value: string | number, sub?: string }) {
+  return (
+    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col gap-1">
+      <span className="text-zinc-600 text-xs">{label}</span>
+      <span className="text-white text-2xl font-semibold tracking-tight">{value}</span>
+      {sub && <span className="text-zinc-600 text-xs">{sub}</span>}
+    </div>
+  )
+}
+
 export default function Dashboard() {
   const [email, setEmail] = useState('')
   const [projects, setProjects] = useState<Project[]>([])
@@ -146,6 +164,11 @@ export default function Dashboard() {
     </main>
   )
 
+  const totalSteps = projects.reduce((acc, p) => acc + (p.steps?.length ?? 0), 0)
+  const completedSteps = projects.reduce((acc, p) => acc + (p.steps?.filter(s => s.completed).length ?? 0), 0)
+  const shippedProjects = projects.filter(p => p.status === 'launched').length
+  const activeProjects = projects.filter(p => p.status === 'building').length
+
   return (
     <main className="min-h-screen bg-[#0A0A0A] px-6 py-10">
       <div className="max-w-lg mx-auto">
@@ -154,6 +177,14 @@ export default function Dashboard() {
           <span className="text-white font-medium tracking-tight">✦ Miroki</span>
           <AvatarMenu email={email} onLogout={handleLogout} />
         </div>
+
+        {projects.length > 0 && (
+          <div className="grid grid-cols-3 gap-2 mb-8">
+            <StatCard label="Projects" value={projects.length} sub={`${activeProjects} active`} />
+            <StatCard label="Steps done" value={completedSteps} sub={`of ${totalSteps} total`} />
+            <StatCard label="Shipped" value={shippedProjects} sub={shippedProjects === 1 ? 'project' : 'projects'} />
+          </div>
+        )}
 
         <div className="flex justify-between items-center mb-5">
           <h1 className="text-white font-semibold">Projects</h1>
@@ -192,12 +223,13 @@ export default function Dashboard() {
               const completedSteps = project.steps?.filter(s => s.completed).length ?? 0
               const totalSteps = project.steps?.length ?? 0
               const progress = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0
+              const accent = categoryAccent[project.category] ?? categoryAccent.other
 
               return (
                 <div
                   key={project.id}
                   onClick={() => window.location.href = `/projects/${project.slug}`}
-                  className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex flex-col gap-3 hover:border-zinc-700 transition-colors cursor-pointer group"
+                  className={`bg-gradient-to-br ${accent} border rounded-xl p-5 flex flex-col gap-3 hover:brightness-110 transition-all cursor-pointer group`}
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex items-center gap-2.5">
@@ -211,7 +243,6 @@ export default function Dashboard() {
                           window.location.href = `/projects/${project.slug}/edit`
                         }}
                         className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition-colors"
-                        title="Edit"
                       >
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
@@ -221,7 +252,6 @@ export default function Dashboard() {
                         onClick={(e) => { e.stopPropagation(); handleDelete(project.id) }}
                         disabled={deleting === project.id}
                         className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-500 hover:text-red-400 transition-colors"
-                        title="Delete"
                       >
                         {deleting === project.id ? (
                           <div className="w-3.5 h-3.5 border border-zinc-600 border-t-transparent rounded-full animate-spin" />
@@ -249,14 +279,14 @@ export default function Dashboard() {
                   <p className="text-zinc-500 text-xs leading-relaxed">{project.core_feature}</p>
 
                   {totalSteps > 0 && (
-                    <div className="border-t border-zinc-800 pt-3">
+                    <div className="border-t border-zinc-800/50 pt-3">
                       <div className="flex justify-between items-center mb-1.5">
                         <span className="text-zinc-600 text-xs">{completedSteps}/{totalSteps} steps</span>
-                        <span className={`text-xs font-medium ${progress === 100 ? 'text-emerald-500' : 'text-zinc-500'}`}>
+                        <span className={`text-xs font-medium ${progress === 100 ? 'text-emerald-400' : 'text-zinc-500'}`}>
                           {progress}%
                         </span>
                       </div>
-                      <div className="h-0.5 bg-zinc-800 rounded-full">
+                      <div className="h-0.5 bg-zinc-800 rounded-full overflow-hidden">
                         <div
                           className="h-0.5 bg-emerald-500 rounded-full transition-all duration-500"
                           style={{ width: `${progress}%` }}
