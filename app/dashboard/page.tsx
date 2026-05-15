@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [email, setEmail] = useState('')
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const [deleting, setDeleting] = useState<number | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -32,6 +33,13 @@ export default function Dashboard() {
     }
     load()
   }, [])
+
+  async function handleDelete(id: number) {
+    setDeleting(id)
+    await supabase.from('projects').delete().eq('id', id)
+    setProjects(prev => prev.filter(p => p.id !== id))
+    setDeleting(null)
+  }
 
   async function handleLogout() {
     await supabase.auth.signOut()
@@ -85,7 +93,16 @@ export default function Dashboard() {
           <div className="flex flex-col gap-4">
             {projects.map(project => (
               <div key={project.id} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col gap-3">
-                <h2 className="text-white font-medium">{project.name}</h2>
+                <div className="flex justify-between items-start">
+                  <h2 className="text-white font-medium">{project.name}</h2>
+                  <button
+                    onClick={() => handleDelete(project.id)}
+                    disabled={deleting === project.id}
+                    className="text-zinc-600 hover:text-red-400 transition-colors text-xs"
+                  >
+                    {deleting === project.id ? 'Deleting...' : 'Delete'}
+                  </button>
+                </div>
                 <div className="flex flex-col gap-2">
                   <div>
                     <p className="text-zinc-500 text-xs mb-0.5">Core feature</p>
