@@ -12,6 +12,7 @@ interface Project {
   category: string
   priority: string
   status: string
+  stack: string[]
 }
 
 interface Step {
@@ -47,6 +48,58 @@ const categoryPaths: Record<string, string> = {
   other: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
 }
 
+const stackTools = [
+  {
+    category: 'Frontend',
+    tools: [
+      { id: 'nextjs', name: 'Next.js', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg' },
+      { id: 'remix', name: 'Remix', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/remix/remix-original.svg' },
+      { id: 'astro', name: 'Astro', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/astro/astro-original.svg' },
+      { id: 'svelte', name: 'SvelteKit', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/svelte/svelte-original.svg' },
+    ]
+  },
+  {
+    category: 'Database & Backend',
+    tools: [
+      { id: 'supabase', name: 'Supabase', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg' },
+      { id: 'firebase', name: 'Firebase', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
+      { id: 'neon', name: 'Neon', logo: 'https://neon.tech/favicon/favicon.svg' },
+      { id: 'planetscale', name: 'PlanetScale', logo: 'https://cdn.brandfetch.io/idj9KAIbPK/w/400/h/400/theme/dark/icon.png' },
+    ]
+  },
+  {
+    category: 'Auth',
+    tools: [
+      { id: 'supabase-auth', name: 'Supabase Auth', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg' },
+      { id: 'clerk', name: 'Clerk', logo: 'https://clerk.com/favicon.ico' },
+      { id: 'nextauth', name: 'NextAuth', logo: 'https://next-auth.js.org/img/logo/logo-sm.png' },
+    ]
+  },
+  {
+    category: 'Hosting',
+    tools: [
+      { id: 'vercel', name: 'Vercel', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg' },
+      { id: 'netlify', name: 'Netlify', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/netlify/netlify-original.svg' },
+      { id: 'railway', name: 'Railway', logo: 'https://railway.app/favicon.ico' },
+      { id: 'flyio', name: 'Fly.io', logo: 'https://fly.io/static/images/brand/logo.svg' },
+    ]
+  },
+  {
+    category: 'Payments',
+    tools: [
+      { id: 'stripe', name: 'Stripe', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/stripe/stripe-original.svg' },
+      { id: 'lemonsqueezy', name: 'Lemon Squeezy', logo: 'https://www.lemonsqueezy.com/favicon.ico' },
+    ]
+  },
+  {
+    category: 'Code',
+    tools: [
+      { id: 'github', name: 'GitHub', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg' },
+      { id: 'gitlab', name: 'GitLab', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg' },
+    ]
+  },
+]
+
 function CategoryIcon({ category }: { category: string }) {
   const path = categoryPaths[category] ?? categoryPaths.other
   return (
@@ -58,16 +111,67 @@ function CategoryIcon({ category }: { category: string }) {
   )
 }
 
-function SummaryCard({ steps }: { steps: Step[] }) {
+function StackSelector({ selected, onChange }: { selected: string[], onChange: (stack: string[]) => void }) {
+  function toggle(toolId: string) {
+    if (selected.includes(toolId)) {
+      onChange(selected.filter(s => s !== toolId))
+    } else {
+      onChange([...selected, toolId])
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {stackTools.map(group => (
+        <div key={group.category}>
+          <p className="text-zinc-600 text-xs uppercase tracking-wider mb-2">{group.category}</p>
+          <div className="flex flex-wrap gap-2">
+            {group.tools.map(tool => {
+              const isSelected = selected.includes(tool.id)
+              return (
+                <button
+                  key={tool.id}
+                  onClick={() => toggle(tool.id)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-medium transition-all ${
+                    isSelected
+                      ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400'
+                      : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-300'
+                  }`}
+                >
+                  <img
+                    src={tool.logo}
+                    alt={tool.name}
+                    className="w-4 h-4 rounded object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                  />
+                  {tool.name}
+                  {isSelected && (
+                    <svg className="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    </svg>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function SummaryCard({ steps, stack }: { steps: Step[], stack: string[] }) {
   const [expanded, setExpanded] = useState(false)
 
   const problem = steps.find(s => s.title === 'Describe the problem')?.answer
   const differentiator = steps.find(s => s.title === 'Define your one differentiator')?.answer
   const mvp = steps.find(s => s.title === 'Define your MVP in one feature')?.answer
-  const stack = steps.find(s => s.title === 'Lock your stack')?.answer
   const shipDate = steps.find(s => s.title === 'Set a ship date')?.answer
 
-  const answered = [problem, differentiator, mvp, stack, shipDate].filter(Boolean)
+  const allTools = stackTools.flatMap(g => g.tools)
+  const selectedTools = stack.map(id => allTools.find(t => t.id === id)).filter(Boolean)
+
+  const answered = [problem, differentiator, mvp, shipDate, stack.length > 0 ? 'stack' : null].filter(Boolean)
   if (answered.length === 0) return null
 
   return (
@@ -110,10 +214,17 @@ function SummaryCard({ steps }: { steps: Step[] }) {
               <span className="text-zinc-200 text-sm leading-relaxed">{mvp}</span>
             </div>
           )}
-          {stack && (
-            <div className="flex flex-col gap-0.5 pt-3 border-t border-zinc-800">
+          {selectedTools.length > 0 && (
+            <div className="flex flex-col gap-2 pt-3 border-t border-zinc-800">
               <span className="text-zinc-600 text-xs">Stack</span>
-              <span className="text-zinc-200 text-sm leading-relaxed">{stack}</span>
+              <div className="flex flex-wrap gap-2">
+                {selectedTools.map(tool => tool && (
+                  <div key={tool.id} className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 rounded-lg px-2.5 py-1">
+                    <img src={tool.logo} alt={tool.name} className="w-3.5 h-3.5 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                    <span className="text-zinc-300 text-xs">{tool.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           {shipDate && (
@@ -173,6 +284,8 @@ export default function ProjectPage() {
   const [activePhase, setActivePhase] = useState('Clarify')
   const [expandedStep, setExpandedStep] = useState<number | null>(null)
   const [answers, setAnswers] = useState<Record<number, string>>({})
+  const [selectedStack, setSelectedStack] = useState<string[]>([])
+  const [savingStack, setSavingStack] = useState(false)
   const [saving, setSaving] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -190,6 +303,7 @@ export default function ProjectPage() {
 
       if (!projectData) { setLoading(false); return }
       setProject(projectData)
+      setSelectedStack(projectData.stack ?? [])
 
       const { data: stepsData } = await supabase
         .from('steps')
@@ -232,6 +346,21 @@ export default function ProjectPage() {
     ))
     setSaving(null)
     setExpandedStep(null)
+  }
+
+  async function saveStack(stack: string[]) {
+    setSavingStack(true)
+    setSelectedStack(stack)
+    await supabase.from('projects').update({ stack }).eq('slug', id as string)
+    setProject(prev => prev ? { ...prev, stack } : prev)
+    setSavingStack(false)
+
+    const lockStep = steps.find(s => s.title === 'Lock your stack')
+    if (lockStep && !lockStep.completed && stack.length > 0) {
+      const stackNames = stackTools.flatMap(g => g.tools).filter(t => stack.includes(t.id)).map(t => t.name).join(', ')
+      await supabase.from('steps').update({ completed: true, answer: stackNames }).eq('id', lockStep.id)
+      setSteps(prev => prev.map(s => s.id === lockStep.id ? { ...s, completed: true, answer: stackNames } : s))
+    }
   }
 
   function handleGoToPhase(phase: string) {
@@ -317,7 +446,7 @@ export default function ProjectPage() {
         </div>
 
         <NextStepBanner steps={steps} onGo={handleGoToPhase} />
-        <SummaryCard steps={steps} />
+        <SummaryCard steps={steps} stack={selectedStack} />
 
         <div className="flex gap-1 mb-5 overflow-x-auto pb-1">
           {phases.map(phase => {
@@ -377,91 +506,131 @@ export default function ProjectPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-2">
-            {phaseSteps.map((step, index) => (
-              <div
-                key={step.id}
-                className={`border rounded-xl overflow-hidden transition-all duration-200 ${
-                  step.completed
-                    ? 'bg-zinc-900/50 border-emerald-500/15'
-                    : 'bg-zinc-900 border-zinc-800 hover:border-zinc-700'
-                }`}
-              >
-                <div
-                  className="p-4 flex gap-3 cursor-pointer select-none"
-                  onClick={() => setExpandedStep(prev => prev === step.id ? null : step.id)}
-                >
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleStep(step.id, step.completed)
-                    }}
-                    className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-all ${
-                      step.completed
-                        ? 'bg-emerald-500 border-emerald-500'
-                        : 'border-zinc-600 hover:border-emerald-500/70'
-                    }`}
-                  >
-                    {step.completed && (
-                      <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                      </svg>
-                    )}
-                  </button>
+            {phaseSteps.map((step, index) => {
+              const isStackStep = step.title === 'Lock your stack'
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-zinc-600 text-xs">{index + 1}</span>
-                      <p className={`text-sm font-medium ${step.completed ? 'line-through text-zinc-600' : 'text-white'}`}>
-                        {step.title}
-                      </p>
-                    </div>
-                    <p className="text-zinc-500 text-xs leading-relaxed">{step.description}</p>
-                    {step.answer && expandedStep !== step.id && (
-                      <div className="mt-2 flex items-start gap-1.5">
-                        <svg className="w-3 h-3 text-emerald-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+              return (
+                <div
+                  key={step.id}
+                  className={`border rounded-xl overflow-hidden transition-all duration-200 ${
+                    step.completed
+                      ? 'bg-zinc-900/50 border-emerald-500/15'
+                      : 'bg-zinc-900 border-zinc-800 hover:border-zinc-700'
+                  }`}
+                >
+                  <div
+                    className="p-4 flex gap-3 cursor-pointer select-none"
+                    onClick={() => setExpandedStep(prev => prev === step.id ? null : step.id)}
+                  >
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (!isStackStep) toggleStep(step.id, step.completed)
+                      }}
+                      className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-all ${
+                        step.completed
+                          ? 'bg-emerald-500 border-emerald-500'
+                          : isStackStep
+                            ? 'border-zinc-700 cursor-default'
+                            : 'border-zinc-600 hover:border-emerald-500/70'
+                      }`}
+                    >
+                      {step.completed && (
+                        <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                         </svg>
-                        <p className="text-emerald-400/80 text-xs leading-relaxed line-clamp-1">{step.answer}</p>
+                      )}
+                    </button>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-zinc-600 text-xs">{index + 1}</span>
+                        <p className={`text-sm font-medium ${step.completed ? 'line-through text-zinc-600' : 'text-white'}`}>
+                          {step.title}
+                        </p>
                       </div>
-                    )}
-                  </div>
-
-                  <svg
-                    className={`w-4 h-4 text-zinc-600 flex-shrink-0 mt-0.5 transition-transform duration-200 ${expandedStep === step.id ? 'rotate-180' : ''}`}
-                    fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                  </svg>
-                </div>
-
-                {expandedStep === step.id && (
-                  <div className="px-4 pb-4 border-t border-zinc-800 pt-3">
-                    <textarea
-                      className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-600 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500/40 transition-colors resize-none"
-                      placeholder="Write your answer here..."
-                      rows={3}
-                      value={answers[step.id] ?? ''}
-                      onChange={e => setAnswers(prev => ({ ...prev, [step.id]: e.target.value }))}
-                    />
-                    <div className="flex items-center justify-between mt-2">
-                      <p className="text-zinc-600 text-xs">Saving will also mark this step as complete</p>
-                      <button
-                        onClick={() => saveAnswer(step.id)}
-                        disabled={saving === step.id}
-                        className="bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 flex items-center gap-1.5"
-                      >
-                        {saving === step.id ? (
-                          <>
-                            <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
-                            Saving
-                          </>
-                        ) : 'Save & complete →'}
-                      </button>
+                      <p className="text-zinc-500 text-xs leading-relaxed">{step.description}</p>
+                      {isStackStep && selectedStack.length > 0 && expandedStep !== step.id && (
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {stackTools.flatMap(g => g.tools).filter(t => selectedStack.includes(t.id)).map(tool => (
+                            <div key={tool.id} className="flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-md px-2 py-0.5">
+                              <img src={tool.logo} alt={tool.name} className="w-3 h-3 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                              <span className="text-zinc-400 text-xs">{tool.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {!isStackStep && step.answer && expandedStep !== step.id && (
+                        <div className="mt-2 flex items-start gap-1.5">
+                          <svg className="w-3 h-3 text-emerald-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                          </svg>
+                          <p className="text-emerald-400/80 text-xs leading-relaxed line-clamp-1">{step.answer}</p>
+                        </div>
+                      )}
                     </div>
+
+                    <svg
+                      className={`w-4 h-4 text-zinc-600 flex-shrink-0 mt-0.5 transition-transform duration-200 ${expandedStep === step.id ? 'rotate-180' : ''}`}
+                      fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {expandedStep === step.id && (
+                    <div className="px-4 pb-4 border-t border-zinc-800 pt-4">
+                      {isStackStep ? (
+                        <>
+                          <StackSelector selected={selectedStack} onChange={saveStack} />
+                          {selectedStack.length > 0 && (
+                            <div className="flex items-center justify-between mt-4 pt-3 border-t border-zinc-800">
+                              <p className="text-zinc-600 text-xs">{selectedStack.length} tool{selectedStack.length !== 1 ? 's' : ''} selected</p>
+                              <button
+                                onClick={() => {
+                                  setExpandedStep(null)
+                                }}
+                                className="bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg px-3 py-1.5 text-xs font-medium transition-colors flex items-center gap-1.5"
+                              >
+                                {savingStack ? (
+                                  <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
+                                ) : null}
+                                Lock stack →
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <textarea
+                            className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-600 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500/40 transition-colors resize-none"
+                            placeholder="Write your answer here..."
+                            rows={3}
+                            value={answers[step.id] ?? ''}
+                            onChange={e => setAnswers(prev => ({ ...prev, [step.id]: e.target.value }))}
+                          />
+                          <div className="flex items-center justify-between mt-2">
+                            <p className="text-zinc-600 text-xs">Saving will also mark this step as complete</p>
+                            <button
+                              onClick={() => saveAnswer(step.id)}
+                              disabled={saving === step.id}
+                              className="bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                            >
+                              {saving === step.id ? (
+                                <>
+                                  <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
+                                  Saving
+                                </>
+                              ) : 'Save & complete →'}
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         )}
       </div>
