@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 
 interface Step {
@@ -23,19 +23,19 @@ interface Project {
 const priorityColor: Record<string, string> = {
   high: 'bg-red-500/10 text-red-400 border-red-500/20',
   medium: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
-  low: 'bg-zinc-700/50 text-zinc-400 border-zinc-700',
+  low: 'bg-zinc-800 text-zinc-400 border-zinc-700',
 }
 
 const statusColor: Record<string, string> = {
   idea: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
   building: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-  launched: 'bg-green-500/10 text-green-400 border-green-500/20',
+  launched: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
 }
 
 const categoryPaths: Record<string, string> = {
   saas: 'M13 10V3L4 14h7v7l9-11h-7z',
   tool: 'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z',
-  app: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z',
+  app: 'M12 18.178l-4.62-1.256-.328-3.544h2.27l.157 1.844 2.52.667 2.52-.667.26-2.866H6.96l-.635-6.678h11.35l-.227 2.21H8.822l.204 2.256h8.126l-.654 7.034L12 18.178z',
   content: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z',
   other: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
 }
@@ -51,11 +51,55 @@ function CategoryIcon({ category }: { category: string }) {
   )
 }
 
-function Avatar({ email }: { email: string }) {
+function AvatarMenu({ email, onLogout }: { email: string, onLogout: () => void }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
   const initials = email.slice(0, 2).toUpperCase()
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
   return (
-    <div className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-medium text-zinc-300">
-      {initials}
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen(prev => !prev)}
+        className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-medium text-zinc-300 hover:border-zinc-600 transition-colors"
+      >
+        {initials}
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-10 w-44 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-xl z-50">
+          <div className="px-3 py-2.5 border-b border-zinc-800">
+            <p className="text-zinc-500 text-xs truncate">{email}</p>
+          </div>
+          <button
+            onClick={() => { setOpen(false); window.location.href = '/account' }}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 text-zinc-300 hover:bg-zinc-800 transition-colors text-sm"
+          >
+            <svg className="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+            Account
+          </button>
+          <button
+            onClick={() => { setOpen(false); onLogout() }}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 text-red-400 hover:bg-zinc-800 transition-colors text-sm border-t border-zinc-800"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+            </svg>
+            Sign out
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -108,12 +152,7 @@ export default function Dashboard() {
 
         <div className="flex justify-between items-center mb-10">
           <span className="text-white font-medium tracking-tight">✦ Miroki</span>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 hover:opacity-70 transition-opacity"
-          >
-            <Avatar email={email} />
-          </button>
+          <AvatarMenu email={email} onLogout={handleLogout} />
         </div>
 
         <div className="flex justify-between items-center mb-5">
@@ -219,13 +258,12 @@ export default function Dashboard() {
                       </div>
                       <div className="h-0.5 bg-zinc-800 rounded-full">
                         <div
-                          className={`h-0.5 rounded-full transition-all duration-500 ${progress === 100 ? 'bg-emerald-500' : 'bg-emerald-500'}`}
+                          className="h-0.5 bg-emerald-500 rounded-full transition-all duration-500"
                           style={{ width: `${progress}%` }}
                         />
                       </div>
                     </div>
                   )}
-
                 </div>
               )
             })}
