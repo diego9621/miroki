@@ -178,7 +178,7 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
         </div>
         <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#F0EAE2', border: '0.5px solid #E8E0D8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 500, color: '#7A6C62' }}>JO</div>
       </div>
-      <div style={{ padding: 16, minHeight: 400 }}>{children}</div>
+      <div style={{ padding: 16, height: 440, overflow: 'hidden' }}>{children}</div>
     </div>
   )
 }

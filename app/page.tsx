@@ -48,6 +48,45 @@ export default function Home() {
     }
   }
 
+  const howSteps = [
+    {
+      num: '01',
+      title: 'Answer five questions',
+      body: 'Define your problem, your differentiator, your MVP. Miroki turns your answers into a locked track you cannot deviate from.',
+      done: true,
+      extra: null,
+    },
+    {
+      num: '02',
+      title: 'Follow the phases',
+      body: 'Six phases. Each one unlocks only when the previous is done. No skipping. No shortcuts. Every step has a concrete task.',
+      done: true,
+      extra: (
+        <div className="flex gap-2 flex-wrap mt-4">
+          {['Clarify', 'Plan', 'Stack', 'Build', 'Launch', 'Track'].map((p, i) => (
+            <span
+              key={p}
+              className="text-xs px-2.5 py-1 rounded-lg"
+              style={i < 2
+                ? { background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }
+                : { background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)' }
+              }
+            >
+              {p}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
+      num: '03',
+      title: 'Ship. Then grow.',
+      body: 'When all steps are done your project goes live. Track users, revenue and social growth directly from your dashboard.',
+      done: false,
+      extra: null,
+    },
+  ]
+
   return (
     <main className="min-h-screen" style={{ background: 'var(--m-bg)' }}>
 
@@ -133,30 +172,30 @@ export default function Home() {
         <p className="text-xs font-medium uppercase tracking-widest mb-10" style={{ color: 'var(--m-text-muted)' }}>
           Sound familiar
         </p>
-        <div className="flex flex-col">
+
+        <div className="flex flex-col gap-6 mb-10">
           {[
-            {
-              q: 'You have five projects. None of them shipped.',
-              a: 'Not because you stopped caring. Because there was no clear next step.'
-            },
-            {
-              q: 'You switched stacks halfway through. Again.',
-              a: 'Next.js felt too heavy so you tried SvelteKit. Then Astro. Now it is week three and you have not written a line of product code.'
-            },
-            {
-              q: 'Your project sits at 80% for months.',
-              a: 'The hard part is done but shipping feels scary. So you keep tweaking. Keep polishing. Never publishing.'
-            },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="py-7"
-              style={{ borderBottom: i < 2 ? '0.5px solid var(--m-border)' : 'none' }}
-            >
-              <p className="text-lg font-medium mb-2 leading-snug" style={{ color: 'var(--m-text-primary)' }}>{item.q}</p>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{item.a}</p>
+            'You started. You drifted. You stopped.',
+            'You switched stacks. Lost momentum. Started over.',
+            'You got to 80%. Never shipped.',
+          ].map((line, i) => (
+            <div key={i} className="flex items-start gap-4">
+              <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-2.5" style={{ background: 'var(--m-border-hover)' }} />
+              <p className="text-xl font-semibold leading-snug" style={{ color: 'var(--m-text-primary)' }}>{line}</p>
             </div>
           ))}
+        </div>
+
+        <div
+          className="rounded-2xl px-6 py-5 mt-2"
+          style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}
+        >
+          <p className="text-base font-semibold leading-relaxed" style={{ color: 'var(--m-accent)' }}>
+            Your idea deserves to be live.<br />
+            <span style={{ color: 'var(--m-text-primary)', fontWeight: 400 }}>
+              Miroki gives it a clear path to follow. Step by step. Phase by phase. No drift.
+            </span>
+          </p>
         </div>
       </section>
 
@@ -166,55 +205,44 @@ export default function Home() {
           <p className="text-xs font-medium uppercase tracking-widest mb-10" style={{ color: 'var(--m-text-muted)' }}>
             How it works
           </p>
+
           <div className="flex flex-col">
-            {[
-              {
-                num: '01',
-                title: 'Answer five questions',
-                body: 'Define your problem, your differentiator, your MVP. Miroki turns your answers into a locked track you cannot deviate from.',
-                extra: null,
-              },
-              {
-                num: '02',
-                title: 'Follow the phases',
-                body: 'Six phases. Each one unlocks only when the previous is done. No skipping. No shortcuts. Every step has a concrete task.',
-                extra: (
-                  <div className="flex gap-2 flex-wrap mt-4">
-                    {['Clarify', 'Plan', 'Stack', 'Build', 'Launch', 'Track'].map((p, i) => (
-                      <span
-                        key={p}
-                        className="text-xs px-2.5 py-1 rounded-lg"
-                        style={i < 2
-                          ? { background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }
-                          : { background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)' }
-                        }
-                      >
-                        {p}
-                      </span>
-                    ))}
+            {howSteps.map((step, i) => (
+              <div key={i} className="flex gap-6">
+
+                {/* Timeline */}
+                <div className="flex flex-col items-center" style={{ width: 32, flexShrink: 0 }}>
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
+                    style={step.done
+                      ? { background: 'var(--m-accent)', color: 'white' }
+                      : { background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)' }
+                    }
+                  >
+                    {step.done
+                      ? <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                      : step.num
+                    }
                   </div>
-                ),
-              },
-              {
-                num: '03',
-                title: 'Ship. Then grow.',
-                body: 'When all steps are done your project goes live. Track users, revenue and social growth directly from your dashboard.',
-                extra: null,
-              },
-            ].map((step, i) => (
-              <div
-                key={i}
-                className="flex gap-6 py-7"
-                style={{ borderBottom: i < 2 ? '0.5px solid var(--m-border)' : 'none' }}
-              >
-                <span
-                  className="text-xs font-medium flex-shrink-0 mt-1 px-2 py-0.5 rounded-md h-fit"
-                  style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }}
-                >
-                  {step.num}
-                </span>
-                <div>
-                  <p className="text-lg font-medium mb-2" style={{ color: 'var(--m-text-primary)' }}>{step.title}</p>
+                  {i < howSteps.length - 1 && (
+                    <div
+                      className="w-0.5 flex-1 my-1"
+                      style={{
+                        background: i < 1 ? 'var(--m-accent)' : 'var(--m-border)',
+                        minHeight: 40,
+                      }}
+                    />
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="pb-10 flex-1 min-w-0">
+                  <p
+                    className="text-lg font-semibold mb-2 leading-snug"
+                    style={{ color: step.done ? 'var(--m-text-primary)' : 'var(--m-text-muted)' }}
+                  >
+                    {step.title}
+                  </p>
                   <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{step.body}</p>
                   {step.extra}
                 </div>
@@ -275,7 +303,7 @@ export default function Home() {
                   </button>
                 </div>
                 {waitlistStatus === 'error' && (
-                  <p className="text-xs" style={{ color: 'var(--m-danger)' }}>Something went wrong. Try again.</p>
+                  <p className="text-xs mb-2" style={{ color: 'var(--m-danger)' }}>Something went wrong. Try again.</p>
                 )}
                 <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>No spam. Unsubscribe anytime.</p>
               </form>
