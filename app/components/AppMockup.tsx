@@ -427,9 +427,9 @@ export default function AppMockup() {
     <div style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       gap: 20, padding: '32px 16px', background: 'var(--m-bg)',
-      minHeight: 640, contain: 'layout style' as any
+      height: 640, overflow: 'hidden',
     }}>
-      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
         {[0, 1, 2, 3, 4].map(i => (
           <div
             key={i}
@@ -445,18 +445,24 @@ export default function AppMockup() {
       </div>
 
       <div style={{
-        position: 'relative', width: 280, height: 508, flexShrink: 0,
-        contain: 'strict' as any
+        position: 'relative',
+        width: 280,
+        height: 508,
+        flexShrink: 0,
       }}>
         {screens.map((screen, i) => (
           <div
             key={i}
             style={{
-              position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+              position: 'absolute',
+              top: 0, left: 0,
+              width: 280,
+              height: 508,
               opacity: i === cur ? 1 : 0,
               transition: 'opacity 0.4s ease',
               pointerEvents: i === cur ? 'auto' : 'none',
-              willChange: 'opacity',
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden' as const,
             }}
           >
             <PhoneFrame>{screen}</PhoneFrame>
@@ -464,7 +470,7 @@ export default function AppMockup() {
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
         <button
           onClick={() => setCur(c => (c + 4) % 5)}
           style={{ fontSize: 11, borderRadius: 8, border: '0.5px solid var(--m-border)', background: 'var(--m-surface-1)', color: 'var(--m-text-secondary)', cursor: 'pointer', padding: '6px 14px', fontFamily: 'inherit' }}
