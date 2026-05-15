@@ -9,10 +9,19 @@ interface Project {
   slug: string
   name: string
   core_feature: string
-  hours_per_week: number
   category: string
   priority: string
   status: string
+}
+
+interface Step {
+  id: number
+  phase: string
+  phase_order: number
+  title: string
+  description: string
+  step_order: number
+  completed: boolean
 }
 
 const priorityColor: Record<string, string> = {
@@ -26,6 +35,8 @@ const statusColor: Record<string, string> = {
   building: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
   launched: 'bg-green-500/10 text-green-400 border-green-500/20',
 }
+
+const phases = ['Clarify', 'Plan', 'Stack', 'Build', 'Launch', 'Track']
 
 const categoryPaths: Record<string, string> = {
   saas: 'M13 10V3L4 14h7v7l9-11h-7z',
@@ -49,6 +60,8 @@ function CategoryIcon({ category }: { category: string }) {
 export default function ProjectPage() {
   const { id } = useParams()
   const [project, setProject] = useState<Project | null>(null)
+  const [steps, setSteps] = useState<Step[]>([])
+  const [activePhase, setActivePhase] = useState('Clarify')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -56,18 +69,44 @@ export default function ProjectPage() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.user) { window.location.href = '/'; return }
 
-      const { data } = await supabase
+      const { data: projectData } = await supabase
         .from('projects')
         .select('*')
         .eq('slug', id)
         .eq('user_id', session.user.id)
         .single()
 
-      setProject(data)
+      if (!projectData) { setLoading(false); return }
+      setProject(projectData)
+
+      const { data: stepsData } = await supabase
+        .from('steps')
+        .select('*')
+        .eq('project_id', projectData.id)
+        .order('phase_order', { ascending: true })
+        .order('step_order', { ascending: true })
+
+      setSteps(stepsData ?? [])
       setLoading(false)
     }
     load()
   }, [id])
+
+  async function toggleStep(stepId: number, completed: boolean) {
+    await supabase
+      .from('steps')
+      .update({ completed: !completed })
+      .eq('id', stepId)
+
+    setSteps(prev => prev.map(s =>
+      s.id === stepId ? { ...s, completed: !completed } : s
+    ))
+  }
+
+  const phaseSteps = steps.filter(s => s.phase === activePhase)
+  const completedCount = steps.filter(s => s.completed).length
+  const totalCount = steps.length
+  const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
 
   if (loading) return (
     <main className="flex min-h-screen items-center justify-center bg-[#0A0A0A]">
@@ -106,12 +145,12 @@ export default function ProjectPage() {
           </button>
         </div>
 
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-3">
           <CategoryIcon category={project.category} />
           <h1 className="text-xl font-semibold text-white">{project.name}</h1>
         </div>
 
-        <div className="flex gap-1.5 flex-wrap mb-8">
+        <div className="flex gap-1.5 flex-wrap mb-6">
           <span className={`text-xs px-2 py-0.5 rounded-md border capitalize ${priorityColor[project.priority] ?? priorityColor.medium}`}>
             {project.priority} priority
           </span>
@@ -123,19 +162,74 @@ export default function ProjectPage() {
           </span>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex flex-col gap-4 mb-4">
-          <div>
-            <p className="text-zinc-500 text-xs mb-1">Core feature</p>
-            <p className="text-white text-sm">{project.core_feature}</p>
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-zinc-500 text-xs">Progress</span>
+            <span className="text-zinc-400 text-xs">{completedCount}/{totalCount} steps</span>
           </div>
-          <div className="border-t border-zinc-800 pt-4">
-            <p className="text-zinc-500 text-xs mb-1">Hours per week</p>
-            <p className="text-white text-sm">{project.hours_per_week}h / week</p>
+          <div className="h-1 bg-zinc-800 rounded-full">
+            <div
+              className="h-1 bg-white rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-          <p className="text-zinc-600 text-xs text-center">Track coming soon</p>
+        <div className="flex gap-1 mb-6 overflow-x-auto pb-1">
+          {phases.map(phase => {
+            const phaseStepsAll = steps.filter(s => s.phase === phase)
+            const phaseCompleted = phaseStepsAll.every(s => s.completed) && phaseStepsAll.length > 0
+            return (
+              <button
+                key={phase}
+                onClick={() => setActivePhase(phase)}
+                className={`px-3 py-1.5 rounded-lg text-xs whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                  activePhase === phase
+                    ? 'bg-white text-black font-medium'
+                    : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:border-zinc-600'
+                }`}
+              >
+                {phaseCompleted && (
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                  </svg>
+                )}
+                {phase}
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="flex flex-col gap-3">
+          {phaseSteps.map(step => (
+            <div
+              key={step.id}
+              onClick={() => toggleStep(step.id, step.completed)}
+              className={`bg-zinc-900 border rounded-xl p-4 flex gap-3 cursor-pointer transition-colors ${
+                step.completed
+                  ? 'border-zinc-700 opacity-60'
+                  : 'border-zinc-800 hover:border-zinc-700'
+              }`}
+            >
+              <div className={`w-5 h-5 rounded-full border flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
+                step.completed
+                  ? 'bg-white border-white'
+                  : 'border-zinc-600'
+              }`}>
+                {step.completed && (
+                  <svg className="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                  </svg>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className={`text-sm font-medium ${step.completed ? 'line-through text-zinc-500' : 'text-white'}`}>
+                  {step.title}
+                </p>
+                <p className="text-zinc-500 text-xs leading-relaxed">{step.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
 
       </div>
