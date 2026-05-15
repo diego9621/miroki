@@ -10,7 +10,6 @@ const captions = [
   'Track users, revenue and social growth in one place.',
 ]
 
-// Inline SVG logos — no external CDN needed, always render
 function NextjsLogo({ size = 14 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -178,7 +177,7 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
         </div>
         <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#F0EAE2', border: '0.5px solid #E8E0D8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 500, color: '#7A6C62' }}>JO</div>
       </div>
-      <div style={{ padding: 16, height: 440, overflow: 'hidden' }}>{children}</div>
+      <div style={{ padding: 16, flex: 1, overflow: 'hidden' }}>{children}</div>
     </div>
   )
 }
@@ -425,13 +424,26 @@ export default function AppMockup() {
   ]
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, padding: '32px 16px', background: 'var(--m-bg)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, padding: '32px 16px', background: 'var(--m-bg)', minHeight: 640 }}>
       <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
         {[0, 1, 2, 3, 4].map(i => (
           <div key={i} onClick={() => setCur(i)} style={{ width: i === cur ? 20 : 6, height: 6, borderRadius: i === cur ? 3 : '50%', background: i === cur ? 'var(--m-accent)' : 'var(--m-border-hover)', transition: 'all 0.3s', cursor: 'pointer' }} />
         ))}
       </div>
-      <PhoneFrame>{screens[cur]}</PhoneFrame>
+
+      <div style={{ position: 'relative', width: 280, height: 508, flexShrink: 0 }}>
+        {screens.map((screen, i) => (
+          <div key={i} style={{
+            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+            opacity: i === cur ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+            pointerEvents: i === cur ? 'auto' : 'none',
+          }}>
+            <PhoneFrame>{screen}</PhoneFrame>
+          </div>
+        ))}
+      </div>
+
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <button onClick={() => setCur(c => (c + 4) % 5)} style={{ fontSize: 11, borderRadius: 8, border: '0.5px solid var(--m-border)', background: 'var(--m-surface-1)', color: 'var(--m-text-secondary)', cursor: 'pointer', padding: '6px 14px', fontFamily: 'inherit' }}>←</button>
         <div style={{ fontSize: 12, color: 'var(--m-text-secondary)', textAlign: 'center' as const, maxWidth: 240, lineHeight: 1.5 }}>{captions[cur]}</div>
