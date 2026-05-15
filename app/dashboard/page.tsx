@@ -8,6 +8,29 @@ interface Project {
   name: string
   core_feature: string
   hours_per_week: number
+  category: string
+  priority: string
+  status: string
+}
+
+const priorityColor: Record<string, string> = {
+  high: 'bg-red-500/10 text-red-400 border-red-500/20',
+  medium: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+  low: 'bg-zinc-700/50 text-zinc-400 border-zinc-700',
+}
+
+const statusColor: Record<string, string> = {
+  idea: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  building: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+  launched: 'bg-green-500/10 text-green-400 border-green-500/20',
+}
+
+const categoryIcon: Record<string, string> = {
+  saas: '⚡',
+  tool: '🔧',
+  app: '📱',
+  content: '✍️',
+  other: '✦',
 }
 
 export default function Dashboard() {
@@ -92,27 +115,45 @@ export default function Dashboard() {
         ) : (
           <div className="flex flex-col gap-4">
             {projects.map(project => (
-              <div key={project.id} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col gap-3">
+              <div key={project.id} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col gap-4 hover:border-zinc-700 transition-colors">
+                
                 <div className="flex justify-between items-start">
-                  <h2 className="text-white font-medium">{project.name}</h2>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{categoryIcon[project.category] ?? '✦'}</span>
+                    <h2 className="text-white font-medium">{project.name}</h2>
+                  </div>
                   <button
                     onClick={() => handleDelete(project.id)}
                     disabled={deleting === project.id}
                     className="text-zinc-600 hover:text-red-400 transition-colors text-xs"
                   >
-                    {deleting === project.id ? 'Deleting...' : 'Delete'}
+                    {deleting === project.id ? '...' : 'Delete'}
                   </button>
                 </div>
-                <div className="flex flex-col gap-2">
+
+                <div className="flex gap-2 flex-wrap">
+                  <span className={`text-xs px-2.5 py-1 rounded-lg border capitalize ${priorityColor[project.priority] ?? priorityColor.medium}`}>
+                    {project.priority} priority
+                  </span>
+                  <span className={`text-xs px-2.5 py-1 rounded-lg border capitalize ${statusColor[project.status] ?? statusColor.idea}`}>
+                    {project.status}
+                  </span>
+                  <span className="text-xs px-2.5 py-1 rounded-lg border border-zinc-800 text-zinc-400 capitalize">
+                    {project.category}
+                  </span>
+                </div>
+
+                <div className="border-t border-zinc-800 pt-4 flex flex-col gap-2">
                   <div>
                     <p className="text-zinc-500 text-xs mb-0.5">Core feature</p>
                     <p className="text-zinc-300 text-sm">{project.core_feature}</p>
                   </div>
                   <div>
                     <p className="text-zinc-500 text-xs mb-0.5">Hours per week</p>
-                    <p className="text-zinc-300 text-sm">{project.hours_per_week} hours</p>
+                    <p className="text-zinc-300 text-sm">{project.hours_per_week}h / week</p>
                   </div>
                 </div>
+
               </div>
             ))}
           </div>
