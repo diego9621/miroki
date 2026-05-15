@@ -26,6 +26,18 @@ interface Step {
   answer: string | null
 }
 
+interface Tracking {
+  id?: number
+  project_id?: number
+  users: number
+  revenue: number
+  visitors: number
+  signups: number
+  reddit_upvotes: number
+  instagram_followers: number
+  twitter_followers: number
+}
+
 const phases = ['Clarify', 'Plan', 'Stack', 'Build', 'Launch', 'Track']
 
 const categoryPaths: Record<string, string> = {
@@ -38,39 +50,63 @@ const categoryPaths: Record<string, string> = {
 
 const stackTools = [
   { category: 'Frontend', tools: [
-    { id: 'nextjs', name: 'Next.js', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg' },
-    { id: 'remix', name: 'Remix', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/remix/remix-original.svg' },
-    { id: 'astro', name: 'Astro', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/astro/astro-original.svg' },
-    { id: 'svelte', name: 'SvelteKit', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/svelte/svelte-original.svg' },
+    { id: 'nextjs', name: 'Next.js' },
+    { id: 'remix', name: 'Remix' },
+    { id: 'astro', name: 'Astro' },
+    { id: 'svelte', name: 'SvelteKit' },
   ]},
   { category: 'Database & Backend', tools: [
-    { id: 'supabase', name: 'Supabase', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg' },
-    { id: 'firebase', name: 'Firebase', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
-    { id: 'neon', name: 'Neon', logo: 'https://neon.tech/favicon/favicon.svg' },
-    { id: 'planetscale', name: 'PlanetScale', logo: 'https://cdn.brandfetch.io/idj9KAIbPK/w/400/h/400/theme/dark/icon.png' },
+    { id: 'supabase', name: 'Supabase' },
+    { id: 'firebase', name: 'Firebase' },
+    { id: 'neon', name: 'Neon' },
+    { id: 'planetscale', name: 'PlanetScale' },
   ]},
   { category: 'Auth', tools: [
-    { id: 'supabase-auth', name: 'Supabase Auth', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg' },
-    { id: 'clerk', name: 'Clerk', logo: 'https://clerk.com/favicon.ico' },
-    { id: 'nextauth', name: 'NextAuth', logo: 'https://next-auth.js.org/img/logo/logo-sm.png' },
+    { id: 'supabase-auth', name: 'Supabase Auth' },
+    { id: 'clerk', name: 'Clerk' },
+    { id: 'nextauth', name: 'NextAuth' },
   ]},
   { category: 'Hosting', tools: [
-    { id: 'vercel', name: 'Vercel', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg' },
-    { id: 'netlify', name: 'Netlify', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/netlify/netlify-original.svg' },
-    { id: 'railway', name: 'Railway', logo: 'https://railway.app/favicon.ico' },
-    { id: 'flyio', name: 'Fly.io', logo: 'https://fly.io/static/images/brand/logo.svg' },
+    { id: 'vercel', name: 'Vercel' },
+    { id: 'netlify', name: 'Netlify' },
+    { id: 'railway', name: 'Railway' },
+    { id: 'flyio', name: 'Fly.io' },
   ]},
   { category: 'Payments', tools: [
-    { id: 'stripe', name: 'Stripe', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/stripe/stripe-original.svg' },
-    { id: 'lemonsqueezy', name: 'Lemon Squeezy', logo: 'https://www.lemonsqueezy.com/favicon.ico' },
+    { id: 'stripe', name: 'Stripe' },
+    { id: 'lemonsqueezy', name: 'Lemon Squeezy' },
   ]},
   { category: 'Code', tools: [
-    { id: 'github', name: 'GitHub', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg' },
-    { id: 'gitlab', name: 'GitLab', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg' },
+    { id: 'github', name: 'GitHub' },
+    { id: 'gitlab', name: 'GitLab' },
   ]},
 ]
 
 const allTools = stackTools.flatMap(g => g.tools)
+
+// Inline SVG logos
+function ToolLogo({ id, size = 14 }: { id: string, size?: number }) {
+  const logos: Record<string, React.ReactNode> = {
+    nextjs: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#000"/><path d="M4.5 19.5V4.5h4.5l6 10V4.5H19.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+    svelte: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#FF3E00"/><path d="M17 7c-1.5-2-4.5-2.5-6.5-1L6 9.5C4.8 10.3 4 11.5 3.8 12.8c-.1 1 .1 2 .7 2.8-.5.7-.6 1.6-.4 2.4.3 1.7 1.8 3 3.5 3 .4 0 .8-.1 1.2-.2l4.8-3c1.2-.8 2-2 2.2-3.3.1-1-.1-2-.7-2.8.5-.7.6-1.6.4-2.4z" fill="white" fillOpacity="0.9"/></svg>,
+    supabase: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#1C1C1C"/><path d="M11.9 4L5 14.5h6l-1 5.5 8-10.5H12l1-5.5z" fill="#3ECF8E"/></svg>,
+    'supabase-auth': <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#1C1C1C"/><path d="M11.9 4L5 14.5h6l-1 5.5 8-10.5H12l1-5.5z" fill="#3ECF8E"/></svg>,
+    firebase: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#1C1C1C"/><path d="M5.5 17.5L8 7l3 4.5L13 4l5.5 13.5z" fill="#FFA000"/><path d="M5.5 17.5l7-4.5 1 4.5z" fill="#F57C00"/><path d="M13 4l1 9-7 4.5z" fill="#FFCA28"/></svg>,
+    vercel: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#000"/><path d="M12 5L21 19H3L12 5z" fill="white"/></svg>,
+    netlify: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#00AD9F"/><path d="M9 7h6M12 4v6M9 17h6M12 14v6M5 12h14" stroke="white" strokeWidth="1.5" strokeLinecap="round"/></svg>,
+    github: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#24292E"/><path d="M12 3C7 3 3 7 3 12c0 4 2.6 7.4 6.2 8.6.5.1.6-.2.6-.4v-1.6c-2.6.6-3.1-1.2-3.1-1.2-.4-1.1-1-1.4-1-1.4-.8-.6.1-.6.1-.6.9.1 1.4 1 1.4 1 .8 1.4 2.1 1 2.7.8.1-.6.3-1 .5-1.2-2.1-.2-4.2-1-4.2-4.6 0-1 .4-1.9 1-2.5-.1-.2-.4-1.2.1-2.5 0 0 .8-.3 2.7 1 .8-.2 1.6-.3 2.4-.3s1.6.1 2.4.3c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.5.6.6 1 1.5 1 2.5 0 3.6-2.2 4.4-4.3 4.6.3.3.6.8.6 1.7V20c0 .2.1.5.6.4C18.4 19.4 21 16 21 12c0-5-4-9-9-9z" fill="white"/></svg>,
+    gitlab: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#FC6D26"/><path d="M12 19l-7-5 2.5-8 1.5 4h6l1.5-4L19 14z" fill="white" fillOpacity="0.9"/></svg>,
+    stripe: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#635BFF"/><path d="M11.5 9.5c0-.8.7-1.1 1.8-1.1 1.6 0 3.2.5 4.7 1.3V6.2C16.5 5.4 14.9 5 13.3 5 9.9 5 7.6 6.7 7.6 9.7c0 4.6 6.3 3.9 6.3 5.9 0 .9-.8 1.2-2 1.2-1.7 0-3.6-.7-5.2-1.7v3.6c1.8.8 3.5 1.2 5.2 1.2 3.5 0 5.9-1.7 5.9-4.8 0-4.8-6.3-4-6.3-5.6z" fill="white"/></svg>,
+    clerk: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#6C47FF"/><circle cx="12" cy="9" r="3.5" fill="white"/><path d="M5 19c0-3.9 3.1-7 7-7s7 3.1 7 7" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>,
+    neon: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#00E5BF"/><path d="M5 7h14v6l-4 4H5V7z" fill="#0A0A0A"/><path d="M15 17l4-4v4h-4z" fill="#00E5BF"/></svg>,
+    railway: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#0B0D0E"/><path d="M12 4C7.6 4 4 7.6 4 12s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 3l4 4-4 4-4-4 4-4z" fill="white"/></svg>,
+    lemonsqueezy: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#FFC233"/><path d="M12 5C9 5 7 7.5 7 10c0 4 5 9 5 9s5-5 5-9c0-2.5-2-5-5-5zm0 6.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="#0A0A0A"/></svg>,
+    flyio: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#7B3FE4"/><path d="M12 4l6 4v8l-6 4-6-4V8l6-4zm0 3L8 9.5V14l4 2.5 4-2.5V9.5L12 7z" fill="white"/></svg>,
+    nextauth: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#1A1A2E"/><path d="M12 4l7 4v8l-7 4-7-4V8l7-4z" stroke="white" strokeWidth="1.5" fill="none"/><path d="M9 12l2 2 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+    planetscale: <svg width={size} height={size} viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#000"/><path d="M4 4l16 16M4 4h7M4 4v7" stroke="white" strokeWidth="1.5" strokeLinecap="round"/></svg>,
+  }
+  return <>{logos[id] ?? <div style={{ width: size, height: size, borderRadius: 3, background: 'var(--m-surface-3)' }} />}</>
+}
 
 function CategoryIcon({ category }: { category: string }) {
   const path = categoryPaths[category] ?? categoryPaths.other
@@ -96,63 +132,36 @@ function SummaryCard({ steps, stack }: { steps: Step[], stack: string[] }) {
 
   return (
     <div className="rounded-2xl mb-6 overflow-hidden" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
-      <button
-        onClick={() => setExpanded(prev => !prev)}
-        className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-80"
-      >
+      <button onClick={() => setExpanded(p => !p)} className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-80">
         <div className="flex items-center gap-2.5">
           <span className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--m-text-muted)' }}>Project summary</span>
           <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: 'var(--m-accent-subtle)', color: 'var(--m-accent)', border: '0.5px solid var(--m-accent-border)' }}>
             {answered.length} filled
           </span>
         </div>
-        <svg className={`w-4 h-4 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
-          style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+        <svg className={`w-4 h-4 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`} style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
         </svg>
       </button>
-
       {expanded && (
         <div className="px-5 pb-5 flex flex-col gap-3 pt-4" style={{ borderTop: '0.5px solid var(--m-border)' }}>
-          {problem && (
-            <div className="flex flex-col gap-0.5">
-              <span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Problem</span>
-              <span className="text-sm leading-relaxed" style={{ color: 'var(--m-text-primary)' }}>{problem}</span>
-            </div>
-          )}
-          {differentiator && (
-            <div className="flex flex-col gap-0.5 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}>
-              <span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Differentiator</span>
-              <span className="text-sm leading-relaxed" style={{ color: 'var(--m-text-primary)' }}>{differentiator}</span>
-            </div>
-          )}
-          {mvp && (
-            <div className="flex flex-col gap-0.5 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}>
-              <span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>MVP</span>
-              <span className="text-sm leading-relaxed" style={{ color: 'var(--m-text-primary)' }}>{mvp}</span>
-            </div>
-          )}
+          {problem && <div className="flex flex-col gap-0.5"><span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Problem</span><span className="text-sm leading-relaxed" style={{ color: 'var(--m-text-primary)' }}>{problem}</span></div>}
+          {differentiator && <div className="flex flex-col gap-0.5 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}><span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Differentiator</span><span className="text-sm leading-relaxed" style={{ color: 'var(--m-text-primary)' }}>{differentiator}</span></div>}
+          {mvp && <div className="flex flex-col gap-0.5 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}><span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>MVP</span><span className="text-sm leading-relaxed" style={{ color: 'var(--m-text-primary)' }}>{mvp}</span></div>}
           {selectedTools.length > 0 && (
             <div className="flex flex-col gap-2 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}>
               <span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Stack</span>
               <div className="flex flex-wrap gap-2">
                 {selectedTools.map(tool => tool && (
-                  <div key={tool.id} className="flex items-center gap-1.5 rounded-lg px-2.5 py-1"
-                    style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)' }}>
-                    <img src={tool.logo} alt={tool.name} className="w-3.5 h-3.5 object-contain"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                  <div key={tool.id} className="flex items-center gap-1.5 rounded-lg px-2.5 py-1" style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)' }}>
+                    <ToolLogo id={tool.id} size={12} />
                     <span className="text-xs" style={{ color: 'var(--m-text-secondary)' }}>{tool.name}</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
-          {shipDate && (
-            <div className="flex flex-col gap-0.5 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}>
-              <span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Ship date</span>
-              <span className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>{shipDate}</span>
-            </div>
-          )}
+          {shipDate && <div className="flex flex-col gap-0.5 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}><span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Ship date</span><span className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>{shipDate}</span></div>}
         </div>
       )}
     </div>
@@ -162,13 +171,9 @@ function SummaryCard({ steps, stack }: { steps: Step[], stack: string[] }) {
 function NextStepBanner({ steps, onGo }: { steps: Step[], onGo: (phase: string) => void }) {
   const nextStep = steps.find(s => !s.completed)
   if (!nextStep) return (
-    <div className="rounded-2xl p-5 mb-6 flex items-center gap-4"
-      style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
-        <svg className="w-5 h-5" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24">
-          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-        </svg>
+    <div className="rounded-2xl p-5 mb-6 flex items-center gap-4" style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
+        <svg className="w-5 h-5" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
       </div>
       <div>
         <p className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>All steps completed</p>
@@ -176,26 +181,16 @@ function NextStepBanner({ steps, onGo }: { steps: Step[], onGo: (phase: string) 
       </div>
     </div>
   )
-
   return (
-    <div
-      className="rounded-2xl p-5 mb-6 flex items-center gap-4 cursor-pointer group transition-opacity hover:opacity-80"
-      style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border-hover)' }}
-      onClick={() => onGo(nextStep.phase)}
-    >
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)' }}>
-        <svg className="w-4 h-4" style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-        </svg>
+    <div className="rounded-2xl p-5 mb-6 flex items-center gap-4 cursor-pointer group transition-opacity hover:opacity-80" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border-hover)' }} onClick={() => onGo(nextStep.phase)}>
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)' }}>
+        <svg className="w-4 h-4" style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs mb-0.5" style={{ color: 'var(--m-text-muted)' }}>Next step · {nextStep.phase}</p>
         <p className="text-sm font-medium truncate" style={{ color: 'var(--m-text-primary)' }}>{nextStep.title}</p>
       </div>
-      <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-      </svg>
+      <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
     </div>
   )
 }
@@ -204,7 +199,6 @@ function StackSelector({ selected, onChange }: { selected: string[], onChange: (
   function toggle(toolId: string) {
     onChange(selected.includes(toolId) ? selected.filter(s => s !== toolId) : [...selected, toolId])
   }
-
   return (
     <div className="flex flex-col gap-4">
       {stackTools.map(group => (
@@ -214,29 +208,188 @@ function StackSelector({ selected, onChange }: { selected: string[], onChange: (
             {group.tools.map(tool => {
               const isSelected = selected.includes(tool.id)
               return (
-                <button
-                  key={tool.id}
-                  onClick={() => toggle(tool.id)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-all"
-                  style={isSelected
-                    ? { background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }
-                    : { background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }
-                  }
-                >
-                  <img src={tool.logo} alt={tool.name} className="w-4 h-4 rounded object-contain"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                <button key={tool.id} onClick={() => toggle(tool.id)} className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-all"
+                  style={isSelected ? { background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' } : { background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}>
+                  <ToolLogo id={tool.id} size={14} />
                   {tool.name}
-                  {isSelected && (
-                    <svg className="w-3 h-3" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                    </svg>
-                  )}
+                  {isSelected && <svg className="w-3 h-3" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>}
                 </button>
               )
             })}
           </div>
         </div>
       ))}
+    </div>
+  )
+}
+
+// Tracking integrations config
+const integrations = [
+  { id: 'search_console', name: 'Search Console', description: 'Track search performance', logo: <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#4285F4"/><circle cx="11" cy="11" r="4.5" stroke="white" strokeWidth="1.5" fill="none"/><path d="M15 15l3 3" stroke="white" strokeWidth="1.5" strokeLinecap="round"/><path d="M9 11h4M11 9v4" stroke="white" strokeWidth="1.3" strokeLinecap="round"/></svg> },
+  { id: 'stripe', name: 'Stripe', description: 'Track revenue', logo: <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#635BFF"/><path d="M11.5 9.5c0-.8.7-1.1 1.8-1.1 1.6 0 3.2.5 4.7 1.3V6.2C16.5 5.4 14.9 5 13.3 5 9.9 5 7.6 6.7 7.6 9.7c0 4.6 6.3 3.9 6.3 5.9 0 .9-.8 1.2-2 1.2-1.7 0-3.6-.7-5.2-1.7v3.6c1.8.8 3.5 1.2 5.2 1.2 3.5 0 5.9-1.7 5.9-4.8 0-4.8-6.3-4-6.3-5.6z" fill="white"/></svg> },
+  { id: 'plausible', name: 'Plausible', description: 'Privacy-friendly analytics', logo: <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#5850EC"/><path d="M5 17l4-6 4 3 3-5 3 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/></svg> },
+  { id: 'reddit', name: 'Reddit', description: 'Track upvotes & mentions', logo: <svg width="16" height="16" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="#FF4500"/><path d="M16.67 10a1.46 1.46 0 00-2.47-1 7.12 7.12 0 00-3.85-1.23l.65-3.07 2.13.45a1 1 0 101.07-1 1 1 0 00-.96.68l-2.38-.5a.17.17 0 00-.2.13l-.73 3.44a7.14 7.14 0 00-3.89 1.23 1.46 1.46 0 10-1.61 2.39 2.87 2.87 0 000 .44c0 2.24 2.61 4.06 5.83 4.06s5.83-1.82 5.83-4.06a2.87 2.87 0 000-.44 1.46 1.46 0 00.49-1.52zM7.27 11a1 1 0 111 1 1 1 0 01-1-1zm5.58 2.71a3.58 3.58 0 01-2.85.86 3.58 3.58 0 01-2.85-.86.17.17 0 01.23-.23 3.26 3.26 0 002.62.71 3.26 3.26 0 002.62-.71.17.17 0 01.23.23zm-.14-1.71a1 1 0 111-1 1 1 0 01-1 1z" fill="white"/></svg> },
+  { id: 'instagram', name: 'Instagram', description: 'Track followers', logo: <svg width="16" height="16" viewBox="0 0 24 24"><defs><linearGradient id="ig-t" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stopColor="#FED373"/><stop offset="30%" stopColor="#F15245"/><stop offset="60%" stopColor="#D92E7F"/><stop offset="100%" stopColor="#515ECF"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#ig-t)"/><circle cx="12" cy="12" r="4.5" stroke="white" strokeWidth="1.5" fill="none"/><circle cx="17.5" cy="6.5" r="1.2" fill="white"/></svg> },
+  { id: 'twitter', name: 'X / Twitter', description: 'Track followers', logo: <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#000"/><path d="M17.5 4h2.5l-5.5 6.3L21 20h-5l-3.7-4.8L8 20H5.5l5.8-6.6L4 4h5.1l3.4 4.4L17.5 4zm-.9 14.4h1.4L7.5 5.4H6z" fill="white"/></svg> },
+]
+
+function TrackingSection({ projectId }: { projectId: number }) {
+  const [tracking, setTracking] = useState<Tracking>({
+    users: 0, revenue: 0, visitors: 0, signups: 0,
+    reddit_upvotes: 0, instagram_followers: 0, twitter_followers: 0,
+  })
+  const [editing, setEditing] = useState<string | null>(null)
+  const [tempVal, setTempVal] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [showIntegrations, setShowIntegrations] = useState(false)
+
+  useEffect(() => {
+    supabase.from('tracking').select('*').eq('project_id', projectId).single()
+      .then(({ data }) => { if (data) setTracking(data) })
+  }, [projectId])
+
+  async function saveTracking(updates: Partial<Tracking>) {
+    setSaving(true)
+    const newTracking = { ...tracking, ...updates }
+    setTracking(newTracking)
+    const { data: existing } = await supabase.from('tracking').select('id').eq('project_id', projectId).single()
+    if (existing) {
+      await supabase.from('tracking').update({ ...updates, updated_at: new Date().toISOString() }).eq('project_id', projectId)
+    } else {
+      await supabase.from('tracking').insert([{ project_id: projectId, ...newTracking }])
+    }
+    setSaving(false)
+    setEditing(null)
+  }
+
+  function startEdit(field: string, value: number) {
+    setEditing(field)
+    setTempVal(value.toString())
+  }
+
+  function commitEdit(field: string) {
+    const val = parseFloat(tempVal) || 0
+    saveTracking({ [field]: val })
+  }
+
+  const metrics = [
+    { key: 'visitors', label: 'Visitors', value: tracking.visitors, prefix: '' },
+    { key: 'signups', label: 'Signups', value: tracking.signups, prefix: '' },
+    { key: 'users', label: 'Users', value: tracking.users, prefix: '' },
+    { key: 'revenue', label: 'Revenue', value: tracking.revenue, prefix: '$' },
+  ]
+
+  const social = [
+    { key: 'reddit_upvotes', label: 'Reddit upvotes', value: tracking.reddit_upvotes, logo: integrations.find(i => i.id === 'reddit')!.logo },
+    { key: 'instagram_followers', label: 'Instagram followers', value: tracking.instagram_followers, logo: integrations.find(i => i.id === 'instagram')!.logo },
+    { key: 'twitter_followers', label: 'X followers', value: tracking.twitter_followers, logo: integrations.find(i => i.id === 'twitter')!.logo },
+  ]
+
+  return (
+    <div className="mt-8">
+      <div style={{ borderTop: '0.5px solid var(--m-border)' }} className="mb-8" />
+
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="font-semibold" style={{ color: 'var(--m-text-primary)' }}>Growth tracking</h2>
+          <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>Tap any number to update</p>
+        </div>
+        {saving && <div className="w-3 h-3 border border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--m-accent)' }} />}
+      </div>
+
+      {/* Metrics grid */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        {metrics.map(m => (
+          <div key={m.key} className="rounded-xl p-4 cursor-pointer transition-all hover:opacity-80"
+            style={{ background: 'var(--m-surface-1)', border: `0.5px solid ${editing === m.key ? 'var(--m-accent-border)' : 'var(--m-border)'}` }}
+            onClick={() => editing !== m.key && startEdit(m.key, m.value)}>
+            <div className="text-xs mb-2" style={{ color: 'var(--m-text-muted)' }}>{m.label}</div>
+            {editing === m.key ? (
+              <input
+                autoFocus
+                type="number"
+                value={tempVal}
+                onChange={e => setTempVal(e.target.value)}
+                onBlur={() => commitEdit(m.key)}
+                onKeyDown={e => e.key === 'Enter' && commitEdit(m.key)}
+                className="w-full text-xl font-semibold focus:outline-none"
+                style={{ background: 'transparent', color: 'var(--m-text-primary)', caretColor: 'var(--m-accent)' }}
+              />
+            ) : (
+              <div className="text-xl font-semibold" style={{ color: 'var(--m-text-primary)' }}>
+                {m.prefix}{m.key === 'revenue' ? m.value.toLocaleString('en', { minimumFractionDigits: 0 }) : m.value.toLocaleString()}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Social */}
+      <div className="flex flex-col gap-2 mb-6">
+        {social.map(s => (
+          <div key={s.key} className="rounded-xl p-4 flex items-center gap-3 cursor-pointer transition-all hover:opacity-80"
+            style={{ background: 'var(--m-surface-1)', border: `0.5px solid ${editing === s.key ? 'var(--m-accent-border)' : 'var(--m-border)'}` }}
+            onClick={() => editing !== s.key && startEdit(s.key, s.value)}>
+            <div className="flex-shrink-0">{s.logo}</div>
+            <div className="flex-1">
+              <div className="text-xs" style={{ color: 'var(--m-text-muted)' }}>{s.label}</div>
+            </div>
+            {editing === s.key ? (
+              <input
+                autoFocus
+                type="number"
+                value={tempVal}
+                onChange={e => setTempVal(e.target.value)}
+                onBlur={() => commitEdit(s.key)}
+                onKeyDown={e => e.key === 'Enter' && commitEdit(s.key)}
+                className="w-24 text-right text-sm font-semibold focus:outline-none"
+                style={{ background: 'transparent', color: 'var(--m-text-primary)', caretColor: 'var(--m-accent)' }}
+              />
+            ) : (
+              <div className="text-sm font-semibold" style={{ color: 'var(--m-text-primary)' }}>{s.value.toLocaleString()}</div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Integrations */}
+      <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--m-border)' }}>
+        <button
+          onClick={() => setShowIntegrations(p => !p)}
+          className="w-full flex items-center justify-between px-4 py-3 transition-opacity hover:opacity-80"
+          style={{ background: 'var(--m-surface-1)' }}
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
+              <svg className="w-3 h-3" style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium" style={{ color: 'var(--m-text-primary)' }}>Add integrations</span>
+          </div>
+          <svg className={`w-4 h-4 transition-transform duration-200 ${showIntegrations ? 'rotate-180' : ''}`} style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+
+        {showIntegrations && (
+          <div className="flex flex-col" style={{ borderTop: '0.5px solid var(--m-border)' }}>
+            {integrations.map((intg, i) => (
+              <div key={intg.id} className="flex items-center gap-3 px-4 py-3 transition-opacity hover:opacity-80 cursor-pointer"
+                style={{ borderBottom: i < integrations.length - 1 ? '0.5px solid var(--m-border)' : 'none', background: 'var(--m-surface-1)' }}>
+                <div className="flex-shrink-0">{intg.logo}</div>
+                <div className="flex-1">
+                  <div className="text-sm font-medium" style={{ color: 'var(--m-text-primary)' }}>{intg.name}</div>
+                  <div className="text-xs" style={{ color: 'var(--m-text-muted)' }}>{intg.description}</div>
+                </div>
+                <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>
+                  Soon
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -257,18 +410,11 @@ export default function ProjectPage() {
     async function load() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.user) { window.location.href = '/'; return }
-
-      const { data: projectData } = await supabase
-        .from('projects').select('*').eq('slug', id).eq('user_id', session.user.id).single()
-
+      const { data: projectData } = await supabase.from('projects').select('*').eq('slug', id).eq('user_id', session.user.id).single()
       if (!projectData) { setLoading(false); return }
       setProject(projectData)
       setSelectedStack(projectData.stack ?? [])
-
-      const { data: stepsData } = await supabase
-        .from('steps').select('*').eq('project_id', projectData.id)
-        .order('phase_order', { ascending: true }).order('step_order', { ascending: true })
-
+      const { data: stepsData } = await supabase.from('steps').select('*').eq('project_id', projectData.id).order('phase_order', { ascending: true }).order('step_order', { ascending: true })
       setSteps(stepsData ?? [])
       const initialAnswers: Record<number, string> = {}
       stepsData?.forEach(s => { if (s.answer) initialAnswers[s.id] = s.answer })
@@ -337,20 +483,12 @@ export default function ProjectPage() {
       <div className="max-w-lg mx-auto">
 
         <div className="flex items-center justify-between mb-10">
-          <button onClick={() => window.location.href = '/dashboard'}
-            className="flex items-center gap-1.5 text-sm hover:opacity-70 transition-opacity"
-            style={{ color: 'var(--m-text-secondary)' }}>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
+          <button onClick={() => window.location.href = '/dashboard'} className="flex items-center gap-1.5 text-sm hover:opacity-70 transition-opacity" style={{ color: 'var(--m-text-secondary)' }}>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
             Back
           </button>
-          <button onClick={() => window.location.href = `/projects/${project.slug}/edit`}
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs hover:opacity-70 transition-opacity"
-            style={{ border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}>
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
-            </svg>
+          <button onClick={() => window.location.href = `/projects/${project.slug}/edit`} className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs hover:opacity-70 transition-opacity" style={{ border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" /></svg>
             Edit
           </button>
         </div>
@@ -363,12 +501,7 @@ export default function ProjectPage() {
         <div className="flex gap-1.5 flex-wrap mb-6">
           {[
             { label: project.priority + ' priority', style: { background: 'rgba(163,48,40,0.08)', color: 'var(--m-danger)', border: '0.5px solid var(--m-danger-border)' } },
-            { label: project.status, style: project.status === 'building'
-              ? { background: 'rgba(100,70,160,0.08)', color: '#7A5AB8', border: '0.5px solid rgba(100,70,160,0.2)' }
-              : project.status === 'launched'
-                ? { background: 'var(--m-accent-subtle)', color: 'var(--m-accent)', border: '0.5px solid var(--m-accent-border)' }
-                : { background: 'rgba(60,100,180,0.08)', color: '#4A72B8', border: '0.5px solid rgba(60,100,180,0.2)' }
-            },
+            { label: project.status, style: project.status === 'building' ? { background: 'rgba(100,70,160,0.08)', color: '#7A5AB8', border: '0.5px solid rgba(100,70,160,0.2)' } : project.status === 'launched' ? { background: 'var(--m-accent-subtle)', color: 'var(--m-accent)', border: '0.5px solid var(--m-accent-border)' } : { background: 'rgba(60,100,180,0.08)', color: '#4A72B8', border: '0.5px solid rgba(60,100,180,0.2)' } },
             { label: project.category, style: { background: 'var(--m-surface-2)', color: 'var(--m-text-secondary)', border: '0.5px solid var(--m-border)' } },
           ].map(b => (
             <span key={b.label} className="text-xs px-2 py-0.5 rounded-md capitalize" style={b.style}>{b.label}</span>
@@ -378,13 +511,10 @@ export default function ProjectPage() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Overall progress</span>
-            <span className="text-xs font-medium" style={{ color: progress === 100 ? 'var(--m-accent)' : 'var(--m-text-secondary)' }}>
-              {completedCount}/{totalCount} · {progress}%
-            </span>
+            <span className="text-xs font-medium" style={{ color: progress === 100 ? 'var(--m-accent)' : 'var(--m-text-secondary)' }}>{completedCount}/{totalCount} · {progress}%</span>
           </div>
           <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--m-surface-3)' }}>
-            <div className="h-1.5 rounded-full transition-all duration-700"
-              style={{ width: `${progress}%`, background: 'var(--m-accent)' }} />
+            <div className="h-1.5 rounded-full transition-all duration-700" style={{ width: `${progress}%`, background: 'var(--m-accent)' }} />
           </div>
         </div>
 
@@ -398,32 +528,10 @@ export default function ProjectPage() {
             const unlocked = isPhaseUnlocked(phase)
             const isActive = activePhase === phase
             return (
-              <button
-                key={phase}
-                onClick={() => unlocked && setActivePhase(phase)}
-                disabled={!unlocked}
+              <button key={phase} onClick={() => unlocked && setActivePhase(phase)} disabled={!unlocked}
                 className="px-3 py-1.5 rounded-lg text-xs whitespace-nowrap transition-all flex items-center gap-1.5"
-                style={
-                  !unlocked
-                    ? { background: 'transparent', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)', opacity: 0.4, cursor: 'not-allowed' }
-                    : isActive
-                      ? phaseCompleted
-                        ? { background: 'var(--m-accent)', color: 'white', border: '0.5px solid var(--m-accent)', fontWeight: 500 }
-                        : { background: 'var(--m-text-primary)', color: 'var(--m-bg)', border: '0.5px solid var(--m-text-primary)', fontWeight: 500 }
-                      : phaseCompleted
-                        ? { background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }
-                        : { background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }
-                }
-              >
-                {!unlocked ? (
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                  </svg>
-                ) : phaseCompleted ? (
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                  </svg>
-                ) : null}
+                style={!unlocked ? { background: 'transparent', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)', opacity: 0.4, cursor: 'not-allowed' } : isActive ? phaseCompleted ? { background: 'var(--m-accent)', color: 'white', border: '0.5px solid var(--m-accent)', fontWeight: 500 } : { background: 'var(--m-text-primary)', color: 'var(--m-bg)', border: '0.5px solid var(--m-text-primary)', fontWeight: 500 } : phaseCompleted ? { background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' } : { background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}>
+                {!unlocked ? <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg> : phaseCompleted ? <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> : null}
                 {phase}
               </button>
             )
@@ -432,18 +540,10 @@ export default function ProjectPage() {
 
         {!activePhaseUnlocked ? (
           <div className="rounded-2xl p-8 text-center" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
-            <svg className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--m-border-hover)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-            </svg>
+            <svg className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--m-border-hover)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
             <p className="text-sm font-medium mb-1" style={{ color: 'var(--m-text-secondary)' }}>Phase locked</p>
-            <p className="text-xs mb-4" style={{ color: 'var(--m-text-muted)' }}>
-              Complete all steps in {phases[phases.indexOf(activePhase) - 1]} first.
-            </p>
-            <button
-              onClick={() => setActivePhase(phases[phases.indexOf(activePhase) - 1])}
-              className="text-xs hover:opacity-70 transition-opacity"
-              style={{ color: 'var(--m-accent)' }}
-            >
+            <p className="text-xs mb-4" style={{ color: 'var(--m-text-muted)' }}>Complete all steps in {phases[phases.indexOf(activePhase) - 1]} first.</p>
+            <button onClick={() => setActivePhase(phases[phases.indexOf(activePhase) - 1])} className="text-xs hover:opacity-70 transition-opacity" style={{ color: 'var(--m-accent)' }}>
               ← Go to {phases[phases.indexOf(activePhase) - 1]}
             </button>
           </div>
@@ -453,70 +553,38 @@ export default function ProjectPage() {
               const isStackStep = step.title === 'Lock your stack'
               return (
                 <div key={step.id} className="rounded-xl overflow-hidden transition-all duration-200"
-                  style={{
-                    background: 'var(--m-surface-1)',
-                    border: step.completed
-                      ? '0.5px solid var(--m-accent-border)'
-                      : '0.5px solid var(--m-border)'
-                  }}>
-                  <div className="p-4 flex gap-3 cursor-pointer select-none"
-                    onClick={() => setExpandedStep(prev => prev === step.id ? null : step.id)}>
+                  style={{ background: 'var(--m-surface-1)', border: step.completed ? '0.5px solid var(--m-accent-border)' : '0.5px solid var(--m-border)' }}>
+                  <div className="p-4 flex gap-3 cursor-pointer select-none" onClick={() => setExpandedStep(prev => prev === step.id ? null : step.id)}>
                     <button
                       onClick={(e) => { e.stopPropagation(); if (!isStackStep) toggleStep(step.id, step.completed) }}
                       className="w-5 h-5 rounded-full flex-shrink-0 mt-0.5 flex items-center justify-center transition-all"
-                      style={step.completed
-                        ? { background: 'var(--m-accent)', border: '2px solid var(--m-accent)' }
-                        : isStackStep
-                          ? { border: '2px solid var(--m-border-hover)' }
-                          : { border: '2px solid var(--m-border-hover)' }
-                      }
-                    >
-                      {step.completed && (
-                        <svg className="w-2.5 h-2.5" fill="currentColor" style={{ color: 'white' }} viewBox="0 0 24 24">
-                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                        </svg>
-                      )}
+                      style={step.completed ? { background: 'var(--m-accent)', border: '2px solid var(--m-accent)' } : { border: '2px solid var(--m-border-hover)' }}>
+                      {step.completed && <svg className="w-2.5 h-2.5" fill="currentColor" style={{ color: 'white' }} viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>}
                     </button>
-
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>{index + 1}</span>
-                        <p className="text-sm font-medium" style={{
-                          color: step.completed ? 'var(--m-text-muted)' : 'var(--m-text-primary)',
-                          textDecoration: step.completed ? 'line-through' : 'none'
-                        }}>
-                          {step.title}
-                        </p>
+                        <p className="text-sm font-medium" style={{ color: step.completed ? 'var(--m-text-muted)' : 'var(--m-text-primary)', textDecoration: step.completed ? 'line-through' : 'none' }}>{step.title}</p>
                       </div>
                       <p className="text-xs leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{step.description}</p>
-
                       {isStackStep && selectedStack.length > 0 && expandedStep !== step.id && (
                         <div className="flex flex-wrap gap-1.5 mt-2">
                           {allTools.filter(t => selectedStack.includes(t.id)).map(tool => (
-                            <div key={tool.id} className="flex items-center gap-1 rounded-md px-2 py-0.5"
-                              style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)' }}>
-                              <img src={tool.logo} alt={tool.name} className="w-3 h-3 object-contain"
-                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                            <div key={tool.id} className="flex items-center gap-1 rounded-md px-2 py-0.5" style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)' }}>
+                              <ToolLogo id={tool.id} size={11} />
                               <span className="text-xs" style={{ color: 'var(--m-text-secondary)' }}>{tool.name}</span>
                             </div>
                           ))}
                         </div>
                       )}
-
                       {!isStackStep && step.answer && expandedStep !== step.id && (
                         <div className="mt-2 flex items-start gap-1.5">
-                          <svg className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                          </svg>
+                          <svg className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
                           <p className="text-xs leading-relaxed line-clamp-1" style={{ color: 'var(--m-accent)' }}>{step.answer}</p>
                         </div>
                       )}
                     </div>
-
-                    <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 transition-transform duration-200 ${expandedStep === step.id ? 'rotate-180' : ''}`}
-                      style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
+                    <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 transition-transform duration-200 ${expandedStep === step.id ? 'rotate-180' : ''}`} style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
                   </div>
 
                   {expandedStep === step.id && (
@@ -527,11 +595,7 @@ export default function ProjectPage() {
                           {selectedStack.length > 0 && (
                             <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}>
                               <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>{selectedStack.length} tool{selectedStack.length !== 1 ? 's' : ''} selected</p>
-                              <button
-                                onClick={() => setExpandedStep(null)}
-                                className="rounded-lg px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80 flex items-center gap-1.5"
-                                style={{ background: 'var(--m-accent)', color: 'white' }}
-                              >
+                              <button onClick={() => setExpandedStep(null)} className="rounded-lg px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80 flex items-center gap-1.5" style={{ background: 'var(--m-accent)', color: 'white' }}>
                                 {savingStack && <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />}
                                 Lock stack →
                               </button>
@@ -542,12 +606,7 @@ export default function ProjectPage() {
                         <>
                           <textarea
                             className="w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none transition-colors resize-none"
-                            style={{
-                              background: 'var(--m-surface-2)',
-                              border: '0.5px solid var(--m-border)',
-                              color: 'var(--m-text-primary)',
-                              caretColor: 'var(--m-accent)'
-                            }}
+                            style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-primary)', caretColor: 'var(--m-accent)' }}
                             placeholder="Write your answer here..."
                             rows={3}
                             value={answers[step.id] ?? ''}
@@ -555,15 +614,8 @@ export default function ProjectPage() {
                           />
                           <div className="flex items-center justify-between mt-2">
                             <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Saving will also mark this step as complete</p>
-                            <button
-                              onClick={() => saveAnswer(step.id)}
-                              disabled={saving === step.id}
-                              className="rounded-lg px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80 disabled:opacity-50 flex items-center gap-1.5"
-                              style={{ background: 'var(--m-accent)', color: 'white' }}
-                            >
-                              {saving === step.id ? (
-                                <><div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />Saving</>
-                              ) : 'Save & complete →'}
+                            <button onClick={() => saveAnswer(step.id)} disabled={saving === step.id} className="rounded-lg px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80 disabled:opacity-50 flex items-center gap-1.5" style={{ background: 'var(--m-accent)', color: 'white' }}>
+                              {saving === step.id ? <><div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />Saving</> : 'Save & complete →'}
                             </button>
                           </div>
                         </>
@@ -575,6 +627,12 @@ export default function ProjectPage() {
             })}
           </div>
         )}
+
+        {/* Tracking — only visible when launched */}
+        {project.status === 'launched' && (
+          <TrackingSection projectId={project.id} />
+        )}
+
       </div>
     </main>
   )
