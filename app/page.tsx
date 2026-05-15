@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import AppMockup from './components/AppMockup'
 import ThemeToggle from './components/ThemeToggle'
 import SoundFamiliar from './components/SoundFamiliar'
+import Logo from './components/Logo'
 import { supabase } from './lib/supabase'
 
 export default function Home() {
@@ -94,10 +95,7 @@ export default function Home() {
       {/* Nav */}
       <nav style={{ borderBottom: '0.5px solid var(--m-border)' }}>
         <div className="flex justify-between items-center px-6 py-5 max-w-2xl mx-auto">
-          <div className="flex items-center gap-2">
-            <span style={{ color: 'var(--m-accent)', fontSize: 18 }}>✦</span>
-            <span className="font-semibold tracking-tight" style={{ color: 'var(--m-text-primary)' }}>Miroki</span>
-          </div>
+          <Logo />
           <ThemeToggle />
         </div>
       </nav>
@@ -245,10 +243,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="px-6 py-8 max-w-2xl mx-auto flex justify-between items-center" style={{ borderTop: '0.5px solid var(--m-border)' }}>
-        <div className="flex items-center gap-2">
-          <span style={{ color: 'var(--m-accent)' }}>✦</span>
-          <span className="text-sm" style={{ color: 'var(--m-text-muted)' }}>Miroki</span>
-        </div>
+        <Logo />
         <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Ship calm. Step by step.</p>
       </footer>
 

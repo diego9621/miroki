@@ -1,4 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#000"/>
-  <text x="16" y="22" font-size="18" text-anchor="middle" fill="white" font-family="serif">✦</text>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="7" fill="#161210"/>
+  <rect x="4" y="9" width="7" height="5" rx="2.5" fill="#7A9E6F"/>
+  <rect x="13" y="9" width="7" height="5" rx="2.5" fill="#7A9E6F"/>
+  <rect x="22" y="9" width="7" height="5" rx="2.5" fill="#7A9E6F"/>
+  <rect x="4" y="18" width="7" height="5" rx="2.5" fill="#2A2420"/>
+  <rect x="13" y="18" width="7" height="5" rx="2.5" fill="#2A2420"/>
 </svg>
