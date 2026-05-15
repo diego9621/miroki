@@ -12,31 +12,22 @@ interface Project {
 
 export default function Dashboard() {
   const [email, setEmail] = useState('')
-  const [project, setProject] = useState<Project | null>(null)
+  const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
       const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session?.user) { 
-        window.location.href = '/'
-        return 
-      }
-
+      if (!session?.user) { window.location.href = '/'; return }
       setEmail(session.user.email ?? '')
 
-      const { data: projects } = await supabase
+      const { data } = await supabase
         .from('projects')
         .select('*')
         .eq('user_id', session.user.id)
         .order('created_at', { ascending: false })
-        .limit(1)
 
-      if (projects && projects.length > 0) {
-        setProject(projects[0])
-      }
-
+      setProjects(data ?? [])
       setLoading(false)
     }
     load()
@@ -56,7 +47,7 @@ export default function Dashboard() {
   return (
     <main className="min-h-screen bg-[#0A0A0A] px-6 py-12">
       <div className="max-w-lg mx-auto">
-        
+
         <div className="flex justify-between items-center mb-12">
           <div className="text-white text-xl">✦ Miroki</div>
           <div className="flex items-center gap-4">
@@ -70,40 +61,43 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {project ? (
-          <div className="flex flex-col gap-6">
-            <div>
-              <p className="text-zinc-500 text-sm mb-1">Your project</p>
-              <h1 className="text-2xl font-semibold text-white">{project.name}</h1>
-            </div>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-white font-semibold text-lg">Your projects</h1>
+          <button
+            onClick={() => window.location.href = '/onboarding'}
+            className="bg-white text-black rounded-xl px-3 py-1.5 text-xs font-medium hover:bg-zinc-100 transition-colors"
+          >
+            + New project
+          </button>
+        </div>
 
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col gap-4">
-              <div>
-                <p className="text-zinc-500 text-xs mb-1">Core feature</p>
-                <p className="text-white text-sm">{project.core_feature}</p>
-              </div>
-              <div>
-                <p className="text-zinc-500 text-xs mb-1">Hours per week</p>
-                <p className="text-white text-sm">{project.hours_per_week} hours</p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => window.location.href = '/onboarding'}
-              className="text-zinc-600 text-xs text-center hover:text-zinc-400 transition-colors"
-            >
-              + Start a new project
-            </button>
-          </div>
-        ) : (
-          <div className="text-center">
-            <p className="text-zinc-500 text-sm mb-4">You have no projects yet.</p>
+        {projects.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-zinc-500 text-sm mb-4">No projects yet.</p>
             <button
               onClick={() => window.location.href = '/onboarding'}
               className="bg-white text-black rounded-xl px-4 py-3 text-sm font-medium hover:bg-zinc-100 transition-colors"
             >
               Start your first project →
             </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {projects.map(project => (
+              <div key={project.id} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col gap-3">
+                <h2 className="text-white font-medium">{project.name}</h2>
+                <div className="flex flex-col gap-2">
+                  <div>
+                    <p className="text-zinc-500 text-xs mb-0.5">Core feature</p>
+                    <p className="text-zinc-300 text-sm">{project.core_feature}</p>
+                  </div>
+                  <div>
+                    <p className="text-zinc-500 text-xs mb-0.5">Hours per week</p>
+                    <p className="text-zinc-300 text-sm">{project.hours_per_week} hours</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
