@@ -83,7 +83,7 @@ export default function Home() {
       num: '03',
       title: 'Ship. Then grow.',
       body: 'When all steps are done your project goes live. Track users, revenue and social growth directly from your dashboard.',
-      done: false,
+      done: true,
       extra: null,
     },
   ]
@@ -98,29 +98,12 @@ export default function Home() {
             <span style={{ color: 'var(--m-accent)', fontSize: 18 }}>✦</span>
             <span className="font-semibold tracking-tight" style={{ color: 'var(--m-text-primary)' }}>Miroki</span>
           </div>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <button
-              onClick={handleGitHub}
-              className="text-sm px-4 py-2 rounded-lg transition-opacity hover:opacity-80"
-              style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
-            >
-              Sign in
-            </button>
-          </div>
+          <ThemeToggle />
         </div>
       </nav>
 
       {/* Hero */}
       <section className="px-6 py-20 max-w-2xl mx-auto">
-        <div
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs mb-8"
-          style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }}
-        >
-          <span>✦</span>
-          <span>From idea to shipped, calmly</span>
-        </div>
-
         <h1 className="text-5xl font-semibold tracking-tight leading-tight mb-6" style={{ color: 'var(--m-text-primary)' }}>
           Stop starting.<br />
           <span style={{ color: 'var(--m-accent)' }}>Start shipping.</span>
@@ -179,39 +162,22 @@ export default function Home() {
           <p className="text-xs font-medium uppercase tracking-widest mb-10" style={{ color: 'var(--m-text-muted)' }}>
             How it works
           </p>
-
           <div className="flex flex-col">
             {howSteps.map((step, i) => (
               <div key={i} className="flex gap-6">
                 <div className="flex flex-col items-center" style={{ width: 32, flexShrink: 0 }}>
                   <div
                     className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
-                    style={step.done
-                      ? { background: 'var(--m-accent)', color: 'white' }
-                      : { background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)' }
-                    }
+                    style={{ background: 'var(--m-accent)', color: 'white' }}
                   >
-                    {step.done
-                      ? <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
-                      : step.num
-                    }
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
                   </div>
                   {i < howSteps.length - 1 && (
-                    <div
-                      className="w-0.5 flex-1 my-1"
-                      style={{
-                        background: i < 1 ? 'var(--m-accent)' : 'var(--m-border)',
-                        minHeight: 40,
-                      }}
-                    />
+                    <div className="w-0.5 flex-1 my-1" style={{ background: 'var(--m-accent)', minHeight: 40 }} />
                   )}
                 </div>
-
                 <div className="pb-10 flex-1 min-w-0">
-                  <p
-                    className="text-lg font-semibold mb-2 leading-snug"
-                    style={{ color: step.done ? 'var(--m-text-primary)' : 'var(--m-text-muted)' }}
-                  >
+                  <p className="text-lg font-semibold mb-2 leading-snug" style={{ color: 'var(--m-text-primary)' }}>
                     {step.title}
                   </p>
                   <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{step.body}</p>
@@ -226,10 +192,7 @@ export default function Home() {
       {/* Waitlist */}
       <section style={{ borderTop: '0.5px solid var(--m-border)' }}>
         <div className="px-6 py-20 max-w-2xl mx-auto">
-          <div
-            className="rounded-2xl p-10"
-            style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}
-          >
+          <div className="rounded-2xl p-8 sm:p-10" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
             <p className="text-2xl font-semibold mb-3 leading-snug" style={{ color: 'var(--m-text-primary)' }}>
               <strong style={{ fontWeight: 500 }}>Miroki</strong> is early.<br />Follow the build.
             </p>
@@ -238,10 +201,7 @@ export default function Home() {
             </p>
 
             {waitlistStatus === 'success' ? (
-              <div
-                className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}
-              >
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
                 <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                 </svg>
@@ -249,7 +209,7 @@ export default function Home() {
               </div>
             ) : (
               <form onSubmit={handleWaitlist}>
-                <div className="flex gap-2 mb-3">
+                <div className="flex flex-col sm:flex-row gap-2 mb-3">
                   <input
                     type="email"
                     placeholder="your@email.com"
@@ -284,10 +244,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer
-        className="px-6 py-8 max-w-2xl mx-auto flex justify-between items-center"
-        style={{ borderTop: '0.5px solid var(--m-border)' }}
-      >
+      <footer className="px-6 py-8 max-w-2xl mx-auto flex justify-between items-center" style={{ borderTop: '0.5px solid var(--m-border)' }}>
         <div className="flex items-center gap-2">
           <span style={{ color: 'var(--m-accent)' }}>✦</span>
           <span className="text-sm" style={{ color: 'var(--m-text-muted)' }}>Miroki</span>

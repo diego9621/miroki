@@ -424,30 +424,58 @@ export default function AppMockup() {
   ]
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, padding: '32px 16px', background: 'var(--m-bg)', minHeight: 640 }}>
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      gap: 20, padding: '32px 16px', background: 'var(--m-bg)',
+      minHeight: 640, contain: 'layout style' as any
+    }}>
       <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
         {[0, 1, 2, 3, 4].map(i => (
-          <div key={i} onClick={() => setCur(i)} style={{ width: i === cur ? 20 : 6, height: 6, borderRadius: i === cur ? 3 : '50%', background: i === cur ? 'var(--m-accent)' : 'var(--m-border-hover)', transition: 'all 0.3s', cursor: 'pointer' }} />
+          <div
+            key={i}
+            onClick={() => setCur(i)}
+            style={{
+              width: i === cur ? 20 : 6, height: 6,
+              borderRadius: i === cur ? 3 : '50%',
+              background: i === cur ? 'var(--m-accent)' : 'var(--m-border-hover)',
+              transition: 'all 0.3s', cursor: 'pointer',
+            }}
+          />
         ))}
       </div>
 
-      <div style={{ position: 'relative', width: 280, height: 508, flexShrink: 0 }}>
+      <div style={{
+        position: 'relative', width: 280, height: 508, flexShrink: 0,
+        contain: 'strict' as any
+      }}>
         {screens.map((screen, i) => (
-          <div key={i} style={{
-            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-            opacity: i === cur ? 1 : 0,
-            transition: 'opacity 0.3s ease',
-            pointerEvents: i === cur ? 'auto' : 'none',
-          }}>
+          <div
+            key={i}
+            style={{
+              position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+              opacity: i === cur ? 1 : 0,
+              transition: 'opacity 0.4s ease',
+              pointerEvents: i === cur ? 'auto' : 'none',
+              willChange: 'opacity',
+            }}
+          >
             <PhoneFrame>{screen}</PhoneFrame>
           </div>
         ))}
       </div>
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button onClick={() => setCur(c => (c + 4) % 5)} style={{ fontSize: 11, borderRadius: 8, border: '0.5px solid var(--m-border)', background: 'var(--m-surface-1)', color: 'var(--m-text-secondary)', cursor: 'pointer', padding: '6px 14px', fontFamily: 'inherit' }}>←</button>
-        <div style={{ fontSize: 12, color: 'var(--m-text-secondary)', textAlign: 'center' as const, maxWidth: 240, lineHeight: 1.5 }}>{captions[cur]}</div>
-        <button onClick={() => setCur(c => (c + 1) % 5)} style={{ fontSize: 11, borderRadius: 8, border: '0.5px solid var(--m-border)', background: 'var(--m-surface-1)', color: 'var(--m-text-secondary)', cursor: 'pointer', padding: '6px 14px', fontFamily: 'inherit' }}>→</button>
+        <button
+          onClick={() => setCur(c => (c + 4) % 5)}
+          style={{ fontSize: 11, borderRadius: 8, border: '0.5px solid var(--m-border)', background: 'var(--m-surface-1)', color: 'var(--m-text-secondary)', cursor: 'pointer', padding: '6px 14px', fontFamily: 'inherit' }}
+        >←</button>
+        <div style={{ fontSize: 12, color: 'var(--m-text-secondary)', textAlign: 'center' as const, maxWidth: 240, lineHeight: 1.5 }}>
+          {captions[cur]}
+        </div>
+        <button
+          onClick={() => setCur(c => (c + 1) % 5)}
+          style={{ fontSize: 11, borderRadius: 8, border: '0.5px solid var(--m-border)', background: 'var(--m-surface-1)', color: 'var(--m-text-secondary)', cursor: 'pointer', padding: '6px 14px', fontFamily: 'inherit' }}
+        >→</button>
       </div>
     </div>
   )
