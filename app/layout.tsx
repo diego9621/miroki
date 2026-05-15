@@ -20,8 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={geist.variable} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{
+    <head>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+      <script dangerouslySetInnerHTML={{
           __html: `
             try {
               const t = localStorage.getItem('miroki-theme') || 'dark';
