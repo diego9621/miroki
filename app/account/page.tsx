@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import ThemeToggle from '../components/ThemeToggle'
 
 export default function AccountPage() {
   const [email, setEmail] = useState('')
@@ -23,70 +24,75 @@ export default function AccountPage() {
   }
 
   if (loading) return (
-    <main className="flex min-h-screen items-center justify-center bg-[#0A0A0A]">
-      <div className="w-1.5 h-1.5 bg-zinc-600 rounded-full animate-pulse" />
+    <main className="flex min-h-screen items-center justify-center" style={{ background: 'var(--m-bg)' }}>
+      <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--m-border-hover)' }} />
     </main>
   )
 
   const initials = email.slice(0, 2).toUpperCase()
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A] px-6 py-10">
+    <main className="min-h-screen px-6 py-10" style={{ background: 'var(--m-bg)' }}>
       <div className="max-w-lg mx-auto">
 
-        <div className="flex items-center gap-4 mb-10">
+        <div className="flex items-center justify-between mb-10">
           <button
             onClick={() => window.location.href = '/dashboard'}
-            className="flex items-center gap-1.5 text-zinc-500 hover:text-white transition-colors text-sm"
+            className="flex items-center gap-1.5 text-sm hover:opacity-70 transition-opacity"
+            style={{ color: 'var(--m-text-secondary)' }}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
             Back
           </button>
+          <ThemeToggle />
         </div>
 
         <div className="flex items-center gap-4 mb-10">
-          <div className="w-14 h-14 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-lg font-medium text-zinc-300">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-medium"
+            style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}>
             {initials}
           </div>
           <div>
-            <h1 className="text-white font-semibold">Account</h1>
-            <p className="text-zinc-500 text-sm">{email}</p>
+            <h1 className="font-semibold" style={{ color: 'var(--m-text-primary)' }}>Account</h1>
+            <p className="text-sm" style={{ color: 'var(--m-text-secondary)' }}>{email}</p>
           </div>
         </div>
 
         <div className="flex flex-col gap-3">
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-            <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-4">Profile</h2>
+          <div className="rounded-xl p-5" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
+            <h2 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--m-text-muted)' }}>Profile</h2>
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center">
-                <span className="text-zinc-400 text-sm">Email</span>
-                <span className="text-zinc-300 text-sm">{email}</span>
+                <span className="text-sm" style={{ color: 'var(--m-text-secondary)' }}>Email</span>
+                <span className="text-sm" style={{ color: 'var(--m-text-primary)' }}>{email}</span>
               </div>
-              <div className="flex justify-between items-center border-t border-zinc-800 pt-3">
-                <span className="text-zinc-400 text-sm">Avatar</span>
-                <div className="w-7 h-7 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-medium text-zinc-300">
+              <div className="flex justify-between items-center pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}>
+                <span className="text-sm" style={{ color: 'var(--m-text-secondary)' }}>Avatar</span>
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-medium"
+                  style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}>
                   {initials}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-            <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-4">Preferences</h2>
+          <div className="rounded-xl p-5" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
+            <h2 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--m-text-muted)' }}>Appearance</h2>
             <div className="flex justify-between items-center">
-              <span className="text-zinc-400 text-sm">Theme</span>
-              <span className="text-zinc-600 text-xs border border-zinc-800 rounded-md px-2 py-0.5">Dark — coming soon</span>
+              <span className="text-sm" style={{ color: 'var(--m-text-secondary)' }}>Theme</span>
+              <ThemeToggle />
             </div>
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-            <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-4">Danger zone</h2>
+          <div className="rounded-xl p-5" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
+            <h2 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--m-text-muted)' }}>Danger zone</h2>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-red-400 hover:text-red-300 transition-colors text-sm"
+              className="flex items-center gap-2 text-sm hover:opacity-70 transition-opacity"
+              style={{ color: 'var(--m-danger)' }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
