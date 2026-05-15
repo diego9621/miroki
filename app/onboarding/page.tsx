@@ -10,7 +10,6 @@ const statuses = ['Idea', 'Building', 'Launched']
 export default function Onboarding() {
   const [name, setName] = useState('')
   const [coreFeature, setCoreFeature] = useState('')
-  const [hours, setHours] = useState('')
   const [category, setCategory] = useState('SaaS')
   const [priority, setPriority] = useState('Medium')
   const [status, setStatus] = useState('Idea')
@@ -27,21 +26,22 @@ export default function Onboarding() {
 
   async function handleSubmit() {
     if (!userId) { alert('Not logged in'); return }
-    if (!name || !coreFeature || !hours) { alert('Fill in all fields'); return }
+    if (!name || !coreFeature) { alert('Fill in all fields'); return }
     setSubmitting(true)
+
     const { data, error } = await supabase
       .from('projects')
       .insert([{
         user_id: userId,
         name,
         core_feature: coreFeature,
-        hours_per_week: parseInt(hours),
         category: category.toLowerCase(),
         priority: priority.toLowerCase(),
         status: status.toLowerCase()
       }])
       .select()
       .single()
+
     if (error) { alert(error.message); setSubmitting(false); return }
     await supabase.rpc('create_default_steps', { p_project_id: data.id })
     window.location.href = '/dashboard'
@@ -71,6 +71,7 @@ export default function Onboarding() {
   return (
     <main className="min-h-screen px-6 py-12" style={{ background: 'var(--m-bg)' }}>
       <div className="max-w-sm mx-auto flex flex-col gap-8">
+
         <div>
           <button
             onClick={() => window.location.href = '/dashboard'}
@@ -171,18 +172,6 @@ export default function Onboarding() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--m-text-muted)' }}>Hours per week</label>
-            <input
-              className="rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
-              style={{ ...inputStyle, caretColor: 'var(--m-accent)' }}
-              type="number"
-              placeholder="5"
-              value={hours}
-              onChange={e => setHours(e.target.value)}
-            />
-          </div>
-
         </div>
 
         <button
@@ -193,6 +182,7 @@ export default function Onboarding() {
         >
           {submitting ? 'Creating...' : 'Lock in my track →'}
         </button>
+
       </div>
     </main>
   )
