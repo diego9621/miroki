@@ -54,14 +54,14 @@ export default function Home() {
     {
       num: '01',
       title: 'Answer five questions',
-      body: 'Define your problem, your differentiator, your MVP. Miroki turns your answers into a locked track you cannot deviate from.',
+      body: 'Define your problem, target user, MVP and stack. Once locked, Miroki prevents endless pivots, stack switching and feature creep before launch.',
       done: true,
       extra: null,
     },
     {
       num: '02',
       title: 'Follow the phases',
-      body: 'Six phases. Each one unlocks only when the previous is done. No skipping. No shortcuts. Every step has a concrete task.',
+      body: 'You move through six locked execution phases. No adding features before the MVP ships. No redesign loops. No restarting from scratch halfway through.',
       done: true,
       extra: (
         <div className="flex gap-2 flex-wrap mt-4">
@@ -83,7 +83,7 @@ export default function Home() {
     {
       num: '03',
       title: 'Ship. Then grow.',
-      body: 'When all steps are done your project goes live. Track users, revenue and social growth directly from your dashboard.',
+      body: 'Ship your MVP first. Then unlock iteration, analytics and growth tracking. Miroki keeps you focused on execution before optimization.',
       done: true,
       extra: null,
     },
