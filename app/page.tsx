@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import AppMockup from './components/AppMockup'
 import ThemeToggle from './components/ThemeToggle'
+import SoundFamiliar from './components/SoundFamiliar'
 import { supabase } from './lib/supabase'
 
 export default function Home() {
@@ -168,30 +169,12 @@ export default function Home() {
       </section>
 
       {/* Sound familiar */}
-      <section className="px-6 py-20 max-w-2xl mx-auto">
-        <p className="text-xs font-medium uppercase tracking-widest mb-10" style={{ color: 'var(--m-text-muted)' }}>
-          Sound familiar
-        </p>
-
-        <div className="flex flex-col gap-5 mb-10">
-          {[
-            'You started. You drifted. You stopped.',
-            'You switched stacks. Lost momentum. Started over.',
-            'You got to 80%. Never shipped.',
-          ].map((line, i) => (
-            <p key={i} className="text-lg leading-snug" style={{ color: 'var(--m-text-secondary)' }}>
-              {line}
-            </p>
-          ))}
-        </div>
-
-        <p className="text-base leading-relaxed" style={{ color: 'var(--m-text-secondary)' }}>
-          Your idea deserves to be live. <strong style={{ color: 'var(--m-text-primary)', fontWeight: 500 }}>Miroki</strong> gives it a clear path to follow. Step by step. Phase by phase.
-        </p>
-      </section>
+      <div style={{ borderBottom: '0.5px solid var(--m-border)' }}>
+        <SoundFamiliar />
+      </div>
 
       {/* How it works */}
-      <section style={{ borderTop: '0.5px solid var(--m-border)' }}>
+      <section>
         <div className="px-6 py-20 max-w-2xl mx-auto">
           <p className="text-xs font-medium uppercase tracking-widest mb-10" style={{ color: 'var(--m-text-muted)' }}>
             How it works
@@ -200,7 +183,6 @@ export default function Home() {
           <div className="flex flex-col">
             {howSteps.map((step, i) => (
               <div key={i} className="flex gap-6">
-
                 <div className="flex flex-col items-center" style={{ width: 32, flexShrink: 0 }}>
                   <div
                     className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
@@ -235,7 +217,6 @@ export default function Home() {
                   <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{step.body}</p>
                   {step.extra}
                 </div>
-
               </div>
             ))}
           </div>
