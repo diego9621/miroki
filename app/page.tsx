@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import AppMockup from './components/AppMockup'
+import ThemeToggle from './components/ThemeToggle'
 
 export default function Home() {
   const [loading, setLoading] = useState(false)
@@ -42,13 +43,16 @@ export default function Home() {
             <span style={{ color: 'var(--m-accent)', fontSize: 18 }}>✦</span>
             <span className="font-semibold tracking-tight" style={{ color: 'var(--m-text-primary)' }}>Miroki</span>
           </div>
-          <button
-            onClick={handleGitHub}
-            className="text-sm px-4 py-2 rounded-lg transition-opacity hover:opacity-80"
-            style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
-          >
-            Sign in
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={handleGitHub}
+              className="text-sm px-4 py-2 rounded-lg transition-opacity hover:opacity-80"
+              style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
+            >
+              Sign in
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -171,7 +175,7 @@ export default function Home() {
           Ready to ship?
         </h2>
         <p className="text-sm mb-8" style={{ color: 'var(--m-text-secondary)' }}>
-          Start your track today. It's free.
+          Start your track today. It is free.
         </p>
         <button
           onClick={handleGitHub}
