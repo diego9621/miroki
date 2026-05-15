@@ -115,8 +115,7 @@ export default function Dashboard() {
         ) : (
           <div className="flex flex-col gap-4">
             {projects.map(project => (
-              <div key={project.id} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col gap-4 hover:border-zinc-700 transition-colors">
-                
+              <div key={project.id} onClick={() => window.location.href = `/projects/${project.id}`} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col gap-4 hover:border-zinc-700 transition-colors cursor-pointer">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{categoryIcon[project.category] ?? '✦'}</span>
