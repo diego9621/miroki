@@ -171,8 +171,8 @@ const setupSteps = [
 
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ width: 280, background: '#FFFFFF', borderRadius: 28, border: '1px solid #E8E0D8', overflow: 'hidden', flexShrink: 0 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px 8px', borderBottom: '0.5px solid #F0EAE2' }}>
+    <div style={{ width: 280, height: 508, background: '#FFFFFF', borderRadius: 28, border: '1px solid #E8E0D8', overflow: 'hidden', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px 8px', borderBottom: '0.5px solid #F0EAE2', flexShrink: 0 }}>
         <div style={{ fontSize: 13, fontWeight: 500, color: '#1C1612' }}>
           <span style={{ color: '#5A8A4A' }}>✦</span> Miroki
         </div>
