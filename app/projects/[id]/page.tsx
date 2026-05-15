@@ -22,6 +22,7 @@ interface Step {
   description: string
   step_order: number
   completed: boolean
+  answer: string | null
 }
 
 const priorityColor: Record<string, string> = {
@@ -36,8 +37,6 @@ const statusColor: Record<string, string> = {
   launched: 'bg-green-500/10 text-green-400 border-green-500/20',
 }
 
-const phases = ['Clarify', 'Plan', 'Stack', 'Build', 'Launch', 'Track']
-
 const categoryPaths: Record<string, string> = {
   saas: 'M13 10V3L4 14h7v7l9-11h-7z',
   tool: 'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z',
@@ -45,6 +44,8 @@ const categoryPaths: Record<string, string> = {
   content: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z',
   other: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
 }
+
+const phases = ['Clarify', 'Plan', 'Stack', 'Build', 'Launch', 'Track']
 
 function CategoryIcon({ category }: { category: string }) {
   const path = categoryPaths[category] ?? categoryPaths.other
@@ -62,6 +63,9 @@ export default function ProjectPage() {
   const [project, setProject] = useState<Project | null>(null)
   const [steps, setSteps] = useState<Step[]>([])
   const [activePhase, setActivePhase] = useState('Clarify')
+  const [expandedStep, setExpandedStep] = useState<number | null>(null)
+  const [answers, setAnswers] = useState<Record<number, string>>({})
+  const [saving, setSaving] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -87,6 +91,12 @@ export default function ProjectPage() {
         .order('step_order', { ascending: true })
 
       setSteps(stepsData ?? [])
+
+      const initialAnswers: Record<number, string> = {}
+      stepsData?.forEach(s => {
+        if (s.answer) initialAnswers[s.id] = s.answer
+      })
+      setAnswers(initialAnswers)
       setLoading(false)
     }
     load()
@@ -101,6 +111,24 @@ export default function ProjectPage() {
     setSteps(prev => prev.map(s =>
       s.id === stepId ? { ...s, completed: !completed } : s
     ))
+  }
+
+  async function saveAnswer(stepId: number) {
+    setSaving(stepId)
+    await supabase
+      .from('steps')
+      .update({ answer: answers[stepId] ?? '' })
+      .eq('id', stepId)
+
+    setSteps(prev => prev.map(s =>
+      s.id === stepId ? { ...s, answer: answers[stepId] ?? '' } : s
+    ))
+    setSaving(null)
+    setExpandedStep(null)
+  }
+
+  function handleExpand(stepId: number) {
+    setExpandedStep(prev => prev === stepId ? null : stepId)
   }
 
   const phaseSteps = steps.filter(s => s.phase === activePhase)
@@ -165,11 +193,11 @@ export default function ProjectPage() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
             <span className="text-zinc-500 text-xs">Progress</span>
-            <span className="text-zinc-400 text-xs">{completedCount}/{totalCount} steps</span>
+            <span className="text-emerald-500 text-xs font-medium">{completedCount}/{totalCount} steps · {progress}%</span>
           </div>
-          <div className="h-1 bg-zinc-800 rounded-full">
+          <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
             <div
-              className="h-1 bg-white rounded-full transition-all duration-500"
+              className="h-1.5 bg-emerald-500 rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -185,8 +213,12 @@ export default function ProjectPage() {
                 onClick={() => setActivePhase(phase)}
                 className={`px-3 py-1.5 rounded-lg text-xs whitespace-nowrap transition-colors flex items-center gap-1.5 ${
                   activePhase === phase
-                    ? 'bg-white text-black font-medium'
-                    : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:border-zinc-600'
+                    ? phaseCompleted
+                      ? 'bg-emerald-500 text-white font-medium'
+                      : 'bg-white text-black font-medium'
+                    : phaseCompleted
+                      ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
+                      : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:border-zinc-600'
                 }`}
               >
                 {phaseCompleted && (
@@ -204,30 +236,70 @@ export default function ProjectPage() {
           {phaseSteps.map(step => (
             <div
               key={step.id}
-              onClick={() => toggleStep(step.id, step.completed)}
-              className={`bg-zinc-900 border rounded-xl p-4 flex gap-3 cursor-pointer transition-colors ${
+              className={`bg-zinc-900 border rounded-xl overflow-hidden transition-colors ${
                 step.completed
-                  ? 'border-zinc-700 opacity-60'
+                  ? 'border-emerald-500/20'
                   : 'border-zinc-800 hover:border-zinc-700'
               }`}
             >
-              <div className={`w-5 h-5 rounded-full border flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
-                step.completed
-                  ? 'bg-white border-white'
-                  : 'border-zinc-600'
-              }`}>
-                {step.completed && (
-                  <svg className="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                  </svg>
-                )}
+              <div
+                className="p-4 flex gap-3 cursor-pointer"
+                onClick={() => handleExpand(step.id)}
+              >
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggleStep(step.id, step.completed)
+                  }}
+                  className={`w-5 h-5 rounded-full border flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
+                    step.completed
+                      ? 'bg-emerald-500 border-emerald-500'
+                      : 'border-zinc-600 hover:border-emerald-500'
+                  }`}
+                >
+                  {step.completed && (
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    </svg>
+                  )}
+                </button>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-medium ${step.completed ? 'line-through text-zinc-500' : 'text-white'}`}>
+                    {step.title}
+                  </p>
+                  <p className="text-zinc-500 text-xs leading-relaxed mt-0.5">{step.description}</p>
+                  {step.answer && expandedStep !== step.id && (
+                    <p className="text-emerald-400 text-xs mt-2 truncate">✓ {step.answer}</p>
+                  )}
+                </div>
+                <svg
+                  className={`w-4 h-4 text-zinc-600 flex-shrink-0 mt-0.5 transition-transform ${expandedStep === step.id ? 'rotate-180' : ''}`}
+                  fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
               </div>
-              <div className="flex flex-col gap-1">
-                <p className={`text-sm font-medium ${step.completed ? 'line-through text-zinc-500' : 'text-white'}`}>
-                  {step.title}
-                </p>
-                <p className="text-zinc-500 text-xs leading-relaxed">{step.description}</p>
-              </div>
+
+              {expandedStep === step.id && (
+                <div className="px-4 pb-4 border-t border-zinc-800 pt-3">
+                  <textarea
+                    className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-600 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors resize-none"
+                    placeholder="Write your answer here..."
+                    rows={3}
+                    value={answers[step.id] ?? ''}
+                    onChange={e => setAnswers(prev => ({ ...prev, [step.id]: e.target.value }))}
+                  />
+                  <div className="flex justify-end mt-2">
+                    <button
+                      onClick={() => saveAnswer(step.id)}
+                      disabled={saving === step.id}
+                      className="bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50"
+                    >
+                      {saving === step.id ? 'Saving...' : 'Save'}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
