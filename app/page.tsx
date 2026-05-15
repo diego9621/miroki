@@ -3,21 +3,21 @@
 import { useState, useEffect } from 'react'
 import AppMockup from './components/AppMockup'
 import ThemeToggle from './components/ThemeToggle'
+import { supabase } from './lib/supabase'
 
 export default function Home() {
   const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('')
+  const [waitlistStatus, setWaitlistStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   useEffect(() => {
-    import('./lib/supabase').then(({ supabase }) => {
-      supabase.auth.onAuthStateChange((event, session) => {
-        if (session) window.location.href = '/dashboard'
-      })
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session) window.location.href = '/dashboard'
     })
   }, [])
 
   async function handleGitHub() {
     setLoading(true)
-    const { supabase } = await import('./lib/supabase')
     await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: { redirectTo: 'https://www.miroki.app/auth/callback' }
@@ -26,11 +26,26 @@ export default function Home() {
 
   async function handleGoogle() {
     setLoading(true)
-    const { supabase } = await import('./lib/supabase')
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: 'https://www.miroki.app/auth/callback' }
     })
+  }
+
+  async function handleWaitlist(e: React.FormEvent) {
+    e.preventDefault()
+    if (!email) return
+    setWaitlistStatus('loading')
+    const { error } = await supabase.from('waitlist').insert([{ email }])
+    if (error) {
+      if (error.code === '23505') {
+        setWaitlistStatus('success')
+      } else {
+        setWaitlistStatus('error')
+      }
+    } else {
+      setWaitlistStatus('success')
+    }
   }
 
   return (
@@ -38,7 +53,7 @@ export default function Home() {
 
       {/* Nav */}
       <nav style={{ borderBottom: '0.5px solid var(--m-border)' }}>
-        <div className="flex justify-between items-center px-6 py-5 max-w-4xl mx-auto">
+        <div className="flex justify-between items-center px-6 py-5 max-w-2xl mx-auto">
           <div className="flex items-center gap-2">
             <span style={{ color: 'var(--m-accent)', fontSize: 18 }}>✦</span>
             <span className="font-semibold tracking-tight" style={{ color: 'var(--m-text-primary)' }}>Miroki</span>
@@ -57,13 +72,13 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section className="px-6 py-20 max-w-2xl mx-auto text-center">
+      <section className="px-6 py-20 max-w-2xl mx-auto">
         <div
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs mb-8"
           style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }}
         >
           <span>✦</span>
-          <span>From idea to shipped — calmly</span>
+          <span>From idea to shipped, calmly</span>
         </div>
 
         <h1 className="text-5xl font-semibold tracking-tight leading-tight mb-6" style={{ color: 'var(--m-text-primary)' }}>
@@ -71,14 +86,11 @@ export default function Home() {
           <span style={{ color: 'var(--m-accent)' }}>Start shipping.</span>
         </h1>
 
-        <p className="text-lg leading-relaxed mb-4 max-w-lg mx-auto" style={{ color: 'var(--m-text-secondary)' }}>
-          Miroki breaks your idea into a clear, locked track — phase by phase, step by step.
-        </p>
-        <p className="text-base leading-relaxed mb-12 max-w-md mx-auto" style={{ color: 'var(--m-text-muted)' }}>
-          No more half-finished projects collecting dust.
+        <p className="text-lg leading-relaxed mb-12 max-w-lg" style={{ color: 'var(--m-text-secondary)' }}>
+          Most builders never ship. Not because they lack ideas or skills. Because they drift. Miroki locks you in and walks you through, phase by phase.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <button
             onClick={handleGitHub}
             disabled={loading}
@@ -107,7 +119,7 @@ export default function Home() {
         </div>
 
         <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>
-          No password needed. No credit card. Free to start.
+          No password. No credit card. Free to start.
         </p>
       </section>
 
@@ -116,80 +128,165 @@ export default function Home() {
         <AppMockup />
       </section>
 
-      {/* Features */}
+      {/* Sound familiar */}
       <section className="px-6 py-20 max-w-2xl mx-auto">
-        <div className="flex flex-col gap-12">
-
-          <div className="flex gap-6 items-start">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
-              <svg className="w-5 h-5" style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-              </svg>
+        <p className="text-xs font-medium uppercase tracking-widest mb-10" style={{ color: 'var(--m-text-muted)' }}>
+          Sound familiar
+        </p>
+        <div className="flex flex-col">
+          {[
+            {
+              q: 'You have five projects. None of them shipped.',
+              a: 'Not because you stopped caring. Because there was no clear next step.'
+            },
+            {
+              q: 'You switched stacks halfway through. Again.',
+              a: 'Next.js felt too heavy so you tried SvelteKit. Then Astro. Now it is week three and you have not written a line of product code.'
+            },
+            {
+              q: 'Your project sits at 80% for months.',
+              a: 'The hard part is done but shipping feels scary. So you keep tweaking. Keep polishing. Never publishing.'
+            },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="py-7"
+              style={{ borderBottom: i < 2 ? '0.5px solid var(--m-border)' : 'none' }}
+            >
+              <p className="text-lg font-medium mb-2 leading-snug" style={{ color: 'var(--m-text-primary)' }}>{item.q}</p>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{item.a}</p>
             </div>
-            <div>
-              <h3 className="font-semibold mb-2" style={{ color: 'var(--m-text-primary)' }}>Lock your track</h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-secondary)' }}>
-                Answer five questions. Get a personalized path from idea to live product. Stack is locked. Scope is locked. No more switching halfway through.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-6 items-start">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
-              <svg className="w-5 h-5" style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2" style={{ color: 'var(--m-text-primary)' }}>Phase by phase</h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-secondary)' }}>
-                Six phases — Clarify, Plan, Stack, Build, Launch, Track. Each phase unlocks only when the previous is done. No skipping. No shortcuts.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-6 items-start">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
-              <svg className="w-5 h-5" style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2" style={{ color: 'var(--m-text-primary)' }}>Ship for real</h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-secondary)' }}>
-                Only free tools. Literal step-by-step instructions — from creating your Supabase account to connecting your domain. Your only job is to follow the steps.
-              </p>
-            </div>
-          </div>
-
+          ))}
         </div>
       </section>
 
-      {/* Bottom CTA */}
-      <section className="px-6 pb-24 max-w-2xl mx-auto text-center">
-        <div style={{ borderTop: '0.5px solid var(--m-border)' }} className="mb-16" />
-        <h2 className="text-2xl font-semibold mb-4" style={{ color: 'var(--m-text-primary)' }}>
-          Ready to ship?
-        </h2>
-        <p className="text-sm mb-8" style={{ color: 'var(--m-text-secondary)' }}>
-          Start your track today. It is free.
-        </p>
-        <button
-          onClick={handleGitHub}
-          disabled={loading}
-          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-          style={{ background: 'var(--m-accent)', color: 'white' }}
-        >
-          Start your track →
-        </button>
+      {/* How it works */}
+      <section style={{ borderTop: '0.5px solid var(--m-border)' }}>
+        <div className="px-6 py-20 max-w-2xl mx-auto">
+          <p className="text-xs font-medium uppercase tracking-widest mb-10" style={{ color: 'var(--m-text-muted)' }}>
+            How it works
+          </p>
+          <div className="flex flex-col">
+            {[
+              {
+                num: '01',
+                title: 'Answer five questions',
+                body: 'Define your problem, your differentiator, your MVP. Miroki turns your answers into a locked track you cannot deviate from.',
+                extra: null,
+              },
+              {
+                num: '02',
+                title: 'Follow the phases',
+                body: 'Six phases. Each one unlocks only when the previous is done. No skipping. No shortcuts. Every step has a concrete task.',
+                extra: (
+                  <div className="flex gap-2 flex-wrap mt-4">
+                    {['Clarify', 'Plan', 'Stack', 'Build', 'Launch', 'Track'].map((p, i) => (
+                      <span
+                        key={p}
+                        className="text-xs px-2.5 py-1 rounded-lg"
+                        style={i < 2
+                          ? { background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }
+                          : { background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)' }
+                        }
+                      >
+                        {p}
+                      </span>
+                    ))}
+                  </div>
+                ),
+              },
+              {
+                num: '03',
+                title: 'Ship. Then grow.',
+                body: 'When all steps are done your project goes live. Track users, revenue and social growth directly from your dashboard.',
+                extra: null,
+              },
+            ].map((step, i) => (
+              <div
+                key={i}
+                className="flex gap-6 py-7"
+                style={{ borderBottom: i < 2 ? '0.5px solid var(--m-border)' : 'none' }}
+              >
+                <span
+                  className="text-xs font-medium flex-shrink-0 mt-1 px-2 py-0.5 rounded-md h-fit"
+                  style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }}
+                >
+                  {step.num}
+                </span>
+                <div>
+                  <p className="text-lg font-medium mb-2" style={{ color: 'var(--m-text-primary)' }}>{step.title}</p>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{step.body}</p>
+                  {step.extra}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Waitlist */}
+      <section style={{ borderTop: '0.5px solid var(--m-border)' }}>
+        <div className="px-6 py-20 max-w-2xl mx-auto">
+          <div
+            className="rounded-2xl p-10"
+            style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}
+          >
+            <p className="text-2xl font-semibold mb-3 leading-snug" style={{ color: 'var(--m-text-primary)' }}>
+              Miroki is early.<br />Follow the build.
+            </p>
+            <p className="text-sm leading-relaxed mb-8" style={{ color: 'var(--m-text-muted)' }}>
+              Get updates on new features, improvements and the story behind building Miroki in public.
+            </p>
+
+            {waitlistStatus === 'success' ? (
+              <div
+                className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}
+              >
+                <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+                <p className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>You are on the list. We will be in touch.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleWaitlist}>
+                <div className="flex gap-2 mb-3">
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                    className="flex-1 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
+                    style={{
+                      background: 'var(--m-surface-2)',
+                      border: '0.5px solid var(--m-border)',
+                      color: 'var(--m-text-primary)',
+                      caretColor: 'var(--m-accent)',
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={waitlistStatus === 'loading'}
+                    className="rounded-xl px-5 py-3 text-sm font-medium transition-opacity hover:opacity-80 disabled:opacity-50 whitespace-nowrap"
+                    style={{ background: 'var(--m-accent)', color: 'white' }}
+                  >
+                    {waitlistStatus === 'loading' ? 'Saving...' : 'Stay updated →'}
+                  </button>
+                </div>
+                {waitlistStatus === 'error' && (
+                  <p className="text-xs" style={{ color: 'var(--m-danger)' }}>Something went wrong. Try again.</p>
+                )}
+                <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>No spam. Unsubscribe anytime.</p>
+              </form>
+            )}
+          </div>
+        </div>
       </section>
 
       {/* Footer */}
       <footer
-        className="px-6 py-8 max-w-4xl mx-auto flex justify-between items-center"
+        className="px-6 py-8 max-w-2xl mx-auto flex justify-between items-center"
         style={{ borderTop: '0.5px solid var(--m-border)' }}
       >
         <div className="flex items-center gap-2">
