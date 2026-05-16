@@ -95,12 +95,14 @@ export default function Pricing() {
                   <span className="text-sm" style={{ color: 'var(--m-text-muted)' }}>/month</span>
                 </div>
               </div>
-              <span
-                className="text-xs px-2.5 py-1 rounded-lg"
-                style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)' }}
-              >
-                Current plan
-              </span>
+              {isLoggedIn && (
+                <span
+                  className="text-xs px-2.5 py-1 rounded-lg"
+                  style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)' }}
+                >
+                  Current plan
+                </span>
+              )}
             </div>
 
             <div className="flex flex-col gap-2.5 mb-8">
@@ -117,9 +119,9 @@ export default function Pricing() {
             <button
               onClick={() => window.location.href = isLoggedIn ? '/dashboard' : '/'}
               className="w-full rounded-xl py-3 text-sm font-medium transition-opacity hover:opacity-80"
-              style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
+              style={{ background: 'var(--m-accent)', color: 'white' }}
             >
-              {isLoggedIn ? 'Go to dashboard' : 'Get started free'}
+              {isLoggedIn ? 'Go to dashboard' : 'Get started free →'}
             </button>
           </div>
 
