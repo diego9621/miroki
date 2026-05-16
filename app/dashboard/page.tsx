@@ -170,7 +170,6 @@ export default function Dashboard() {
 
   const isPro = plan === 'pro'
   const atLimit = !isPro && projects.length >= FREE_LIMIT
-  const nearLimit = !isPro && projects.length === FREE_LIMIT - 1
 
   const totalSteps = projects.reduce((acc, p) => acc + (p.steps?.length ?? 0), 0)
   const completedSteps = projects.reduce((acc, p) => acc + (p.steps?.filter(s => s.completed).length ?? 0), 0)
@@ -188,52 +187,6 @@ export default function Dashboard() {
             <AvatarMenu email={email} onLogout={handleLogout} />
           </div>
         </div>
-
-        {/* Plan limit banners */}
-        {atLimit && (
-          <div
-            className="rounded-xl px-4 py-3.5 mb-6 flex items-center justify-between gap-4"
-            style={{ background: 'rgba(163,48,40,0.06)', border: '0.5px solid rgba(163,48,40,0.2)' }}
-          >
-            <div className="flex items-center gap-3">
-              <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--m-danger)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-              </svg>
-              <div>
-                <p className="text-sm font-medium" style={{ color: 'var(--m-danger)' }}>Free plan limit reached</p>
-                <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>You are using {projects.length} of {FREE_LIMIT} projects. Upgrade for unlimited.</p>
-              </div>
-            </div>
-            <button
-              className="text-xs font-medium px-3 py-1.5 rounded-lg flex-shrink-0 transition-opacity hover:opacity-80"
-              style={{ background: 'var(--m-danger)', color: 'white' }}
-            >
-              Upgrade
-            </button>
-          </div>
-        )}
-
-        {nearLimit && (
-          <div
-            className="rounded-xl px-4 py-3.5 mb-6 flex items-center justify-between gap-4"
-            style={{ background: 'rgba(180,140,60,0.06)', border: '0.5px solid rgba(180,140,60,0.2)' }}
-          >
-            <div className="flex items-center gap-3">
-              <svg className="w-4 h-4 flex-shrink-0" style={{ color: '#A07830' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-              </svg>
-              <p className="text-sm" style={{ color: '#A07830' }}>
-                One project slot left on your free plan.
-              </p>
-            </div>
-            <button
-              className="text-xs font-medium px-3 py-1.5 rounded-lg flex-shrink-0 transition-opacity hover:opacity-80"
-              style={{ background: '#A07830', color: 'white' }}
-            >
-              Upgrade
-            </button>
-          </div>
-        )}
 
         {projects.length > 0 && (
           <div className="grid grid-cols-3 gap-2 mb-8">
@@ -253,15 +206,7 @@ export default function Dashboard() {
 
         <div className="flex justify-between items-center mb-5">
           <h1 className="font-semibold" style={{ color: 'var(--m-text-primary)' }}>Projects</h1>
-          {atLimit ? (
-            <button
-              disabled
-              className="rounded-lg px-3 py-1.5 text-xs font-medium cursor-not-allowed opacity-40"
-              style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}
-            >
-              + New
-            </button>
-          ) : (
+          {!atLimit && (
             <button
               onClick={() => window.location.href = '/onboarding'}
               className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors hover:opacity-80"
@@ -377,13 +322,72 @@ export default function Dashboard() {
                 </div>
               )
             })}
-          </div>
-        )}
 
-        {!isPro && (
-          <p className="text-xs text-center mt-8" style={{ color: 'var(--m-text-muted)' }}>
-            Free plan · {projects.length}/{FREE_LIMIT} projects used
-          </p>
+            {/* Upgrade card — alleen zichtbaar als free user op limiet zit */}
+            {atLimit && (
+              <div
+                className="rounded-xl p-5 flex flex-col gap-4 mt-1"
+                style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-accent-border)' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}
+                  >
+                    <svg className="w-4 h-4" style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium" style={{ color: 'var(--m-text-primary)' }}>Unlock unlimited projects</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>You have used all {FREE_LIMIT} free project slots.</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  {[
+                    'Unlimited projects',
+                    'All phases and steps',
+                    'Growth tracking',
+                    'Early access to new features',
+                  ].map(f => (
+                    <div key={f} className="flex items-center gap-2">
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                      </svg>
+                      <span className="text-xs" style={{ color: 'var(--m-text-secondary)' }}>{f}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => window.location.href = '/pricing'}
+                  className="w-full rounded-xl py-2.5 text-sm font-medium transition-opacity hover:opacity-80"
+                  style={{ background: 'var(--m-accent)', color: 'white' }}
+                >
+                  Upgrade to Pro →
+                </button>
+
+                <p className="text-xs text-center" style={{ color: 'var(--m-text-muted)' }}>
+                  Free plan · {FREE_LIMIT}/{FREE_LIMIT} projects used
+                </p>
+              </div>
+            )}
+
+            {/* New project card — alleen zichtbaar als er nog ruimte is */}
+            {!atLimit && (
+              <button
+                onClick={() => window.location.href = '/onboarding'}
+                className="rounded-xl p-5 flex items-center justify-center gap-2 transition-opacity hover:opacity-70"
+                style={{ border: '0.5px dashed var(--m-border)', background: 'transparent' }}
+              >
+                <svg className="w-4 h-4" style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <span className="text-sm" style={{ color: 'var(--m-text-muted)' }}>New project</span>
+              </button>
+            )}
+          </div>
         )}
 
       </div>
