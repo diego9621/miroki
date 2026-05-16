@@ -84,7 +84,7 @@ export default function Home() {
       num: '03',
       title: 'Ship. Then grow.',
       body: 'Ship your MVP first. Then unlock iteration, analytics and growth tracking. Miroki keeps you focused on execution before optimization.',
-      done: true,
+      done: false,
       extra: null,
     },
   ]
@@ -104,11 +104,11 @@ export default function Home() {
       <section className="px-6 py-20 max-w-2xl mx-auto">
         <h1 className="text-5xl font-semibold tracking-tight leading-tight mb-6" style={{ color: 'var(--m-text-primary)' }}>
           Stop Rebuilding.<br />
-          <span style={{ color: 'var(--m-accent)' }}>Start shipping.</span>
+          <span style={{ color: 'var(--m-accent)' }}>Start Finishing.</span>
         </h1>
 
         <p className="text-lg leading-relaxed mb-12 max-w-lg" style={{ color: 'var(--m-text-secondary)' }}>
-          Most builders never ship. Not because they lack ideas or skills. Because they drift. <strong style={{ color: 'var(--m-text-primary)', fontWeight: 500 }}>Miroki</strong> locks you in and walks you through, phase by phase.
+          AI lets you build anything. <strong style={{ color: 'var(--m-text-primary)', fontWeight: 500 }}>Miroki</strong> helps you finish something.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -140,6 +140,7 @@ export default function Home() {
         </div>
 
         <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>
+          No password. No credit card. Free to start.
         </p>
       </section>
 
@@ -165,16 +166,25 @@ export default function Home() {
                 <div className="flex flex-col items-center" style={{ width: 32, flexShrink: 0 }}>
                   <div
                     className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
-                    style={{ background: 'var(--m-accent)', color: 'white' }}
+                    style={step.done
+                      ? { background: 'var(--m-accent)', color: 'white' }
+                      : { background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)' }
+                    }
                   >
-                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                    {step.done
+                      ? <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                      : step.num
+                    }
                   </div>
                   {i < howSteps.length - 1 && (
-                    <div className="w-0.5 flex-1 my-1" style={{ background: 'var(--m-accent)', minHeight: 40 }} />
+                    <div
+                      className="w-0.5 flex-1 my-1"
+                      style={{ background: step.done ? 'var(--m-accent)' : 'var(--m-border)', minHeight: 40 }}
+                    />
                   )}
                 </div>
                 <div className="pb-10 flex-1 min-w-0">
-                  <p className="text-lg font-semibold mb-2 leading-snug" style={{ color: 'var(--m-text-primary)' }}>
+                  <p className="text-lg font-semibold mb-2 leading-snug" style={{ color: step.done ? 'var(--m-text-primary)' : 'var(--m-text-muted)' }}>
                     {step.title}
                   </p>
                   <p className="text-sm leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{step.body}</p>
