@@ -5,7 +5,6 @@ import { supabase } from '../lib/supabase'
 import ThemeToggle from '../components/ThemeToggle'
 import Logo from '../components/Logo'
 
-
 interface Step {
   id: number
   completed: boolean
@@ -116,9 +115,12 @@ function AvatarMenu({ email, onLogout }: { email: string, onLogout: () => void }
   )
 }
 
+const FREE_LIMIT = 3
+
 export default function Dashboard() {
   const [email, setEmail] = useState('')
   const [projects, setProjects] = useState<Project[]>([])
+  const [plan, setPlan] = useState<string>('free')
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<number | null>(null)
 
@@ -127,12 +129,22 @@ export default function Dashboard() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.user) { window.location.href = '/'; return }
       setEmail(session.user.email ?? '')
-      const { data } = await supabase
-        .from('projects')
-        .select('*, steps(id, completed)')
-        .eq('user_id', session.user.id)
-        .order('created_at', { ascending: false })
-      setProjects(data ?? [])
+
+      const [{ data: projectsData }, { data: profile }] = await Promise.all([
+        supabase
+          .from('projects')
+          .select('*, steps(id, completed)')
+          .eq('user_id', session.user.id)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('profiles')
+          .select('plan')
+          .eq('id', session.user.id)
+          .single()
+      ])
+
+      setProjects(projectsData ?? [])
+      setPlan(profile?.plan ?? 'free')
       setLoading(false)
     }
     load()
@@ -156,6 +168,10 @@ export default function Dashboard() {
     </main>
   )
 
+  const isPro = plan === 'pro'
+  const atLimit = !isPro && projects.length >= FREE_LIMIT
+  const nearLimit = !isPro && projects.length === FREE_LIMIT - 1
+
   const totalSteps = projects.reduce((acc, p) => acc + (p.steps?.length ?? 0), 0)
   const completedSteps = projects.reduce((acc, p) => acc + (p.steps?.filter(s => s.completed).length ?? 0), 0)
   const shippedProjects = projects.filter(p => p.status === 'launched').length
@@ -172,6 +188,52 @@ export default function Dashboard() {
             <AvatarMenu email={email} onLogout={handleLogout} />
           </div>
         </div>
+
+        {/* Plan limit banners */}
+        {atLimit && (
+          <div
+            className="rounded-xl px-4 py-3.5 mb-6 flex items-center justify-between gap-4"
+            style={{ background: 'rgba(163,48,40,0.06)', border: '0.5px solid rgba(163,48,40,0.2)' }}
+          >
+            <div className="flex items-center gap-3">
+              <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--m-danger)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+              <div>
+                <p className="text-sm font-medium" style={{ color: 'var(--m-danger)' }}>Free plan limit reached</p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>You are using {projects.length} of {FREE_LIMIT} projects. Upgrade for unlimited.</p>
+              </div>
+            </div>
+            <button
+              className="text-xs font-medium px-3 py-1.5 rounded-lg flex-shrink-0 transition-opacity hover:opacity-80"
+              style={{ background: 'var(--m-danger)', color: 'white' }}
+            >
+              Upgrade
+            </button>
+          </div>
+        )}
+
+        {nearLimit && (
+          <div
+            className="rounded-xl px-4 py-3.5 mb-6 flex items-center justify-between gap-4"
+            style={{ background: 'rgba(180,140,60,0.06)', border: '0.5px solid rgba(180,140,60,0.2)' }}
+          >
+            <div className="flex items-center gap-3">
+              <svg className="w-4 h-4 flex-shrink-0" style={{ color: '#A07830' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+              <p className="text-sm" style={{ color: '#A07830' }}>
+                One project slot left on your free plan.
+              </p>
+            </div>
+            <button
+              className="text-xs font-medium px-3 py-1.5 rounded-lg flex-shrink-0 transition-opacity hover:opacity-80"
+              style={{ background: '#A07830', color: 'white' }}
+            >
+              Upgrade
+            </button>
+          </div>
+        )}
 
         {projects.length > 0 && (
           <div className="grid grid-cols-3 gap-2 mb-8">
@@ -191,13 +253,23 @@ export default function Dashboard() {
 
         <div className="flex justify-between items-center mb-5">
           <h1 className="font-semibold" style={{ color: 'var(--m-text-primary)' }}>Projects</h1>
-          <button
-            onClick={() => window.location.href = '/onboarding'}
-            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
-            style={{ background: 'var(--m-accent)', color: 'white' }}
-          >
-            + New
-          </button>
+          {atLimit ? (
+            <button
+              disabled
+              className="rounded-lg px-3 py-1.5 text-xs font-medium cursor-not-allowed opacity-40"
+              style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}
+            >
+              + New
+            </button>
+          ) : (
+            <button
+              onClick={() => window.location.href = '/onboarding'}
+              className="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors hover:opacity-80"
+              style={{ background: 'var(--m-accent)', color: 'white' }}
+            >
+              + New
+            </button>
+          )}
         </div>
 
         {projects.length === 0 ? (
@@ -307,6 +379,13 @@ export default function Dashboard() {
             })}
           </div>
         )}
+
+        {!isPro && (
+          <p className="text-xs text-center mt-8" style={{ color: 'var(--m-text-muted)' }}>
+            Free plan · {projects.length}/{FREE_LIMIT} projects used
+          </p>
+        )}
+
       </div>
     </main>
   )
