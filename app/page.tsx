@@ -253,8 +253,18 @@ export default function Home() {
       {/* Footer */}
       <footer className="px-6 py-8 max-w-2xl mx-auto flex justify-between items-center" style={{ borderTop: '0.5px solid var(--m-border)' }}>
         <Logo />
-        <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Ship calm. Step by step.</p>
+        <div className="flex items-center gap-5">
+          <button
+            onClick={() => window.location.href = '/pricing'}
+            className="text-xs transition-opacity hover:opacity-70"
+            style={{ color: 'var(--m-text-muted)' }}
+          >
+            Pricing
+          </button>
+          <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Ship calm. Step by step.</p>
+        </div>
       </footer>
+
 
     </main>
   )
