@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import ThemeToggle from '../components/ThemeToggle'
+import Logo from '../components/Logo'
 
 export default function AccountPage() {
   const [email, setEmail] = useState('')
+  const [plan, setPlan] = useState<string>('free')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -13,6 +15,14 @@ export default function AccountPage() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.user) { window.location.href = '/'; return }
       setEmail(session.user.email ?? '')
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan')
+        .eq('id', session.user.id)
+        .single()
+
+      setPlan(profile?.plan ?? 'free')
       setLoading(false)
     }
     load()
@@ -30,6 +40,7 @@ export default function AccountPage() {
   )
 
   const initials = email.slice(0, 2).toUpperCase()
+  const isPro = plan === 'pro'
 
   return (
     <main className="min-h-screen px-6 py-10" style={{ background: 'var(--m-bg)' }}>
@@ -62,6 +73,7 @@ export default function AccountPage() {
 
         <div className="flex flex-col gap-3">
 
+          {/* Profile */}
           <div className="rounded-xl p-5" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
             <h2 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--m-text-muted)' }}>Profile</h2>
             <div className="flex flex-col gap-3">
@@ -79,6 +91,96 @@ export default function AccountPage() {
             </div>
           </div>
 
+          {/* Plan */}
+          <div
+            className="rounded-xl p-5"
+            style={{
+              background: 'var(--m-surface-1)',
+              border: isPro ? '0.5px solid var(--m-accent-border)' : '0.5px solid var(--m-border)'
+            }}
+          >
+            <h2 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--m-text-muted)' }}>Plan</h2>
+
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5">
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                  style={{
+                    background: isPro ? 'var(--m-accent-subtle)' : 'var(--m-surface-2)',
+                    border: isPro ? '0.5px solid var(--m-accent-border)' : '0.5px solid var(--m-border)',
+                  }}
+                >
+                  {isPro ? (
+                    <svg className="w-4 h-4" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" style={{ color: 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-medium" style={{ color: 'var(--m-text-primary)' }}>
+                    {isPro ? 'Pro' : 'Free'}
+                  </p>
+                  <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>
+                    {isPro ? 'Unlimited projects' : '3 projects included'}
+                  </p>
+                </div>
+              </div>
+              <span
+                className="text-xs px-2.5 py-1 rounded-lg"
+                style={isPro
+                  ? { background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)', color: 'var(--m-accent)' }
+                  : { background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-muted)' }
+                }
+              >
+                {isPro ? 'Active' : 'Free plan'}
+              </span>
+            </div>
+
+            {!isPro && (
+              <>
+                <div style={{ borderTop: '0.5px solid var(--m-border)' }} className="pt-4 mb-4">
+                  <div className="flex flex-col gap-2">
+                    {[
+                      'Unlimited projects',
+                      'Early access to new features',
+                      'Priority support',
+                    ].map(f => (
+                      <div key={f} className="flex items-center gap-2">
+                        <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                        </svg>
+                        <span className="text-xs" style={{ color: 'var(--m-text-secondary)' }}>{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <button
+                  onClick={() => window.location.href = '/pricing'}
+                  className="w-full rounded-xl py-2.5 text-sm font-medium transition-opacity hover:opacity-80"
+                  style={{ background: 'var(--m-accent)', color: 'white' }}
+                >
+                  Upgrade to Pro — €9/month →
+                </button>
+              </>
+            )}
+
+            {isPro && (
+              <div style={{ borderTop: '0.5px solid var(--m-border)' }} className="pt-4">
+                <button
+                  className="text-xs hover:opacity-70 transition-opacity"
+                  style={{ color: 'var(--m-text-muted)' }}
+                >
+                  Manage subscription →
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Appearance */}
           <div className="rounded-xl p-5" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
             <h2 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--m-text-muted)' }}>Appearance</h2>
             <div className="flex justify-between items-center">
@@ -87,6 +189,7 @@ export default function AccountPage() {
             </div>
           </div>
 
+          {/* Danger zone */}
           <div className="rounded-xl p-5" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
             <h2 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--m-text-muted)' }}>Danger zone</h2>
             <button
