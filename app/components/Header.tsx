@@ -100,13 +100,24 @@ export default function Header({ maxWidth = 'max-w-2xl' }: HeaderProps) {
 
             <div className="my-1" style={{ borderTop: '0.5px solid var(--m-border)' }} />
 
+            {isLoggedIn && (
             <Link
-              href={isLoggedIn ? '/dashboard' : '/'}
-              onClick={() => setOpen(false)}
-              className="block rounded-xl px-4 py-3 text-sm font-medium transition-opacity hover:opacity-80"
-              style={{ color: 'var(--m-accent)' }}
+                href="/account"
+                onClick={() => setOpen(false)}
+                className="block rounded-xl px-4 py-3 text-sm font-medium transition-opacity hover:opacity-80"
+                style={{ color: 'var(--m-text-primary)' }}
             >
-              {isLoggedIn ? 'Dashboard' : 'Sign in'}
+                Account
+            </Link>
+            )}
+
+            <Link
+            href={isLoggedIn ? '/dashboard' : '/'}
+            onClick={() => setOpen(false)}
+            className="block rounded-xl px-4 py-3 text-sm font-medium transition-opacity hover:opacity-80"
+            style={{ color: 'var(--m-accent)' }}
+            >
+            {isLoggedIn ? 'Dashboard' : 'Sign in'}
             </Link>
           </div>
         )}
