@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import Logo from '../components/Logo'
-import ThemeToggle from '../components/ThemeToggle'
+import Header from '../components/Header'
 import FaqItem from '../components/FaqItem'
 
 export default function Pricing() {
@@ -52,52 +52,34 @@ export default function Pricing() {
     'Priority support',
   ]
 
+  const questions = [
+    {
+      q: 'Why not just use Notion or Trello?',
+      a: 'Miroki is not built for collecting ideas. It is built for finishing them. The product uses locked execution phases to prevent endless rebuilding, feature creep and stack switching.',
+    },
+    {
+      q: 'Why does Miroki lock phases?',
+      a: 'Because most builders do not fail from lack of ideas. They fail from constantly changing direction. Miroki keeps your focus on the next required step instead of another restart.',
+    },
+    {
+      q: 'Can I change my stack later?',
+      a: 'Yes, but Miroki is designed to make that decision intentional. The goal is to stop casual stack switching before your MVP is finished.',
+    },
+    {
+      q: 'What happens when I hit the free limit?',
+      a: 'Your existing projects stay accessible. You just cannot create new projects until you upgrade.',
+    },
+    {
+      q: 'Can I cancel anytime?',
+      a: 'Yes. You keep Pro access until the end of your billing period.',
+    },
+  ]
+
   return (
     <main className="min-h-screen" style={{ background: 'var(--m-bg)' }}>
-
-      <nav style={{ borderBottom: '0.5px solid var(--m-border)' }}>
-        <div className="flex justify-between items-center px-6 py-5 max-w-2xl mx-auto">
-          <button
-            onClick={() => window.location.href = '/'}
-            className="transition-opacity hover:opacity-80"
-          >
-            <Logo />
-          </button>
-
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-
-            {isLoggedIn ? (
-              <button
-                onClick={() => window.location.href = '/dashboard'}
-                className="text-sm px-4 py-2 rounded-lg transition-opacity hover:opacity-80"
-                style={{
-                  background: 'var(--m-surface-1)',
-                  border: '0.5px solid var(--m-border)',
-                  color: 'var(--m-text-secondary)'
-                }}
-              >
-                Dashboard
-              </button>
-            ) : (
-              <button
-                onClick={() => window.location.href = '/'}
-                className="text-sm px-4 py-2 rounded-lg transition-opacity hover:opacity-80"
-                style={{
-                  background: 'var(--m-surface-1)',
-                  border: '0.5px solid var(--m-border)',
-                  color: 'var(--m-text-secondary)'
-                }}
-              >
-                Sign in
-              </button>
-            )}
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       <section className="px-6 py-20 max-w-2xl mx-auto">
-
         <div className="mb-14">
           <p
             className="text-xs font-medium uppercase tracking-widest mb-4"
@@ -117,17 +99,16 @@ export default function Pricing() {
             className="text-lg leading-relaxed"
             style={{ color: 'var(--m-text-secondary)' }}
           >
-            Start free. Upgrade when you are ready to ship more.
+            Start free. Upgrade when you are ready to finish more.
           </p>
         </div>
 
         <div className="flex flex-col gap-4">
-
           <div
             className="rounded-2xl p-8"
             style={{
               background: 'var(--m-surface-1)',
-              border: '0.5px solid var(--m-border)'
+              border: '0.5px solid var(--m-border)',
             }}
           >
             <div className="flex items-start justify-between mb-6">
@@ -162,7 +143,7 @@ export default function Pricing() {
                   style={{
                     background: 'var(--m-surface-2)',
                     border: '0.5px solid var(--m-border)',
-                    color: 'var(--m-text-muted)'
+                    color: 'var(--m-text-muted)',
                   }}
                 >
                   Current plan
@@ -171,22 +152,22 @@ export default function Pricing() {
             </div>
 
             <div className="flex flex-col gap-2.5 mb-8">
-              {free.map(f => (
-                <div key={f} className="flex items-center gap-2.5">
+              {free.map(feature => (
+                <div key={feature} className="flex items-center gap-2.5">
                   <svg
                     className="w-4 h-4 flex-shrink-0"
                     style={{ color: 'var(--m-text-muted)' }}
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
                   </svg>
 
                   <span
                     className="text-sm"
                     style={{ color: 'var(--m-text-secondary)' }}
                   >
-                    {f}
+                    {feature}
                   </span>
                 </div>
               ))}
@@ -197,7 +178,7 @@ export default function Pricing() {
               className="w-full rounded-xl py-3 text-sm font-medium transition-opacity hover:opacity-80"
               style={{
                 background: 'var(--m-accent)',
-                color: 'white'
+                color: 'white',
               }}
             >
               {isLoggedIn ? 'Go to dashboard' : 'Get started free →'}
@@ -208,7 +189,7 @@ export default function Pricing() {
             className="rounded-2xl p-8"
             style={{
               background: 'var(--m-surface-1)',
-              border: '0.5px solid var(--m-accent-border)'
+              border: '0.5px solid var(--m-accent-border)',
             }}
           >
             <div className="flex items-start justify-between mb-6">
@@ -242,32 +223,30 @@ export default function Pricing() {
                 style={{
                   background: 'var(--m-accent-subtle)',
                   border: '0.5px solid var(--m-accent-border)',
-                  color: 'var(--m-accent)'
+                  color: 'var(--m-accent)',
                 }}
               >
-                {isLoggedIn && plan === 'pro'
-                  ? 'Current plan'
-                  : 'Most popular'}
+                {isLoggedIn && plan === 'pro' ? 'Current plan' : 'Most popular'}
               </span>
             </div>
 
             <div className="flex flex-col gap-2.5 mb-8">
-              {pro.map(f => (
-                <div key={f} className="flex items-center gap-2.5">
+              {pro.map(feature => (
+                <div key={feature} className="flex items-center gap-2.5">
                   <svg
                     className="w-4 h-4 flex-shrink-0"
                     style={{ color: 'var(--m-accent)' }}
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
                   </svg>
 
                   <span
                     className="text-sm"
                     style={{ color: 'var(--m-text-secondary)' }}
                   >
-                    {f}
+                    {feature}
                   </span>
                 </div>
               ))}
@@ -286,7 +265,7 @@ export default function Pricing() {
               className="w-full rounded-xl py-3 text-sm font-medium transition-opacity hover:opacity-80"
               style={{
                 background: 'var(--m-accent)',
-                color: 'white'
+                color: 'white',
               }}
             >
               {plan === 'pro'
@@ -296,45 +275,37 @@ export default function Pricing() {
                   : 'Start free, then upgrade →'}
             </button>
           </div>
-
         </div>
 
         <div className="mt-16">
-          <p
-            className="text-xs font-medium uppercase tracking-widest mb-8"
-            style={{ color: 'var(--m-text-muted)' }}
-          >
-            Questions
-          </p>
+          <div className="mb-8">
+            <p
+              className="text-xs font-medium uppercase tracking-widest mb-3"
+              style={{ color: 'var(--m-text-muted)' }}
+            >
+              Questions
+            </p>
 
-          <div className="flex flex-col">
-          {[
-            {
-                q: 'Why not just use Notion or Trello?',
-                a: 'Miroki is not built for collecting ideas. It is built for finishing them. The product uses locked execution phases to prevent endless rebuilding, feature creep and stack switching.',
-            },
-            {
-                q: 'Why does Miroki lock phases?',
-                a: 'Because most builders do not fail from lack of ideas. They fail from constantly changing direction. Miroki keeps your focus on the next required step instead of another restart.',
-            },
-            {
-                q: 'Can I change my stack later?',
-                a: 'Yes, but Miroki is designed to make that decision intentional. The goal is to stop casual stack switching before your MVP is finished.',
-            },
-            {
-                q: 'What happens when I hit the free limit?',
-                a: 'Your existing projects stay accessible. You just cannot create new projects until you upgrade.',
-            },
-            {
-                q: 'Can I cancel anytime?',
-                a: 'Yes. You keep Pro access until the end of your billing period.',
-            },
-            ].map(item => (
-            <FaqItem key={item.q} q={item.q} a={item.a} />
+            <h2
+              className="text-2xl font-semibold tracking-tight"
+              style={{ color: 'var(--m-text-primary)' }}
+            >
+              Still wondering if Miroki fits?
+            </h2>
+          </div>
+
+          <div
+            className="rounded-2xl px-6"
+            style={{
+              background: 'var(--m-surface-1)',
+              border: '0.5px solid var(--m-border)',
+            }}
+          >
+            {questions.map(item => (
+              <FaqItem key={item.q} q={item.q} a={item.a} />
             ))}
           </div>
         </div>
-
       </section>
 
       <footer
@@ -350,7 +321,6 @@ export default function Pricing() {
           Ship calm. Step by step.
         </p>
       </footer>
-
     </main>
   )
 }
