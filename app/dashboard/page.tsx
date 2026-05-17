@@ -21,6 +21,8 @@ interface Project {
   priority: string
   status: string
   steps: Step[]
+  is_public: boolean
+  public_id: string | null
 }
 
 const categoryPaths: Record<string, string> = {
@@ -339,22 +341,45 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="flex gap-1.5 flex-wrap">
-                    <span className="text-xs px-2 py-0.5 rounded-md capitalize" style={priorityStyle(project.priority)}>
-                      {project.priority}
-                    </span>
-                    <span className="text-xs px-2 py-0.5 rounded-md capitalize" style={statusStyle(project.status)}>
-                      {project.status}
-                    </span>
-                    <span className="text-xs px-2 py-0.5 rounded-md capitalize" style={{
-                      border: '0.5px solid var(--m-border)',
-                      background: 'var(--m-surface-2)',
-                      color: 'var(--m-text-secondary)'
+                <div className="flex gap-1.5 flex-wrap">
+                <span className="text-xs px-2 py-0.5 rounded-md capitalize" style={priorityStyle(project.priority)}>
+                    {project.priority}
+                </span>
+                <span className="text-xs px-2 py-0.5 rounded-md capitalize" style={statusStyle(project.status)}>
+                    {project.status}
+                </span>
+                <span className="text-xs px-2 py-0.5 rounded-md capitalize" style={{
+                    border: '0.5px solid var(--m-border)',
+                    background: 'var(--m-surface-2)',
+                    color: 'var(--m-text-secondary)'
+                }}>
+                    {project.category}
+                </span>
+                {project.is_public ? (
+                    <span className="text-xs px-2 py-0.5 rounded-md flex items-center gap-1" style={{
+                    background: 'var(--m-accent-subtle)',
+                    border: '0.5px solid var(--m-accent-border)',
+                    color: 'var(--m-accent)'
                     }}>
-                      {project.category}
+                    <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 00-9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                    Public
                     </span>
-                    {shipDays !== null && <ShipDateBadge days={shipDays} />}
-                  </div>
+                ) : (
+                    <span className="text-xs px-2 py-0.5 rounded-md flex items-center gap-1" style={{
+                    background: 'var(--m-surface-2)',
+                    border: '0.5px solid var(--m-border)',
+                    color: 'var(--m-text-muted)'
+                    }}>
+                    <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                    Private
+                    </span>
+                )}
+                {shipDays !== null && <ShipDateBadge days={shipDays} />}
+                </div>
 
                   <p className="text-xs leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{project.core_feature}</p>
 
