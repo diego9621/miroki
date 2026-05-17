@@ -4,32 +4,39 @@ import Logo from './Logo'
 export default function Footer() {
   return (
     <footer style={{ borderTop: '0.5px solid var(--m-border)' }}>
-      <div className="px-6 py-8 max-w-2xl mx-auto flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="px-6 py-10 max-w-2xl mx-auto">
 
-        <Link href="/" className="transition-opacity hover:opacity-80 self-start">
-          <Logo />
-        </Link>
+        {/* Top row: logo + nav links */}
+        <div className="flex items-center justify-between mb-8">
+          <Link href="/" className="transition-opacity hover:opacity-80">
+            <Logo />
+          </Link>
 
-        <div className="flex flex-col gap-4 sm:items-end">
-
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-6">
             <Link
               href="/how-it-works"
-              className="text-xs transition-opacity hover:opacity-70"
+              className="text-sm transition-opacity hover:opacity-70"
               style={{ color: 'var(--m-text-muted)' }}
             >
               How it works
             </Link>
             <Link
               href="/pricing"
-              className="text-xs transition-opacity hover:opacity-70"
+              className="text-sm transition-opacity hover:opacity-70"
               style={{ color: 'var(--m-text-muted)' }}
             >
               Pricing
             </Link>
           </div>
+        </div>
 
-          <div className="flex items-center gap-3">
+        {/* Bottom row: copyright + socials */}
+        <div className="flex items-center justify-between" style={{ borderTop: '0.5px solid var(--m-border)', paddingTop: '1.5rem' }}>
+          <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>
+            © 2025 Miroki
+          </p>
+
+          <div className="flex items-center gap-2">
             <a
               href="https://x.com/miroki_app"
               target="_blank"
@@ -70,10 +77,6 @@ export default function Footer() {
               </svg>
             </a>
           </div>
-
-          <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>
-            © 2025 Miroki
-          </p>
         </div>
 
       </div>
