@@ -47,33 +47,6 @@ export default function Header({ maxWidth = 'max-w-2xl' }: HeaderProps) {
         </Link>
 
         <div className="flex items-center gap-3">
-          <div className="hidden">
-            {links.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm px-3 py-2 rounded-lg transition-opacity hover:opacity-80"
-                style={{ color: 'var(--m-text-secondary)' }}
-              >
-                {link.label}
-              </Link>
-            ))}
-
-            <Link
-              href={isLoggedIn ? '/dashboard' : '/'}
-              className="text-sm px-4 py-2 rounded-lg transition-opacity hover:opacity-80"
-              style={{
-                background: 'var(--m-surface-1)',
-                border: '0.5px solid var(--m-border)',
-                color: 'var(--m-text-secondary)',
-              }}
-            >
-              {isLoggedIn ? 'Dashboard' : 'Sign in'}
-            </Link>
-          </div>
-
-          <ThemeToggle />
-
           <button
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
@@ -85,9 +58,15 @@ export default function Header({ maxWidth = 'max-w-2xl' }: HeaderProps) {
               color: 'var(--m-text-primary)',
             }}
           >
-            <span className="text-xl leading-none">
-              {open ? '×' : '☰'}
-            </span>
+            {open ? (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            )}
           </button>
         </div>
 
@@ -111,6 +90,13 @@ export default function Header({ maxWidth = 'max-w-2xl' }: HeaderProps) {
                 {link.label}
               </Link>
             ))}
+
+            <div className="my-1" style={{ borderTop: '0.5px solid var(--m-border)' }} />
+
+            <div className="flex items-center justify-between rounded-xl px-4 py-3">
+              <span className="text-sm font-medium" style={{ color: 'var(--m-text-primary)' }}>Theme</span>
+              <ThemeToggle />
+            </div>
 
             <div className="my-1" style={{ borderTop: '0.5px solid var(--m-border)' }} />
 
