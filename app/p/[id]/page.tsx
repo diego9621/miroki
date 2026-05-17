@@ -13,11 +13,13 @@ const categoryPaths: Record<string, string> = {
   other: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
 }
 
-export default async function PublicProjectPage({ params }: { params: { id: string } }) {
+export default async function PublicProjectPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  
   const { data: project } = await supabase
     .from('projects')
     .select('*')
-    .eq('public_id', params.id)
+    .eq('public_id', id)
     .eq('is_public', true)
     .single()
 
