@@ -2,7 +2,7 @@ export default function Logo() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       <span style={{
-        fontFamily: "'Shippori Mincho', serif",
+        fontFamily: "var(--font-shippori), serif",
         fontSize: 20,
         fontWeight: 500,
         color: 'var(--m-text-primary)',

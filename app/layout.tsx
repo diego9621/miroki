@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Shippori_Mincho } from "next/font/google";
 import "./globals.css";
 
 const geist = Geist({
@@ -7,12 +7,31 @@ const geist = Geist({
   subsets: ["latin"],
 });
 
+const shipporiMincho = Shippori_Mincho({
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  variable: "--font-shippori",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Miroki",
-  description: "Stop Rebuilding. Start Finishing.",
+  title: "Miroki — Stop Rebuilding. Start Finishing.",
+  description: "AI lets you build anything. Miroki helps you finish something. Lock your MVP, stack and execution path so you can ship.",
   icons: { icon: "/favicon.svg" },
   verification: {
     google: "KEeQL2vgIjrGhF-PwKOtdtLYeu3i7nuNxxTznpi2XZM",
+  },
+  openGraph: {
+    title: "Miroki — Stop Rebuilding. Start Finishing.",
+    description: "AI lets you build anything. Miroki helps you finish something. Lock your MVP, stack and execution path so you can ship.",
+    url: "https://www.miroki.app",
+    siteName: "Miroki",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Miroki — Stop Rebuilding. Start Finishing.",
+    description: "AI lets you build anything. Miroki helps you finish something.",
   },
 };
 
@@ -38,21 +57,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={geist.variable} suppressHydrationWarning>
+    <html lang="en" className={`${geist.variable} ${shipporiMincho.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-
-        <link
-          href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
