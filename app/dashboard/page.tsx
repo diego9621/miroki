@@ -229,7 +229,9 @@ export default function Dashboard() {
       <div className="max-w-lg mx-auto">
 
         <div className="flex justify-between items-center mb-10">
-          <Logo />
+          <button onClick={() => window.location.href = '/'} className="transition-opacity hover:opacity-80">
+            <Logo />
+          </button>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <AvatarMenu email={email} plan={plan} onLogout={handleLogout} />
