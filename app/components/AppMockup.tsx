@@ -172,8 +172,20 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ width: 280, height: 508, background: '#FFFFFF', borderRadius: 28, border: '1px solid #E8E0D8', overflow: 'hidden', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px 8px', borderBottom: '0.5px solid #F0EAE2', flexShrink: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: '#1C1612' }}>
-          <span style={{ color: '#5A8A4A' }}>✦</span> Miroki
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <div style={{ display: 'flex', gap: 2 }}>
+            <div style={{ width: 8, height: 5, borderRadius: 1.5, background: '#5A8A4A' }} />
+            <div style={{ width: 8, height: 5, borderRadius: 1.5, background: '#5A8A4A' }} />
+            <div style={{ width: 8, height: 5, borderRadius: 1.5, background: '#5A8A4A' }} />
+            </div>
+            <div style={{ display: 'flex', gap: 2 }}>
+            <div style={{ width: 8, height: 5, borderRadius: 1.5, background: '#C4B8AE' }} />
+            <div style={{ width: 8, height: 5, borderRadius: 1.5, background: '#C4B8AE' }} />
+            <div style={{ width: 8, height: 5, borderRadius: 1.5, background: 'transparent' }} />
+            </div>
+        </div>
+        <span style={{ fontSize: 13, fontWeight: 500, color: '#1C1612', fontFamily: 'Shippori Mincho, serif' }}>Miroki</span>
         </div>
         <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#F0EAE2', border: '0.5px solid #E8E0D8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 500, color: '#7A6C62' }}>JO</div>
       </div>
