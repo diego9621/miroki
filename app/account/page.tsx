@@ -190,20 +190,16 @@ export default function AccountPage() {
           </div>
 
           {/* Danger zone */}
-          <div className="rounded-xl p-5" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
-            <h2 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--m-text-muted)' }}>Danger zone</h2>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 text-sm hover:opacity-70 transition-opacity"
-              style={{ color: 'var(--m-danger)' }}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-              </svg>
-              Sign out
-            </button>
-          </div>
-
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 text-sm hover:opacity-70 transition-opacity px-1"
+          style={{ color: 'var(--m-text-muted)' }}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+          </svg>
+          Sign out
+          </button>
         </div>
       </div>
     </main>

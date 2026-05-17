@@ -45,7 +45,7 @@ export default function Onboarding() {
 
     if (error) { alert(error.message); setSubmitting(false); return }
     await supabase.rpc('create_default_steps', { p_project_id: data.id })
-    window.location.href = '/dashboard'
+    window.location.href = `/projects/${data.slug}`
   }
 
   if (loading) return (
