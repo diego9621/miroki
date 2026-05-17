@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react'
 import AppMockup from './components/AppMockup'
 import SoundFamiliar from './components/SoundFamiliar'
-import Logo from './components/Logo'
+import Footer from './components/Footer'
 import Header from './components/Header'
 import { supabase } from './lib/supabase'
+
+
 
 export default function Home() {
   const [loading, setLoading] = useState(false)
@@ -362,26 +364,8 @@ export default function Home() {
         </div>
       </section>
 
-      <footer
-        className="px-6 py-8 max-w-2xl mx-auto flex justify-between items-center"
-        style={{ borderTop: '0.5px solid var(--m-border)' }}
-      >
-        <Logo />
+      <Footer />
 
-        <div className="flex items-center gap-5">
-          <button
-            onClick={() => window.location.href = '/pricing'}
-            className="text-xs transition-opacity hover:opacity-70"
-            style={{ color: 'var(--m-text-muted)' }}
-          >
-            Pricing
-          </button>
-
-          <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>
-            Ship calm. Step by step.
-          </p>
-        </div>
-      </footer>
     </main>
   )
 }
