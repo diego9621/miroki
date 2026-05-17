@@ -15,14 +15,14 @@ const shipporiMincho = Shippori_Mincho({
 });
 
 export const metadata: Metadata = {
-  title: "Miroki — Stop Rebuilding. Start Finishing.",
+  title: "Miroki Stop Rebuilding. Start Finishing.",
   description: "AI lets you build anything. Miroki helps you finish something. Lock your MVP, stack and execution path so you can ship.",
   icons: { icon: "/favicon.svg" },
   verification: {
     google: "KEeQL2vgIjrGhF-PwKOtdtLYeu3i7nuNxxTznpi2XZM",
   },
   openGraph: {
-    title: "Miroki — Stop Rebuilding. Start Finishing.",
+    title: "Miroki Stop Rebuilding. Start Finishing.",
     description: "AI lets you build anything. Miroki helps you finish something. Lock your MVP, stack and execution path so you can ship.",
     url: "https://www.miroki.app",
     siteName: "Miroki",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Miroki — Stop Rebuilding. Start Finishing.",
+    title: "Miroki Stop Rebuilding. Start Finishing.",
     description: "AI lets you build anything. Miroki helps you finish something.",
   },
 };
