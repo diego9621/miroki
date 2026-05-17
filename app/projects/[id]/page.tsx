@@ -5,6 +5,8 @@ import { useParams } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 import NotesSection from '../../components/NotesSection'
 import Logo from '../../components/Logo'
+import { generatePublicId } from '../../lib/generatePublicId'
+
 
 interface Project {
   id: number
@@ -15,6 +17,8 @@ interface Project {
   priority: string
   status: string
   stack: string[]
+  is_public: boolean
+  public_id: string | null
 }
 
 interface Step {
@@ -364,6 +368,10 @@ export default function ProjectPage() {
   const [savingStack, setSavingStack] = useState(false)
   const [saving, setSaving] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isPublic, setIsPublic] = useState(false)
+  const [publicId, setPublicId] = useState<string | null>(null)
+  const [togglingPublic, setTogglingPublic] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     async function load() {
@@ -373,6 +381,8 @@ export default function ProjectPage() {
       const { data: projectData } = await supabase.from('projects').select('*').eq('slug', id).eq('user_id', session.user.id).single()
       if (!projectData) { setLoading(false); return }
       setProject(projectData)
+      setIsPublic(projectData.is_public ?? false)
+      setPublicId(projectData.public_id ?? null)
       setSelectedStack(projectData.stack ?? [])
       const { data: stepsData } = await supabase.from('steps').select('*').eq('project_id', projectData.id).order('phase_order', { ascending: true }).order('step_order', { ascending: true })
       setSteps(stepsData ?? [])
@@ -417,6 +427,36 @@ export default function ProjectPage() {
     setSaving(null)
     setExpandedStep(null)
   }
+  async function togglePublic() {
+  setTogglingPublic(true)
+  
+  if (!isPublic) {
+    // Public maken — genereer public_id als die er nog niet is
+    const newPublicId = publicId ?? generatePublicId()
+    await supabase
+      .from('projects')
+      .update({ is_public: true, public_id: newPublicId })
+      .eq('id', project!.id)
+    setIsPublic(true)
+    setPublicId(newPublicId)
+  } else {
+    // Private maken
+    await supabase
+      .from('projects')
+      .update({ is_public: false })
+      .eq('id', project!.id)
+    setIsPublic(false)
+  }
+  
+  setTogglingPublic(false)
+}
+
+async function copyPublicLink() {
+  if (!publicId) return
+  await navigator.clipboard.writeText(`https://www.miroki.app/p/${publicId}`)
+  setCopied(true)
+  setTimeout(() => setCopied(false), 2000)
+}
 
   async function saveStack(stack: string[]) {
     setSavingStack(true)
@@ -632,7 +672,62 @@ export default function ProjectPage() {
         {project.status === 'launched' && (
           <TrackingSection projectId={project.id} />
         )}
+{/* Share toggle */}
+<div className="mt-8">
+  <div style={{ borderTop: '0.5px solid var(--m-border)' }} className="mb-8" />
+  <div className="rounded-xl p-5" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
+    <div className="flex items-center justify-between mb-3">
+      <div>
+        <p className="text-sm font-medium" style={{ color: 'var(--m-text-primary)' }}>Share project</p>
+        <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>
+          {isPublic ? 'Anyone with the link can view this project.' : 'Only you can see this project.'}
+        </p>
+      </div>
+      <button
+        onClick={togglePublic}
+        disabled={togglingPublic}
+        className="relative w-11 h-6 rounded-full transition-colors disabled:opacity-50 flex-shrink-0"
+        style={{ background: isPublic ? 'var(--m-accent)' : 'var(--m-surface-3)', border: '0.5px solid var(--m-border)' }}
+      >
+        <div
+          className="absolute top-0.5 w-5 h-5 rounded-full transition-transform duration-200"
+          style={{
+            background: 'white',
+            transform: isPublic ? 'translateX(22px)' : 'translateX(2px)',
+          }}
+        />
+      </button>
+    </div>
 
+    {isPublic && publicId && (
+      <div
+        className="flex items-center gap-2 rounded-lg px-3 py-2.5 mt-3"
+        style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)' }}
+      >
+        <p className="text-xs flex-1 truncate" style={{ color: 'var(--m-text-secondary)' }}>
+          miroki.app/p/{publicId}
+        </p>
+        <button
+          onClick={copyPublicLink}
+          className="text-xs px-2.5 py-1 rounded-md flex-shrink-0 transition-opacity hover:opacity-70 flex items-center gap-1.5"
+          style={{ background: 'var(--m-accent)', color: 'white' }}
+        >
+          {copied ? (
+            <>
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+              Copied
+            </>
+          ) : (
+            <>
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+              Copy link
+            </>
+          )}
+        </button>
+      </div>
+    )}
+  </div>
+</div>
         <NotesSection projectId={project.id} />
 
       </div>
