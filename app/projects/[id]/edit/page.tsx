@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { supabase } from '../../../lib/supabase'
+import Logo from '../../../components/Logo'
 
 const categories = ['SaaS', 'Tool', 'App', 'Content', 'Other']
 const priorities = ['High', 'Medium', 'Low']
@@ -73,18 +74,23 @@ export default function EditProject() {
       <div className="max-w-sm mx-auto flex flex-col gap-8">
 
         <div>
-          <button
+        <div className="flex items-center justify-between mb-8">
+        <button onClick={() => window.location.href = '/dashboard'} className="transition-opacity hover:opacity-80">
+            <Logo />
+        </button>
+        <button
             onClick={() => window.location.href = `/projects/${id}`}
-            className="flex items-center gap-1.5 text-sm mb-8 hover:opacity-70 transition-opacity"
+            className="flex items-center gap-1.5 text-sm hover:opacity-70 transition-opacity"
             style={{ color: 'var(--m-text-secondary)' }}
-          >
+            >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
             Back
-          </button>
-          <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--m-text-primary)' }}>Edit project</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--m-text-secondary)' }}>Update your track.</p>
+        </button>
+        </div>
+        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--m-text-primary)' }}>Edit project</h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--m-text-secondary)' }}>Update your track.</p>
         </div>
 
         <div className="flex flex-col gap-6">
