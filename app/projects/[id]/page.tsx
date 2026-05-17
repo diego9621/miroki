@@ -354,6 +354,7 @@ function TrackingSection({ projectId }: { projectId: number }) {
 
 export default function ProjectPage() {
   const { id } = useParams()
+  const [email, setEmail] = useState('')
   const [project, setProject] = useState<Project | null>(null)
   const [steps, setSteps] = useState<Step[]>([])
   const [activePhase, setActivePhase] = useState('Clarify')
@@ -368,6 +369,7 @@ export default function ProjectPage() {
     async function load() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.user) { window.location.href = '/'; return }
+      setEmail(session.user.email ?? '')
       const { data: projectData } = await supabase.from('projects').select('*').eq('slug', id).eq('user_id', session.user.id).single()
       if (!projectData) { setLoading(false); return }
       setProject(projectData)
@@ -460,11 +462,24 @@ export default function ProjectPage() {
         <button onClick={() => window.location.href = '/dashboard'} className="transition-opacity hover:opacity-80">
             <Logo />
         </button>
-        <button onClick={() => window.location.href = `/projects/${project.slug}/edit`} className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs hover:opacity-70 transition-opacity" style={{ border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}>
+        <div className="flex items-center gap-2">
+            <button
+            onClick={() => window.location.href = `/projects/${project.slug}/edit`}
+            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs hover:opacity-70 transition-opacity"
+            style={{ border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
+            >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" /></svg>
             Edit
-        </button>
-      </div>
+            </button>
+            <button
+            onClick={() => window.location.href = '/account'}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-opacity hover:opacity-80"
+            style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
+            >
+            {email.slice(0, 2).toUpperCase()}
+            </button>
+        </div>
+        </div>
         <div className="flex items-center gap-3 mb-3">
           <CategoryIcon category={project.category} />
           <h1 className="text-xl font-semibold" style={{ color: 'var(--m-text-primary)' }}>{project.name}</h1>
