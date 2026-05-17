@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import Logo from '../components/Logo'
 import ThemeToggle from '../components/ThemeToggle'
+import FaqItem from '../components/FaqItem'
 
 export default function Pricing() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -307,48 +308,29 @@ export default function Pricing() {
           </p>
 
           <div className="flex flex-col">
-            {[
-              {
-                q: 'Can I try Miroki before paying?',
-                a: 'Yes. The free plan gives you 3 full projects with all features. No credit card needed.',
-              },
-              {
+          {[
+            {
+                q: 'Why not just use Notion or Trello?',
+                a: 'Miroki is not built for collecting ideas. It is built for finishing them. The product uses locked execution phases to prevent endless rebuilding, feature creep and stack switching.',
+            },
+            {
+                q: 'Why does Miroki lock phases?',
+                a: 'Because most builders do not fail from lack of ideas. They fail from constantly changing direction. Miroki keeps your focus on the next required step instead of another restart.',
+            },
+            {
+                q: 'Can I change my stack later?',
+                a: 'Yes, but Miroki is designed to make that decision intentional. The goal is to stop casual stack switching before your MVP is finished.',
+            },
+            {
                 q: 'What happens when I hit the free limit?',
-                a: 'Your existing projects stay fully accessible. You just cannot create new ones until you upgrade.',
-              },
-              {
+                a: 'Your existing projects stay accessible. You just cannot create new projects until you upgrade.',
+            },
+            {
                 q: 'Can I cancel anytime?',
-                a: 'Yes. Cancel whenever you want. You keep Pro access until the end of your billing period.',
-              },
-              {
-                q: 'Is there a yearly plan?',
-                a: 'Coming soon. Monthly only for now.',
-              },
-            ].map((item, i, arr) => (
-              <div
-                key={i}
-                className="py-6"
-                style={{
-                  borderBottom:
-                    i < arr.length - 1
-                      ? '0.5px solid var(--m-border)'
-                      : 'none'
-                }}
-              >
-                <p
-                  className="text-sm font-medium mb-2"
-                  style={{ color: 'var(--m-text-primary)' }}
-                >
-                  {item.q}
-                </p>
-
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: 'var(--m-text-muted)' }}
-                >
-                  {item.a}
-                </p>
-              </div>
+                a: 'Yes. You keep Pro access until the end of your billing period.',
+            },
+            ].map(item => (
+            <FaqItem key={item.q} q={item.q} a={item.a} />
             ))}
           </div>
         </div>
