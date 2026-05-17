@@ -12,7 +12,6 @@ export default function EditProject() {
   const { id } = useParams()
   const [name, setName] = useState('')
   const [coreFeature, setCoreFeature] = useState('')
-  const [hours, setHours] = useState('')
   const [category, setCategory] = useState('SaaS')
   const [priority, setPriority] = useState('Medium')
   const [status, setStatus] = useState('Idea')
@@ -32,7 +31,6 @@ export default function EditProject() {
       if (data) {
         setName(data.name)
         setCoreFeature(data.core_feature)
-        setHours(data.hours_per_week.toString())
         setCategory(data.category.charAt(0).toUpperCase() + data.category.slice(1))
         setPriority(data.priority.charAt(0).toUpperCase() + data.priority.slice(1))
         setStatus(data.status.charAt(0).toUpperCase() + data.status.slice(1))
@@ -49,7 +47,6 @@ export default function EditProject() {
       .update({
         name,
         core_feature: coreFeature,
-        hours_per_week: parseInt(hours),
         category: category.toLowerCase(),
         priority: priority.toLowerCase(),
         status: status.toLowerCase()
@@ -94,12 +91,22 @@ export default function EditProject() {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--m-text-muted)' }}>What are you building?</label>
-            <input className="rounded-xl px-4 py-3 text-sm focus:outline-none" style={inputStyle} value={name} onChange={e => setName(e.target.value)} />
+            <input
+              className="rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
+              style={{ ...inputStyle, caretColor: 'var(--m-accent)' }}
+              value={name}
+              onChange={e => setName(e.target.value)}
+            />
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--m-text-muted)' }}>One core feature</label>
-            <input className="rounded-xl px-4 py-3 text-sm focus:outline-none" style={inputStyle} value={coreFeature} onChange={e => setCoreFeature(e.target.value)} />
+            <input
+              className="rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
+              style={{ ...inputStyle, caretColor: 'var(--m-accent)' }}
+              value={coreFeature}
+              onChange={e => setCoreFeature(e.target.value)}
+            />
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -149,11 +156,6 @@ export default function EditProject() {
                 </button>
               ))}
             </div>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--m-text-muted)' }}>Hours per week</label>
-            <input className="rounded-xl px-4 py-3 text-sm focus:outline-none" style={inputStyle} type="number" value={hours} onChange={e => setHours(e.target.value)} />
           </div>
 
         </div>
