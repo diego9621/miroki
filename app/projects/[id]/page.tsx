@@ -458,32 +458,36 @@ export default function ProjectPage() {
     <main className="min-h-screen px-6 py-10" style={{ background: 'var(--m-bg)' }}>
       <div className="max-w-lg mx-auto">
 
-      <div className="flex items-center justify-between mb-10">
-        <button onClick={() => window.location.href = '/dashboard'} className="transition-opacity hover:opacity-80">
+    <div className="flex items-center justify-between mb-10">
+          <button onClick={() => window.location.href = '/dashboard'} className="transition-opacity hover:opacity-80">
             <Logo />
-        </button>
-        <div className="flex items-center gap-2">
-            <button
-            onClick={() => window.location.href = `/projects/${project.slug}/edit`}
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs hover:opacity-70 transition-opacity"
-            style={{ border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
-            >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" /></svg>
-            Edit
-            </button>
-            <button
+          </button>
+          <button
             onClick={() => window.location.href = '/account'}
             className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-opacity hover:opacity-80"
             style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
-            >
+          >
             {email.slice(0, 2).toUpperCase()}
-            </button>
+          </button>
         </div>
+
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <CategoryIcon category={project.category} />
+            <h1 className="text-xl font-semibold truncate" style={{ color: 'var(--m-text-primary)' }}>{project.name}</h1>
+          </div>
+          <button
+            onClick={() => window.location.href = `/projects/${project.slug}/edit`}
+            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs hover:opacity-70 transition-opacity flex-shrink-0 ml-3"
+            style={{ border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
+            </svg>
+            Edit
+          </button>
         </div>
-        <div className="flex items-center gap-3 mb-3">
-          <CategoryIcon category={project.category} />
-          <h1 className="text-xl font-semibold" style={{ color: 'var(--m-text-primary)' }}>{project.name}</h1>
-        </div>
+
 
         <div className="flex gap-1.5 flex-wrap mb-6">
           {[
