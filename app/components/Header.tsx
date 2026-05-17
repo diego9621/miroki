@@ -47,7 +47,7 @@ export default function Header({ maxWidth = 'max-w-2xl' }: HeaderProps) {
         </Link>
 
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2">
+          <div className="hidden">
             {links.map(link => (
               <Link
                 key={link.href}
@@ -78,7 +78,7 @@ export default function Header({ maxWidth = 'max-w-2xl' }: HeaderProps) {
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
             aria-expanded={open}
-            className="sm:hidden w-11 h-11 rounded-xl flex items-center justify-center transition-opacity hover:opacity-80"
+            className="w-11 h-11 rounded-xl flex items-center justify-center transition-opacity hover:opacity-80"
             style={{
               background: 'var(--m-surface-1)',
               border: '0.5px solid var(--m-border)',
@@ -93,7 +93,7 @@ export default function Header({ maxWidth = 'max-w-2xl' }: HeaderProps) {
 
         {open && (
           <div
-            className="absolute right-6 top-[76px] z-50 w-56 rounded-2xl p-2 sm:hidden"
+            className="absolute right-6 top-[76px] z-50 w-56 rounded-2xl p-2"
             style={{
               background: 'var(--m-surface-1)',
               border: '0.5px solid var(--m-border)',
