@@ -40,11 +40,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={geist.variable} suppressHydrationWarning>
       <head>
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
-        />
-
         <link rel="preconnect" href="https://fonts.googleapis.com" />
 
         <link

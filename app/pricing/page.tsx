@@ -5,6 +5,8 @@ import { supabase } from '../lib/supabase'
 import Logo from '../components/Logo'
 import Header from '../components/Header'
 import FaqItem from '../components/FaqItem'
+import Footer from '../components/Footer'
+
 
 export default function Pricing() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -307,20 +309,7 @@ export default function Pricing() {
           </div>
         </div>
       </section>
-
-      <footer
-        className="px-6 py-8 max-w-2xl mx-auto flex justify-between items-center"
-        style={{ borderTop: '0.5px solid var(--m-border)' }}
-      >
-        <Logo />
-
-        <p
-          className="text-xs"
-          style={{ color: 'var(--m-text-muted)' }}
-        >
-          Ship calm. Step by step.
-        </p>
-      </footer>
+      <Footer />
     </main>
   )
 }
