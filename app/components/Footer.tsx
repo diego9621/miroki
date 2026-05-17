@@ -33,7 +33,7 @@ export default function Footer() {
         {/* Bottom row: copyright + socials */}
         <div className="flex items-center justify-between" style={{ borderTop: '0.5px solid var(--m-border)', paddingTop: '1.5rem' }}>
           <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>
-            © 2025 Miroki
+            © 2026 Miroki
           </p>
 
           <div className="flex items-center gap-2">
