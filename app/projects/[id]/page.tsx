@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
+import NotesSection from '../../components/NotesSection'
 
 interface Project {
   id: number
@@ -613,6 +614,8 @@ export default function ProjectPage() {
         {project.status === 'launched' && (
           <TrackingSection projectId={project.id} />
         )}
+
+        <NotesSection projectId={project.id} />
 
       </div>
     </main>
