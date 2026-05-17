@@ -579,10 +579,21 @@ export default function ProjectPage() {
                         </>
                       ) : (
                         <>
-                          <textarea className="w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none transition-colors resize-none"
+                        {step.title === 'Set a ship date' ? (
+                        <input
+                            type="date"
+                            className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
+                            style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-primary)', caretColor: 'var(--m-accent)' }}
+                            value={answers[step.id] ?? ''}
+                            min={new Date().toISOString().split('T')[0]}
+                            onChange={e => setAnswers(prev => ({ ...prev, [step.id]: e.target.value }))}
+                        />
+                        ) : (
+                        <textarea className="w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none transition-colors resize-none"
                             style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-primary)', caretColor: 'var(--m-accent)' }}
                             placeholder="Write your answer here..." rows={3}
                             value={answers[step.id] ?? ''} onChange={e => setAnswers(prev => ({ ...prev, [step.id]: e.target.value }))} />
+                        )}
                           <div className="flex items-center justify-between mt-2">
                             <p className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Saving will also mark this step as complete</p>
                             <button onClick={() => saveAnswer(step.id)} disabled={saving === step.id} className="rounded-lg px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80 disabled:opacity-50 flex items-center gap-1.5" style={{ background: 'var(--m-accent)', color: 'white' }}>
