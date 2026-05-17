@@ -26,18 +26,6 @@ interface Step {
   answer: string | null
 }
 
-interface Tracking {
-  id?: number
-  project_id?: number
-  users: number
-  revenue: number
-  visitors: number
-  signups: number
-  reddit_upvotes: number
-  instagram_followers: number
-  twitter_followers: number
-}
-
 const phases = ['Clarify', 'Plan', 'Stack', 'Build', 'Launch', 'Track']
 
 const categoryPaths: Record<string, string> = {
@@ -58,6 +46,70 @@ const stackTools = [
 ]
 
 const allTools = stackTools.flatMap(g => g.tools)
+
+function getDaysUntil(dateStr: string): number | null {
+  const parsed = new Date(dateStr)
+  if (isNaN(parsed.getTime())) return null
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  parsed.setHours(0, 0, 0, 0)
+  return Math.ceil((parsed.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+}
+
+function ShipDateBanner({ days, dateStr }: { days: number, dateStr: string }) {
+  if (days < 0) {
+    return (
+      <div className="rounded-xl px-4 py-3 mb-6 flex items-center gap-3"
+        style={{ background: 'rgba(163,48,40,0.06)', border: '0.5px solid rgba(163,48,40,0.2)' }}>
+        <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--m-danger)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+        <div>
+          <p className="text-sm font-medium" style={{ color: 'var(--m-danger)' }}>Ship date passed {Math.abs(days)} day{Math.abs(days) !== 1 ? 's' : ''} ago</p>
+          <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>You planned to ship on {dateStr}. Time to push it out.</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (days === 0) {
+    return (
+      <div className="rounded-xl px-4 py-3 mb-6 flex items-center gap-3"
+        style={{ background: 'var(--m-accent-subtle)', border: '0.5px solid var(--m-accent-border)' }}>
+        <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+        </svg>
+        <div>
+          <p className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>Today is your ship date</p>
+          <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>You planned to launch today. Ship it.</p>
+        </div>
+      </div>
+    )
+  }
+
+  const urgent = days <= 3
+  const warning = days <= 7
+
+  return (
+    <div className="rounded-xl px-4 py-3 mb-6 flex items-center gap-3"
+      style={{
+        background: urgent ? 'rgba(163,48,40,0.06)' : warning ? 'rgba(180,140,60,0.06)' : 'var(--m-surface-1)',
+        border: urgent ? '0.5px solid rgba(163,48,40,0.2)' : warning ? '0.5px solid rgba(180,140,60,0.2)' : '0.5px solid var(--m-border)'
+      }}>
+      <svg className="w-4 h-4 flex-shrink-0" style={{ color: urgent ? 'var(--m-danger)' : warning ? '#A07830' : 'var(--m-text-muted)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5" />
+      </svg>
+      <div>
+        <p className="text-sm font-medium" style={{ color: urgent ? 'var(--m-danger)' : warning ? '#A07830' : 'var(--m-text-primary)' }}>
+          {days} day{days !== 1 ? 's' : ''} until ship date
+        </p>
+        <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>
+          {urgent ? 'Almost there. Finish what matters, ship the rest.' : warning ? 'One week left. Stay focused.' : `Planned for ${dateStr}.`}
+        </p>
+      </div>
+    </div>
+  )
+}
 
 function ToolLogo({ id, size = 14 }: { id: string, size?: number }) {
   const logos: Record<string, React.ReactNode> = {
@@ -105,6 +157,8 @@ function SummaryCard({ steps, stack }: { steps: Step[], stack: string[] }) {
   const answered = [problem, differentiator, mvp, shipDate, stack.length > 0 ? 'stack' : null].filter(Boolean)
   if (answered.length === 0) return null
 
+  const days = shipDate ? getDaysUntil(shipDate) : null
+
   return (
     <div className="rounded-2xl mb-6 overflow-hidden" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
       <button onClick={() => setExpanded(p => !p)} className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-80">
@@ -134,7 +188,23 @@ function SummaryCard({ steps, stack }: { steps: Step[], stack: string[] }) {
               </div>
             </div>
           )}
-          {shipDate && <div className="flex flex-col gap-0.5 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}><span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Ship date</span><span className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>{shipDate}</span></div>}
+          {shipDate && (
+            <div className="flex flex-col gap-0.5 pt-3" style={{ borderTop: '0.5px solid var(--m-border)' }}>
+              <span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Ship date</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>{shipDate}</span>
+                {days !== null && (
+                  <span className="text-xs px-1.5 py-0.5 rounded-md" style={{
+                    background: days < 0 ? 'rgba(163,48,40,0.08)' : days <= 3 ? 'rgba(163,48,40,0.08)' : days <= 7 ? 'rgba(180,140,60,0.08)' : 'var(--m-accent-subtle)',
+                    color: days < 0 ? 'var(--m-danger)' : days <= 3 ? 'var(--m-danger)' : days <= 7 ? '#A07830' : 'var(--m-accent)',
+                    border: days < 0 ? '0.5px solid rgba(163,48,40,0.2)' : days <= 3 ? '0.5px solid rgba(163,48,40,0.2)' : days <= 7 ? '0.5px solid rgba(180,140,60,0.2)' : '0.5px solid var(--m-accent-border)',
+                  }}>
+                    {days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? 'today' : `${days}d left`}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -224,60 +294,42 @@ function TrackingSection({ projectId }: { projectId: number }) {
   return (
     <div className="mt-8">
       <div style={{ borderTop: '0.5px solid var(--m-border)' }} className="mb-8" />
-
       <div className="mb-6">
         <h2 className="font-semibold" style={{ color: 'var(--m-text-primary)' }}>Growth tracking</h2>
         <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>Connect integrations to see your data here.</p>
       </div>
-
-      {/* Metrics grid — locked until integration */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         {metrics.map(m => (
           <div key={m.label} className="rounded-xl p-4" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
             <div className="flex items-center justify-between mb-3">
               <div style={{ color: 'var(--m-text-muted)' }}>{m.icon}</div>
-              <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>
-                via {m.integration}
-              </span>
+              <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>via {m.integration}</span>
             </div>
             <div className="text-xs mb-1" style={{ color: 'var(--m-text-muted)' }}>{m.label}</div>
             <div className="text-xl font-semibold" style={{ color: 'var(--m-border-hover)' }}>—</div>
           </div>
         ))}
       </div>
-
-      {/* Social — locked until integration */}
       <div className="flex flex-col gap-2 mb-6">
         {social.map(s => (
           <div key={s.label} className="rounded-xl p-4 flex items-center gap-3" style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}>
             <div className="flex-shrink-0">{s.logo}</div>
-            <div className="flex-1">
-              <div className="text-sm" style={{ color: 'var(--m-text-secondary)' }}>{s.label}</div>
-            </div>
-            <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>
-              via {s.integration}
-            </span>
+            <div className="flex-1"><div className="text-sm" style={{ color: 'var(--m-text-secondary)' }}>{s.label}</div></div>
+            <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>via {s.integration}</span>
             <div className="text-sm font-semibold" style={{ color: 'var(--m-border-hover)' }}>—</div>
           </div>
         ))}
       </div>
-
-      {/* Add integrations */}
       <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid var(--m-accent-border)', background: 'var(--m-accent-subtle)' }}>
         <button onClick={() => setShowIntegrations(p => !p)} className="w-full flex items-center justify-between px-4 py-3 transition-opacity hover:opacity-80">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: 'var(--m-accent)', }}>
-              <svg className="w-3 h-3" style={{ color: 'white' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-              </svg>
+            <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: 'var(--m-accent)' }}>
+              <svg className="w-3 h-3" style={{ color: 'white' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
             </div>
             <span className="text-sm font-medium" style={{ color: 'var(--m-accent)' }}>Connect integrations</span>
           </div>
-          <svg className={`w-4 h-4 transition-transform duration-200 ${showIntegrations ? 'rotate-180' : ''}`} style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-          </svg>
+          <svg className={`w-4 h-4 transition-transform duration-200 ${showIntegrations ? 'rotate-180' : ''}`} style={{ color: 'var(--m-accent)' }} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
         </button>
-
         {showIntegrations && (
           <div className="flex flex-col" style={{ borderTop: '0.5px solid var(--m-accent-border)' }}>
             {integrations.map((intg, i) => (
@@ -288,9 +340,7 @@ function TrackingSection({ projectId }: { projectId: number }) {
                   <div className="text-sm font-medium" style={{ color: 'var(--m-text-primary)' }}>{intg.name}</div>
                   <div className="text-xs" style={{ color: 'var(--m-text-muted)' }}>{intg.description}</div>
                 </div>
-                <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>
-                  Coming soon
-                </span>
+                <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>Coming soon</span>
               </div>
             ))}
           </div>
@@ -384,6 +434,10 @@ export default function ProjectPage() {
   const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
   const activePhaseUnlocked = isPhaseUnlocked(activePhase)
 
+  // Ship date countdown
+  const shipDateAnswer = steps.find(s => s.title === 'Set a ship date')?.answer
+  const shipDays = shipDateAnswer ? getDaysUntil(shipDateAnswer) : null
+
   if (loading) return (
     <main className="flex min-h-screen items-center justify-center" style={{ background: 'var(--m-bg)' }}>
       <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--m-border-hover)' }} />
@@ -426,7 +480,7 @@ export default function ProjectPage() {
           ))}
         </div>
 
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs" style={{ color: 'var(--m-text-muted)' }}>Overall progress</span>
             <span className="text-xs font-medium" style={{ color: progress === 100 ? 'var(--m-accent)' : 'var(--m-text-secondary)' }}>{completedCount}/{totalCount} · {progress}%</span>
@@ -435,6 +489,11 @@ export default function ProjectPage() {
             <div className="h-1.5 rounded-full transition-all duration-700" style={{ width: `${progress}%`, background: 'var(--m-accent)' }} />
           </div>
         </div>
+
+        {/* Ship date countdown — alleen tonen als er een datum is en project nog niet launched */}
+        {shipDays !== null && project.status !== 'launched' && (
+          <ShipDateBanner days={shipDays} dateStr={shipDateAnswer!} />
+        )}
 
         <NextStepBanner steps={steps} onGo={(phase) => isPhaseUnlocked(phase) && setActivePhase(phase)} />
         <SummaryCard steps={steps} stack={selectedStack} />
