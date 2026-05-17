@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import ThemeToggle from '../components/ThemeToggle'
 import Logo from '../components/Logo'
+import Header from '../components/Header'
+
 
 interface Step {
   id: number
@@ -229,16 +231,7 @@ export default function Dashboard() {
   return (
     <main className="min-h-screen px-6 py-10" style={{ background: 'var(--m-bg)' }}>
       <div className="max-w-lg mx-auto">
-
-        <div className="flex justify-between items-center mb-10">
-          <button onClick={() => window.location.href = '/'} className="transition-opacity hover:opacity-80">
-            <Logo />
-          </button>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <AvatarMenu email={email} plan={plan} onLogout={handleLogout} />
-          </div>
-        </div>
+        <Header />
 
         {projects.length > 0 && (
           <div className="grid grid-cols-3 gap-2 mb-8">
