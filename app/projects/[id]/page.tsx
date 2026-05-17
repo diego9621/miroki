@@ -6,6 +6,8 @@ import { supabase } from '../../lib/supabase'
 import NotesSection from '../../components/NotesSection'
 import Logo from '../../components/Logo'
 import { generatePublicId } from '../../lib/generatePublicId'
+import Header from '../../components/Header'
+
 
 
 interface Project {
@@ -498,30 +500,17 @@ async function copyPublicLink() {
     <main className="min-h-screen px-6 py-10" style={{ background: 'var(--m-bg)' }}>
       <div className="max-w-lg mx-auto">
 
-        <div className="flex items-center justify-between mb-10">
-        <div className="flex items-center gap-4">
-            <button onClick={() => window.location.href = '/dashboard'} className="transition-opacity hover:opacity-80">
-            <Logo />
-            </button>
-            <button
-            onClick={() => window.location.href = '/dashboard'}
-            className="flex items-center gap-1.5 text-sm transition-opacity hover:opacity-70"
-            style={{ color: 'var(--m-text-muted)' }}
-            >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-            All projects
-            </button>
-        </div>
+        <Header />
         <button
-            onClick={() => window.location.href = '/account'}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-opacity hover:opacity-80"
-            style={{ background: 'var(--m-surface-2)', border: '0.5px solid var(--m-border)', color: 'var(--m-text-secondary)' }}
+        onClick={() => window.location.href = '/dashboard'}
+        className="flex items-center gap-1.5 text-sm mb-8 mt-4 px-6 transition-opacity hover:opacity-70"
+        style={{ color: 'var(--m-text-muted)' }}
         >
-            {email.slice(0, 2).toUpperCase()}
+        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+        </svg>
+        All projects
         </button>
-        </div>
 
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3 min-w-0">
