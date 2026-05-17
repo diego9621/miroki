@@ -100,7 +100,7 @@ function CategoryIcon({ category }: { category: string }) {
   )
 }
 
-function AvatarMenu({ email, onLogout }: { email: string, onLogout: () => void }) {
+function AvatarMenu({ email, plan, onLogout }: { email: string, plan: string, onLogout: () => void }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const initials = email.slice(0, 2).toUpperCase()
@@ -126,8 +126,17 @@ function AvatarMenu({ email, onLogout }: { email: string, onLogout: () => void }
         <div style={{ background: 'var(--m-surface-1)', border: '0.5px solid var(--m-border)' }}
           className="absolute right-0 top-10 w-44 rounded-xl overflow-hidden z-50">
           <div style={{ borderBottom: '0.5px solid var(--m-border)' }} className="px-3 py-2.5">
-            <p style={{ color: 'var(--m-text-muted)' }} className="text-xs truncate">{email}</p>
-          </div>
+            <p style={{ color: 'var(--m-text-muted)' }} className="text-xs truncate mb-1.5">{email}</p>
+            <span
+                className="text-xs px-2 py-0.5 rounded-md font-medium"
+                style={plan === 'pro'
+                ? { background: 'var(--m-accent-subtle)', color: 'var(--m-accent)', border: '0.5px solid var(--m-accent-border)' }
+                : { background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }
+                }
+            >
+                {plan === 'pro' ? 'Pro' : 'Free'}
+            </span>
+            </div>
           <button
             onClick={() => { setOpen(false); window.location.href = '/account' }}
             style={{ color: 'var(--m-text-primary)' }}
@@ -223,7 +232,7 @@ export default function Dashboard() {
           <Logo />
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <AvatarMenu email={email} onLogout={handleLogout} />
+            <AvatarMenu email={email} plan={plan} onLogout={handleLogout} />
           </div>
         </div>
 
