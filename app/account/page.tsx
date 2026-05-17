@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import ThemeToggle from '../components/ThemeToggle'
-import Logo from '../components/Logo'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 export default function AccountPage() {
   const [email, setEmail] = useState('')
@@ -43,22 +44,10 @@ export default function AccountPage() {
   const isPro = plan === 'pro'
 
   return (
-    <main className="min-h-screen px-6 py-10" style={{ background: 'var(--m-bg)' }}>
-      <div className="max-w-lg mx-auto">
+    <main className="min-h-screen" style={{ background: 'var(--m-bg)' }}>
+      <Header />
 
-        <div className="flex items-center justify-between mb-10">
-          <button
-            onClick={() => window.location.href = '/dashboard'}
-            className="flex items-center gap-1.5 text-sm hover:opacity-70 transition-opacity"
-            style={{ color: 'var(--m-text-secondary)' }}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-            Back
-          </button>
-          <ThemeToggle />
-        </div>
+      <div className="px-6 py-10 max-w-lg mx-auto">
 
         <div className="flex items-center gap-4 mb-10">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-medium"
@@ -189,19 +178,21 @@ export default function AccountPage() {
             </div>
           </div>
 
-          {/* Danger zone */}
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-sm hover:opacity-70 transition-opacity px-1"
-          style={{ color: 'var(--m-text-muted)' }}
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-          </svg>
-          Sign out
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-sm hover:opacity-70 transition-opacity px-1"
+            style={{ color: 'var(--m-text-muted)' }}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+            </svg>
+            Sign out
           </button>
+
         </div>
       </div>
+
+      <Footer />
     </main>
   )
 }
