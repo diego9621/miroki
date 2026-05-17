@@ -8,6 +8,8 @@ import Logo from '../components/Logo'
 interface Step {
   id: number
   completed: boolean
+  title: string
+  answer: string | null
 }
 
 interface Project {
@@ -30,6 +32,43 @@ const categoryPaths: Record<string, string> = {
 }
 
 import React from 'react'
+
+function getDaysUntil(dateStr: string): number | null {
+  const parsed = new Date(dateStr)
+  if (isNaN(parsed.getTime())) return null
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  parsed.setHours(0, 0, 0, 0)
+  return Math.ceil((parsed.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+}
+
+function ShipDateBadge({ days }: { days: number }) {
+  if (days < 0) return (
+    <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'rgba(163,48,40,0.08)', color: 'var(--m-danger)', border: '0.5px solid rgba(163,48,40,0.2)' }}>
+      {Math.abs(days)}d overdue
+    </span>
+  )
+  if (days === 0) return (
+    <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'var(--m-accent-subtle)', color: 'var(--m-accent)', border: '0.5px solid var(--m-accent-border)' }}>
+      ships today
+    </span>
+  )
+  if (days <= 3) return (
+    <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'rgba(163,48,40,0.08)', color: 'var(--m-danger)', border: '0.5px solid rgba(163,48,40,0.2)' }}>
+      {days}d left
+    </span>
+  )
+  if (days <= 7) return (
+    <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'rgba(180,140,60,0.08)', color: '#A07830', border: '0.5px solid rgba(180,140,60,0.2)' }}>
+      {days}d left
+    </span>
+  )
+  return (
+    <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'var(--m-surface-2)', color: 'var(--m-text-muted)', border: '0.5px solid var(--m-border)' }}>
+      {days}d left
+    </span>
+  )
+}
 
 function priorityStyle(priority: string): React.CSSProperties {
   const map: Record<string, React.CSSProperties> = {
@@ -133,7 +172,7 @@ export default function Dashboard() {
       const [{ data: projectsData }, { data: profile }] = await Promise.all([
         supabase
           .from('projects')
-          .select('*, steps(id, completed)')
+          .select('*, steps(id, completed, title, answer)')
           .eq('user_id', session.user.id)
           .order('created_at', { ascending: false }),
         supabase
@@ -246,6 +285,8 @@ export default function Dashboard() {
               const completedSteps = project.steps?.filter(s => s.completed).length ?? 0
               const totalSteps = project.steps?.length ?? 0
               const progress = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0
+              const shipDateAnswer = project.steps?.find(s => s.title === 'Set a ship date')?.answer
+              const shipDays = shipDateAnswer && project.status !== 'launched' ? getDaysUntil(shipDateAnswer) : null
 
               return (
                 <div
@@ -301,6 +342,7 @@ export default function Dashboard() {
                     }}>
                       {project.category}
                     </span>
+                    {shipDays !== null && <ShipDateBadge days={shipDays} />}
                   </div>
 
                   <p className="text-xs leading-relaxed" style={{ color: 'var(--m-text-muted)' }}>{project.core_feature}</p>
@@ -323,7 +365,6 @@ export default function Dashboard() {
               )
             })}
 
-            {/* Upgrade card — alleen zichtbaar als free user op limiet zit */}
             {atLimit && (
               <div
                 className="rounded-xl p-5 flex flex-col gap-4 mt-1"
@@ -343,14 +384,8 @@ export default function Dashboard() {
                     <p className="text-xs mt-0.5" style={{ color: 'var(--m-text-muted)' }}>You have used all {FREE_LIMIT} free project slots.</p>
                   </div>
                 </div>
-
                 <div className="flex flex-col gap-1.5">
-                  {[
-                    'Unlimited projects',
-                    'All phases and steps',
-                    'Growth tracking',
-                    'Early access to new features',
-                  ].map(f => (
+                  {['Unlimited projects', 'All phases and steps', 'Growth tracking', 'Early access to new features'].map(f => (
                     <div key={f} className="flex items-center gap-2">
                       <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--m-accent)' }} fill="currentColor" viewBox="0 0 24 24">
                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
@@ -359,7 +394,6 @@ export default function Dashboard() {
                     </div>
                   ))}
                 </div>
-
                 <button
                   onClick={() => window.location.href = '/pricing'}
                   className="w-full rounded-xl py-2.5 text-sm font-medium transition-opacity hover:opacity-80"
@@ -367,14 +401,12 @@ export default function Dashboard() {
                 >
                   Upgrade to Pro →
                 </button>
-
                 <p className="text-xs text-center" style={{ color: 'var(--m-text-muted)' }}>
                   Free plan · {FREE_LIMIT}/{FREE_LIMIT} projects used
                 </p>
               </div>
             )}
 
-            {/* New project card — alleen zichtbaar als er nog ruimte is */}
             {!atLimit && (
               <button
                 onClick={() => window.location.href = '/onboarding'}
